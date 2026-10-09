@@ -897,8 +897,14 @@
   .admin-rail .wordmark {
     @apply self-start;
   }
+  .admin-rail {
+    @apply bg-ink border-[#202947];
+  }
   .admin-rail nav a {
-    @apply gap-2;
+    @apply gap-2 text-mist hover:bg-[#202947] hover:text-white;
+  }
+  .admin-rail nav a.on {
+    @apply bg-blue text-white;
   }
   .admin-rail-person {
     @apply flex min-w-0 items-center gap-2.5;
@@ -907,13 +913,16 @@
     @apply grid min-w-0 leading-tight;
   }
   .admin-rail-identity b {
-    @apply max-w-full truncate;
+    @apply max-w-full truncate text-white;
   }
   .admin-rail-identity small {
-    @apply text-ink-soft;
+    @apply text-mist;
+  }
+  .admin-rail .who {
+    @apply border-[#4a5170] text-mist;
   }
   .admin-rail .who > .btn {
-    @apply mt-2 w-full;
+    @apply mt-2 w-full border-white text-white hover:bg-white hover:text-ink;
   }
 
   .adm-body {
@@ -1399,7 +1408,8 @@
     @apply bg-gold text-white rounded-full text-xs px-2 py-px font-bold;
   }
   .adm {
-    @apply block min-h-screen;
+    @apply grid min-h-screen;
+    grid-template-columns: 236px minmax(0, 1fr);
   }
   .adm-body {
     @apply mx-auto w-full max-w-[1400px] px-8 pt-7 pb-16 min-w-0;
