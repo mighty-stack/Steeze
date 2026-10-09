@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import AuthLayout from '../components/AuthLayout.jsx';
 import { Button, Splash } from '../components/ui.jsx';
 import { useForm, focusFirstError } from '../components/useForm.js';
@@ -8,6 +8,7 @@ import {
 } from '../components/sections.jsx';
 import { api, ApiError } from '../api/client.js';
 import { useOptions } from '../lib/useOptions.js';
+import { TextField } from '../components/fields.jsx';
 import { validateGroups, brandRules, creatorRules, accountRules, emptyBrand, emptyCreator, brandPayload, creatorPayload } from '../lib/schemas.js';
 
 const ACCOUNT_INIT = { email: '', password: '', confirm: '' };
@@ -21,7 +22,15 @@ const FLOWS = {
     endpoint: '/auth/register/brand', initial: { ...emptyBrand, ...ACCOUNT_INIT }, payload: brandPayload,
     steps: [
       { label: 'Your business', short: 'Business', title: 'Tell us about your business', lede: 'The basics that identify your brand.', rules: brandRules.business,
-        render: (f, o) => <BrandBusinessFields form={f} options={o} /> },
+        render: (f, o) => (
+          <>
+            <TextField
+              label="Access code" {...f.bind('accessCode')} hint="Given to you by the team that invited you."
+              autoCapitalize="characters" autoCorrect="off" spellCheck="false" inputClassName="access-code"
+            />
+            <BrandBusinessFields form={f} options={o} />
+          </>
+        ) },
       { label: 'Contact and offer', short: 'Contact', title: 'How can we reach you, and what do you offer?', lede: 'We use this to contact you about your registration and to describe your brand to creators.', rules: brandRules.contact,
         render: (f) => <BrandContactFields form={f} /> },
       { label: 'Interests and login', short: 'Login', title: 'Your interests and login', lede: 'Choose what you are open to, then set up how you will log in.', rules: { ...brandRules.interests, ...accountRules },
@@ -34,7 +43,15 @@ const FLOWS = {
     endpoint: '/auth/register/creator', initial: { ...emptyCreator, ...ACCOUNT_INIT }, payload: creatorPayload,
     steps: [
       { label: 'About you', short: 'You', title: 'Tell us about you', lede: 'Who you are and what you create.', rules: creatorRules.about,
-        render: (f, o) => <CreatorAboutFields form={f} options={o} /> },
+        render: (f, o) => (
+          <>
+            <TextField
+              label="Access code" {...f.bind('accessCode')} hint="Given to you by the team that invited you."
+              autoCapitalize="characters" autoCorrect="off" spellCheck="false" inputClassName="access-code"
+            />
+            <CreatorAboutFields form={f} options={o} />
+          </>
+        ) },
       { label: 'Your audience', short: 'Audience', title: 'Where can brands find you?', lede: 'Add the accounts you post on and describe your content.', rules: creatorRules.audience,
         render: (f) => <CreatorAudienceFields form={f} /> },
       { label: 'Interests and login', short: 'Login', title: 'Your interests and login', lede: 'Choose what you are open to, then set up how you will log in.', rules: { ...creatorRules.interests, ...accountRules },
@@ -58,8 +75,14 @@ function loadDraft(kind, initial) {
 export default function Register({ kind }) {
   const flow = FLOWS[kind];
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const urlCode = searchParams.has('code') ? searchParams.get('code') : null;
   const { options, error: optionsError, reload } = useOptions();
-  const draft = useMemo(() => loadDraft(kind, flow.initial), [kind, flow]);
+  const draft = useMemo(() => {
+    const saved = loadDraft(kind, flow.initial);
+    if (urlCode !== null) saved.values = { ...saved.values, accessCode: urlCode };
+    return saved;
+  }, [kind, flow, urlCode]);
   const form = useForm(draft.values);
   const [step, setStep] = useState(draft.step);
   const [busy, setBusy] = useState(false);
@@ -102,7 +125,7 @@ export default function Register({ kind }) {
     return i === -1 ? last : i;
   };
 
-  const goNext = (e) => {
+  const goNext = async (e) => {
     e.preventDefault();
     setBanner('');
     const errors = validateGroups([current.rules], form.values);
@@ -110,6 +133,27 @@ export default function Register({ kind }) {
       form.setErrors(errors);
       focusFirstError();
       return;
+    }
+    if (step === 0) {
+      setBusy(true);
+      try {
+        await api('/auth/check-access-code', {
+          method: 'POST',
+          body: { code: form.values.accessCode.trim() },
+        });
+      } catch (err) {
+        setBusy(false);
+        if (!(err instanceof ApiError)) throw err;
+        const message = err.fields?.accessCode || err.fields?.code;
+        if (message) {
+          form.setErrors({ accessCode: message });
+          focusFirstError();
+        } else {
+          setBanner(err.message);
+        }
+        return;
+      }
+      setBusy(false);
     }
     if (step < last) {
       // Convenience: login email starts as the contact email.

@@ -5,7 +5,7 @@ export const ABOUT = [
 ];
 
 export const HOW_IT_WORKS = [
-  { title: 'Register', text: 'Fill in a short three-step form as a brand or as a creator.' },
+  { title: 'Register', text: 'Enter the access code you were given, then fill in a short three-step form as a brand or creator.' },
   { title: 'We review', text: 'The Steeze team checks your details. You will get an email when you are verified.' },
   { title: 'See opportunities', text: 'Log in to manage your profile and view current collaboration opportunities.' },
 ];

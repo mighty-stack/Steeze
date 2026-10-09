@@ -30,6 +30,9 @@ export default function Registrations() {
   const toast = useToast();
   const { options } = useAdminOptions();
   const [params, setParams] = useSearchParams();
+  const accessCodeId = params.get('accessCode') || '';
+  const [accessCodeLabel, setAccessCodeLabel] = useState('');
+  const [accessCodeLabelError, setAccessCodeLabelError] = useState('');
 
   const [tab, setTab] = useState(() => (params.get('unseen') === 'true' ? 'all' : 'all'));
   const [q, setQ] = useState('');
@@ -38,6 +41,23 @@ export default function Registrations() {
   const [location, setLocation] = useState('');
   const [page, setPage] = useState(1);
   const onlyUnseen = params.get('unseen') === 'true';
+
+  useEffect(() => {
+    if (!accessCodeId) {
+      setAccessCodeLabel('');
+      setAccessCodeLabelError('');
+      return undefined;
+    }
+    let alive = true;
+    api('/admin/access-codes')
+      .then(({ items }) => {
+        if (alive) setAccessCodeLabel(items.find((item) => item.id === accessCodeId)?.code || accessCodeId);
+      })
+      .catch((err) => {
+        if (alive) setAccessCodeLabelError(err.message);
+      });
+    return () => { alive = false; };
+  }, [accessCodeId]);
 
   const [list, setList] = useState(null); // { items, total, pages }
   const [listError, setListError] = useState('');
@@ -48,7 +68,14 @@ export default function Registrations() {
   const [modal, setModal] = useState(null); // 'edit' | 'reject' | 'delete' | 'deactivate' | null
   const requestId = useRef(0);
 
-  const query = { ...TABS.find((t) => t.key === tab).query, q: debouncedQ, category, location, ...(onlyUnseen ? { unseen: 'true' } : {}) };
+  const query = {
+    ...TABS.find((t) => t.key === tab).query,
+    q: debouncedQ,
+    category,
+    location,
+    ...(onlyUnseen ? { unseen: 'true' } : {}),
+    ...(accessCodeId ? { accessCode: accessCodeId } : {}),
+  };
 
   const load = useCallback(async () => {
     const id = ++requestId.current;
@@ -60,7 +87,7 @@ export default function Registrations() {
       if (id === requestId.current) setListError(err.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tab, debouncedQ, category, location, page, onlyUnseen]);
+  }, [tab, debouncedQ, category, location, page, onlyUnseen, accessCodeId]);
 
   useEffect(() => { setList(null); load(); }, [load]);
   useEffect(() => {
@@ -74,7 +101,7 @@ export default function Registrations() {
       window.removeEventListener('focus', refreshWhenVisible);
     };
   }, [load]);
-  useEffect(() => { setPage(1); }, [tab, debouncedQ, category, location, onlyUnseen]);
+  useEffect(() => { setPage(1); }, [tab, debouncedQ, category, location, onlyUnseen, accessCodeId]);
 
   const openDetail = async (id) => {
     setSelectedId(id);
@@ -90,6 +117,7 @@ export default function Registrations() {
   };
 
   const clearUnseenFilter = () => setParams((p) => { p.delete('unseen'); return p; }, { replace: true });
+  const clearAccessCodeFilter = () => setParams((p) => { p.delete('accessCode'); return p; }, { replace: true });
 
   const act = async (action, id, extra) => {
     setBusyAction(action);
@@ -164,6 +192,13 @@ export default function Registrations() {
           Showing only new, unopened registrations. <button className="link" onClick={clearUnseenFilter}>Show all</button>
         </div>
       )}
+      {accessCodeId && (
+        <div className="filter-note">
+          Filtered by code {accessCodeLabel || accessCodeId}.{' '}
+          {accessCodeLabelError && <span className="text-err">{accessCodeLabelError}</span>}
+          <button className="link" onClick={clearAccessCodeFilter}>Clear filter</button>
+        </div>
+      )}
 
       <div className={cx('content-drawer', selectedId !== null && 'with-drawer')}>
         <div className="reg-table">
@@ -229,6 +264,11 @@ export default function Registrations() {
             {detail && (
               <>
                 <div className="mt-3.5"><Pill tone={statusOf(detail.user).tone}>{statusOf(detail.user).label}</Pill></div>
+                <div className="meta mt-2">
+                  {detail.user.referral
+                    ? `Referred by ${detail.user.referral.ownerName} (${detail.user.referral.code})`
+                    : 'No code (registered before access codes)'}
+                </div>
                 {detail.user.verificationStatus === 'rejected' && detail.user.rejectionReason && (
                   <div className="drawer note">Reason: {detail.user.rejectionReason}</div>
                 )}

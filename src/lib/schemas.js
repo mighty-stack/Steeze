@@ -3,6 +3,7 @@ import { rules, clean, cleanHandle, socialErrors } from './validation.js';
 /* Validation rules grouped by the step/section they belong to. */
 export const brandRules = {
   business: {
+    accessCode: (v) => (!v?.trim() ? 'Enter the access code you were given.' : undefined),
     brandName: rules.text('Brand name', 2, 80),
     category: rules.choice,
     location: rules.choice,
@@ -19,6 +20,7 @@ export const brandRules = {
 
 export const creatorRules = {
   about: {
+    accessCode: (v) => (!v?.trim() ? 'Enter the access code you were given.' : undefined),
     fullName: rules.text('Full name', 2, 80),
     creatorName: rules.text('Creator name', 2, 80),
     niche: rules.choice,
@@ -40,17 +42,18 @@ export const accountRules = {
 
 /* Empty starting values. */
 export const emptyBrand = {
-  brandName: '', category: '', location: '', contactPerson: '', contactEmail: '', phone: '', website: '',
+  accessCode: '', brandName: '', category: '', location: '', contactPerson: '', contactEmail: '', phone: '', website: '',
   productsServices: '', collaborationInterests: [],
 };
 export const emptyCreator = {
-  fullName: '', creatorName: '', niche: '', location: '', socials: [{ platform: '', handle: '', followers: '' }],
+  accessCode: '', fullName: '', creatorName: '', niche: '', location: '', socials: [{ platform: '', handle: '', followers: '' }],
   audienceNotes: '', contentDescription: '', collaborationInterests: [],
 };
 
 /* Turn form values into the API payload. */
 export function brandPayload(v) {
   return {
+    accessCode: v.accessCode.trim(),
     brandName: clean(v.brandName), category: v.category, location: v.location,
     contactPerson: clean(v.contactPerson), contactEmail: v.contactEmail.trim(), phone: v.phone,
     website: v.website.trim(), productsServices: v.productsServices.trim(),
@@ -59,6 +62,7 @@ export function brandPayload(v) {
 }
 export function creatorPayload(v) {
   return {
+    accessCode: v.accessCode.trim(),
     fullName: clean(v.fullName), creatorName: clean(v.creatorName), niche: v.niche, location: v.location,
     socials: v.socials.map((s) => ({ platform: s.platform, handle: cleanHandle(s.handle), followers: Number(s.followers) })),
     audienceNotes: v.audienceNotes.trim(), contentDescription: v.contentDescription.trim(),

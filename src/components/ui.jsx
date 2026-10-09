@@ -90,7 +90,7 @@ export function Modal({ title, onClose, children, footer, wide, labelledBy = 'mo
 }
 
 // Confirmation for destructive actions. `requireText` makes the user type a name to proceed.
-export function ConfirmDialog({ title, message, confirmLabel, requireText, danger = true, onConfirm, onClose }) {
+export function ConfirmDialog({ title, message, confirmLabel, requireText, danger = true, error, onConfirm, onClose }) {
   const [typed, setTyped] = useState('');
   const [busy, setBusy] = useState(false);
   const ok = !requireText || typed.trim().toLowerCase() === requireText.trim().toLowerCase();
@@ -114,6 +114,7 @@ export function ConfirmDialog({ title, message, confirmLabel, requireText, dange
       }
     >
       <p className="muted">{message}</p>
+      {error && <div className="form-error mt-3" role="alert">{error}</div>}
       {requireText && (
         <div className="field">
           <label htmlFor="confirm-text">Type <b>{requireText}</b> to confirm</label>

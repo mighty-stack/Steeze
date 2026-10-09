@@ -22,6 +22,7 @@ import AdminRegistrations from './pages/admin/Registrations.jsx';
 import AdminOptions from './pages/admin/Options.jsx';
 import AdminOpportunities from './pages/admin/Opportunities.jsx';
 import AdminAdmins from './pages/admin/Admins.jsx';
+import AdminAccessCodes from './pages/admin/AccessCodes.jsx';
 
 export default function App() {
   return (
@@ -53,6 +54,7 @@ export default function App() {
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<AdminRegistrations />} />
                 <Route path="registrations" element={<AdminRegistrations />} />
+                <Route path="access-codes" element={<AdminAccessCodes />} />
                 <Route path="options" element={<AdminOptions />} />
                 <Route path="opportunities" element={<AdminOpportunities />} />
                 <Route path="admins" element={<AdminAdmins />} />

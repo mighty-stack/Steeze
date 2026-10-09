@@ -185,6 +185,9 @@
       placeholder:text-[#8b91ad] hover:border-[#b9bfda]
       focus:outline-none focus:border-blue focus:ring-4 focus:ring-blue-tint;
   }
+  .input.access-code {
+    text-transform: uppercase;
+  }
   .textarea {
     @apply h-auto min-h-[116px] py-3.25 leading-snug resize-y;
   }
@@ -891,6 +894,27 @@
   .rail .who .row {
     @apply flex gap-3.5;
   }
+  .admin-rail .wordmark {
+    @apply self-start;
+  }
+  .admin-rail nav a {
+    @apply gap-2;
+  }
+  .admin-rail-person {
+    @apply flex min-w-0 items-center gap-2.5;
+  }
+  .admin-rail-identity {
+    @apply grid min-w-0 leading-tight;
+  }
+  .admin-rail-identity b {
+    @apply max-w-full truncate;
+  }
+  .admin-rail-identity small {
+    @apply text-ink-soft;
+  }
+  .admin-rail .who > .btn {
+    @apply mt-2 w-full;
+  }
 
   .adm-body {
     @apply px-8 pt-7 pb-16 min-w-0;
@@ -1396,6 +1420,18 @@
     }
     .site-nav-person {
       @apply hidden;
+    }
+    .admin-rail {
+      @apply gap-3;
+    }
+    .admin-rail .wordmark {
+      @apply self-auto;
+    }
+    .admin-rail .who {
+      @apply flex items-center;
+    }
+    .admin-rail .who > .btn {
+      @apply mt-0 w-auto;
     }
     .adm-body {
       @apply px-4 pt-5 pb-14;

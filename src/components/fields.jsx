@@ -22,12 +22,12 @@ function Shell({ id, label, optional, hint, error, children, as }) {
 
 const describe = (id, error, hint) => (error ? `${id}-err` : hint ? `${id}-hint` : undefined);
 
-export function TextField({ label, name, value, onChange, error, hint, optional, type = 'text', ...rest }) {
+export function TextField({ label, name, value, onChange, error, hint, optional, type = 'text', inputClassName, ...rest }) {
   const id = useId();
   return (
     <Shell id={id} label={label} optional={optional} hint={hint} error={error}>
       <input
-        id={id} name={name} type={type} value={value} className={cx('input', error && 'err')}
+        id={id} name={name} type={type} value={value} className={cx('input', error && 'err', inputClassName)}
         onChange={(e) => onChange(e.target.value)}
         aria-invalid={error ? 'true' : undefined} aria-describedby={describe(id, error, hint)} {...rest}
       />

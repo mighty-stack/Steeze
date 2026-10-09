@@ -27,6 +27,7 @@ export default function ProjectNav({ user, unseen = 0, onLogout, landing = false
             <NavLink to="/admin/registrations" className={({ isActive }) => cx(isActive && 'active')}>
               Registrations {unseen > 0 && <span className="count-badge">{unseen} new</span>}
             </NavLink>
+            <NavLink to="/admin/access-codes" className={({ isActive }) => cx(isActive && 'active')}>Access codes</NavLink>
             <NavLink to="/admin/opportunities" className={({ isActive }) => cx(isActive && 'active')}>Opportunities</NavLink>
             <NavLink to="/admin/options" className={({ isActive }) => cx(isActive && 'active')}>Categories and locations</NavLink>
             <NavLink to="/admin/admins" className={({ isActive }) => cx(isActive && 'active')}>Admins</NavLink>
