@@ -32,7 +32,7 @@ export default function Landing() {
       <main>
         <section className="landing-hero">
           <h1>Brands and creators, reviewed and in one place.</h1>
-          <p>Register your brand or your channel. The Klout Collabs team checks every profile before it goes live, then shares collaboration opportunities with verified members.</p>
+          <p>Register your brand or your channel. The Steeze team checks every profile before it goes live, then shares collaboration opportunities with verified members.</p>
         </section>
 
         <section className="landing-pair" id="register" aria-label="Choose how you want to join">
@@ -48,7 +48,7 @@ export default function Landing() {
             <div>
               <h2>I create content</h2>
               <p>Share your niche, your platforms and your audience so brands can see who you are.</p>
-              <Link className="btn ink" to="/register/creator">Register as a creator</Link>
+              <Link className="btn white" to="/register/creator">Register as a creator</Link>
             </div>
           </article>
 
@@ -82,7 +82,7 @@ export default function Landing() {
 
         <section className="landing-about" id="about">
           <div className="landing-about-copy">
-            <h2>What Klout Collabs does</h2>
+            <h2>What Steeze does</h2>
             <div>
               {ABOUT.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
             </div>
@@ -153,16 +153,16 @@ export default function Landing() {
         <section className="landing-contact" id="contact" aria-labelledby="landing-contact-title">
           <div>
             <h2 id="landing-contact-title">Get in touch</h2>
-            <p>Have a question about joining Klout Collabs or finding the right collaboration? Our team is happy to help.</p>
+            <p>Have a question about joining Steeze or finding the right collaboration? Our team is happy to help.</p>
           </div>
-          <a className="btn ink" href={`mailto:${CONTACT_EMAIL}`}>Contact us</a>
+          <a className="btn white" href={`mailto:${CONTACT_EMAIL}`}>Contact us</a>
         </section>
       </main>
 
       <footer className="site">
         <div className="footer-main">
           <div className="footer-brand">
-            <Wordmark />
+            <Wordmark tone="reversed" />
             <p>{FOOTER_DESCRIPTION}</p>
           </div>
           {Object.entries(FOOTER_LINKS).map(([title, links]) => (
@@ -191,7 +191,7 @@ export default function Landing() {
           </div>
         </div>
         <div className="footer-bottom">
-          <span>&copy; {new Date().getFullYear()} Klout Collabs</span>
+          <span>&copy; {new Date().getFullYear()} Steeze</span>
           <span>Placeholder copy for design review</span>
         </div>
       </footer>

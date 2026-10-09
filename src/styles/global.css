@@ -6,12 +6,12 @@
   --color-mist: #edeff7;
   --color-line: #d9ddec;
   --color-paper: #ffffff;
-  --color-blue: #2b3bff;
-  --color-blue-deep: #1b27c4;
-  --color-blue-tint: #e3e6ff;
-  --color-gold: #ffb627;
-  --color-gold-tint: #fff0cc;
-  --color-gold-ink: #7a4b00;
+  --color-blue: #035DFC;
+  --color-blue-deep: #061E4A;
+  --color-blue-tint: #E1ECFF;
+  --color-gold: #061E4A;
+  --color-gold-tint: #E6E8ED;
+  --color-gold-ink: #035DFC;
   --color-ok-bg: #d9f4e3;
   --color-ok-fg: #0f5c2e;
   --color-wait-bg: #fff1cc;
@@ -82,14 +82,13 @@
 @layer components {
   /* ---------- shared bits ---------- */
   .wordmark {
-    @apply font-extrabold text-2xl tracking-tight inline-flex items-baseline gap-1.5;
-    font-stretch: 78%;
+    @apply inline-flex items-center gap-2.5;
   }
-  .wordmark i {
-    @apply not-italic text-blue;
+  .wordmark-icon {
+    @apply h-9 w-9 flex-none object-contain;
   }
-  .creator-theme .wordmark i {
-    @apply text-blue-deep;
+  .wordmark-text {
+    @apply h-[22px] w-auto object-contain;
   }
 
   .link {
@@ -113,7 +112,7 @@
     @apply bg-blue text-white hover:not-disabled:bg-blue-deep;
   }
   .btn.gold {
-    @apply bg-gold text-ink;
+    @apply bg-gold text-white;
   }
   .btn.danger {
     @apply bg-white text-bad-fg;
@@ -289,11 +288,7 @@
     @apply flex items-center gap-7 font-medium;
   }
   .nav nav a:not(.btn):hover {
-    @apply text-gold;
-  }
-  .nav .wordmark i,
-  footer.site .wordmark i {
-    @apply text-gold;
+    @apply text-blue-tint;
   }
 
   .intro {
@@ -329,7 +324,7 @@
     border-radius: var(--radius-lg) 0 0 var(--radius-lg);
   }
   .side.creator {
-    @apply bg-gold text-ink;
+    @apply bg-gold text-white;
     border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
   }
   .side h2 {
@@ -346,7 +341,7 @@
     @apply text-[#dce0ff];
   }
   .side.creator p {
-    @apply text-[#4a3300];
+    @apply text-[#dce0ff];
   }
   .sample {
     @apply bg-white text-ink rounded-t-2xl px-6 pt-5.5 pb-6.5 mt-8.5 w-[330px] self-start transition-[transform,box-shadow] duration-200;
@@ -539,9 +534,6 @@
     @apply grid gap-12 max-w-[1240px] mx-auto pb-10;
     grid-template-columns: 1.5fr 1fr 1fr;
   }
-  .footer-brand .wordmark {
-    @apply text-2xl text-white;
-  }
   .footer-brand p {
     @apply mt-3 max-w-[320px] text-[15px] leading-relaxed;
   }
@@ -556,7 +548,7 @@
     @apply transition-colors duration-150;
   }
   .footer-links a:hover {
-    @apply text-gold;
+    @apply text-blue-tint;
   }
   .footer-bottom {
     @apply max-w-[1240px] mx-auto border-t border-[#4a5170] pt-5 flex items-center justify-between gap-4;
@@ -613,16 +605,10 @@
     @apply outline-white;
   }
   .reg.creator-theme aside {
-    @apply bg-gold text-ink;
-  }
-  .reg.creator-theme aside .sub {
-    @apply text-[#4a3300];
-  }
-  .reg.creator-theme aside small {
-    @apply text-[#5c3d00];
+    @apply bg-gold text-white;
   }
   .reg.creator-theme aside :focus-visible {
-    @apply outline-ink;
+    @apply outline-white;
   }
 
   .stepper {
@@ -644,23 +630,7 @@
     @apply text-white font-bold;
   }
   .stepper li.now .num {
-    @apply bg-gold border-gold text-ink;
-  }
-  .creator-theme .stepper li {
-    @apply text-gold-ink;
-  }
-  .creator-theme .stepper .num {
-    @apply border-gold-ink;
-  }
-  .creator-theme .stepper li.done,
-  .creator-theme .stepper li.now {
-    @apply text-ink;
-  }
-  .creator-theme .stepper li.done .num {
-    @apply bg-ink border-ink text-gold;
-  }
-  .creator-theme .stepper li.now .num {
-    @apply bg-white border-white text-ink;
+    @apply bg-white border-white text-blue-deep;
   }
   .stepper .short {
     @apply hidden;
@@ -1379,9 +1349,6 @@
   .site-nav .wordmark {
     @apply flex-none;
   }
-  .site-nav .wordmark i {
-    @apply text-gold;
-  }
   .site-nav-links {
     @apply flex flex-1 items-center justify-center gap-5 font-medium;
   }
@@ -1390,7 +1357,7 @@
   }
   .site-nav-links a:hover,
   .site-nav-links a.active {
-    @apply text-gold;
+    @apply text-blue-tint;
   }
   .site-nav-account {
     @apply flex flex-none items-center gap-2.5;
@@ -1405,7 +1372,7 @@
     @apply text-mist capitalize;
   }
   .count-badge {
-    @apply bg-gold text-ink rounded-full text-xs px-2 py-px font-bold;
+    @apply bg-gold text-white rounded-full text-xs px-2 py-px font-bold;
   }
   .adm {
     @apply block min-h-screen;
@@ -1442,9 +1409,6 @@
       padding: 18px max(24px, calc((100% - 1176px) / 2));
       box-sizing: border-box;
     }
-    .landing-page .site-nav .wordmark i {
-      @apply text-gold;
-    }
     .landing-page .site-nav-links {
       @apply ml-auto flex flex-none items-center justify-end gap-7 font-medium;
     }
@@ -1452,7 +1416,7 @@
       @apply rounded-full whitespace-nowrap text-white transition-colors duration-150;
     }
     .landing-page .site-nav-links a:hover {
-      @apply text-gold;
+      @apply text-blue-tint;
     }
     .landing-page .site-nav-links a:not(.nav-register) {
       @apply px-4 py-2;
@@ -1464,7 +1428,7 @@
       @apply bg-white text-ink;
     }
     .landing-page .site-nav-links .nav-register {
-      @apply bg-gold px-5 py-2 font-bold text-ink;
+      @apply bg-gold px-5 py-2 font-bold text-white;
     }
     .landing-page .site-nav-links .nav-register:hover {
       @apply bg-white text-ink;
@@ -1496,7 +1460,7 @@
       border-radius: var(--radius-lg) 0 0 var(--radius-lg);
     }
     .landing-page .landing-side.creator {
-      @apply bg-gold text-ink;
+      @apply bg-gold text-white;
       border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
     }
     .landing-page .landing-side h2 {
@@ -1510,7 +1474,7 @@
       color: #dce0ff;
     }
     .landing-page .landing-side.creator p {
-      color: #4a3300;
+      color: #dce0ff;
     }
 
     .landing-page .seam-cards {
@@ -1691,7 +1655,7 @@
     }
 
     .landing-page .landing-contact {
-      @apply mx-auto mb-20 flex items-center justify-between gap-8 rounded-3xl bg-gold px-10 py-9;
+      @apply mx-auto mb-20 flex items-center justify-between gap-8 rounded-3xl bg-gold px-10 py-9 text-white;
       width: min(1176px, calc(100% - 48px));
       scroll-margin-top: 24px;
     }
@@ -1700,7 +1664,7 @@
       font-stretch: 92%;
     }
     .landing-page .landing-contact p {
-      @apply mt-2 max-w-[650px] text-base leading-relaxed text-[#4a3300];
+      @apply mt-2 max-w-[650px] text-base leading-relaxed text-[#dce0ff];
     }
 
     .landing-page footer.site {
@@ -1709,9 +1673,6 @@
     .landing-page .footer-main {
       @apply mx-auto grid max-w-none grid-cols-4 gap-12 border-0 pb-10;
       width: min(1176px, calc(100% - 48px));
-    }
-    .landing-page .footer-brand .wordmark {
-      @apply text-2xl text-white;
     }
     .landing-page .footer-brand p {
       @apply mt-3 max-w-[290px] text-[13px] leading-relaxed text-mist;
@@ -1726,7 +1687,7 @@
       @apply text-mist transition-colors duration-150;
     }
     .landing-page .footer-links a:hover {
-      @apply text-gold;
+      @apply text-blue-tint;
     }
     .landing-page .footer-socials {
       @apply flex list-none items-center gap-2;
@@ -1744,7 +1705,7 @@
       @apply fill-current stroke-none;
     }
     .landing-page .footer-bottom {
-      @apply mx-auto flex max-w-none items-center justify-between gap-4 border-t border-[#4a5170] pt-5 text-xs text-ink-soft;
+      @apply mx-auto flex max-w-none items-center justify-between gap-4 border-t border-[#4a5170] pt-5 text-xs text-mist;
       width: min(1176px, calc(100% - 48px));
     }
 
@@ -1757,7 +1718,13 @@
         padding-left: 11px;
       }
       .landing-page .site-nav .wordmark {
-        @apply text-base;
+        @apply gap-2;
+      }
+      .landing-page .site-nav .wordmark-icon {
+        @apply h-8 w-8;
+      }
+      .landing-page .site-nav .wordmark-text {
+        @apply h-[18px];
       }
       .landing-page .site-nav-links {
         @apply gap-1 text-[11px];

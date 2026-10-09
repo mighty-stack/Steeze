@@ -7,7 +7,7 @@ export default function AuthLayout({ theme = 'brand', heading, sub, footnote, as
     <div className={cx('reg', theme === 'creator' && 'creator-theme')}>
       <aside>
         <div>
-          <Wordmark />
+          <Wordmark tone={theme === 'creator' ? 'reversed' : 'mono'} />
           <h1>{heading}</h1>
           {sub && <p className="sub">{sub}</p>}
           {aside}

@@ -3,7 +3,7 @@ import { ABOUT, HOW_IT_WORKS } from '../../lib/content.js';
 export default function About() {
   return (
     <div className="card">
-      <h2>About Klout Collabs</h2>
+      <h2>About Steeze</h2>
       {ABOUT.map((p) => <p key={p} className="card-lede mt-2.5">{p}</p>)}
       <div className="section-title mt-7">How it works</div>
       <div className="grid gap-4 mt-3">

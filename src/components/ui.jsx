@@ -4,11 +4,20 @@ import { subscribeSlow } from '../api/client.js';
 
 export const cx = (...c) => c.filter(Boolean).join(' ');
 
-export const Wordmark = ({ to = '/' }) => (
-  <Link to={to} className="wordmark" aria-label="Klout Collabs home">
-    Klout <i>Collabs</i>
-  </Link>
-);
+export const Wordmark = ({ to = '/', tone = 'default' }) => {
+  const assets = {
+    default: ['/steeze-icon.png', '/steeze-wordmark.png'],
+    reversed: ['/steeze-icon-reversed.png', '/steeze-wordmark-reversed.png'],
+    mono: ['/steeze-icon-white.png', '/steeze-wordmark-reversed.png'],
+  };
+  const [icon, wordmark] = assets[tone] || assets.default;
+  return (
+    <Link to={to} className="wordmark" aria-label="Steeze home">
+      <img className="wordmark-icon" src={icon} alt="" />
+      <img className="wordmark-text" src={wordmark} alt="Steeze" />
+    </Link>
+  );
+};
 
 export const Pill = ({ tone, children }) => <span className={cx('pill', tone)}>{children}</span>;
 
