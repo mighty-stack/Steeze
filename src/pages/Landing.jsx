@@ -20,9 +20,27 @@ function SocialIcon({ name }) {
 
 export default function Landing() {
   const [openFaq, setOpenFaq] = useState(null);
+  const [useStaticHero, setUseStaticHero] = useState(() => (
+    typeof window !== 'undefined'
+    && (window.matchMedia('(max-width: 760px)').matches
+      || window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  ));
 
   useEffect(() => {
     warmUp();
+  }, []);
+
+  useEffect(() => {
+    const mobile = window.matchMedia('(max-width: 760px)');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const updateHeroMedia = () => setUseStaticHero(mobile.matches || reducedMotion.matches);
+
+    mobile.addEventListener('change', updateHeroMedia);
+    reducedMotion.addEventListener('change', updateHeroMedia);
+    return () => {
+      mobile.removeEventListener('change', updateHeroMedia);
+      reducedMotion.removeEventListener('change', updateHeroMedia);
+    };
   }, []);
 
   return (
@@ -31,8 +49,24 @@ export default function Landing() {
 
       <main>
         <section className="landing-hero">
-          <h1>Brands and creators, reviewed and in one place.</h1>
-          <p>Register your brand or your channel. The Steeze team checks every profile before it goes live, then shares collaboration opportunities with verified members.</p>
+          <div className="landing-hero-copy">
+            <h1>Brands and creators, reviewed and in one place.</h1>
+            <p>Register your brand or your channel. The Steeze team checks every profile before it goes live, then shares collaboration opportunities with verified members.</p>
+          </div>
+          <div className="landing-hero-media" aria-hidden="true">
+            {useStaticHero ? (
+              <img src="/hero_image.webp" alt="" />
+            ) : (
+              <video
+                autoPlay
+                muted
+                loop
+                playsInline
+                poster="/hero_image.webp"
+                src="/coverr-a-girl-presses-record-on-a-camera-and-begins-a-vlog-2609-1080p.mp4"
+              />
+            )}
+          </div>
         </section>
 
         <section className="landing-pair" id="register" aria-label="Choose how you want to join">

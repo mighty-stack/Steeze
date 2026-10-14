@@ -1481,15 +1481,35 @@
     }
 
     .landing-page .landing-hero {
-      @apply mx-auto px-0 pt-10 pb-5;
+      @apply mx-auto grid items-center gap-12 px-0 pt-10 pb-5;
       width: min(1176px, calc(100% - 48px));
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    }
+    .landing-page .landing-hero-copy {
+      @apply min-w-0;
     }
     .landing-page .landing-hero h1 {
-      @apply max-w-[620px] text-[68px] leading-[1.02] tracking-tight font-bold;
+      @apply max-w-[640px] text-[68px] leading-[1.02] tracking-tight font-bold;
       font-stretch: 92%;
     }
     .landing-page .landing-hero p {
       @apply mt-6 max-w-[530px] text-lg leading-relaxed text-ink-soft;
+    }
+    .landing-page .landing-hero-media {
+      @apply relative isolate overflow-hidden rounded-[28px];
+      min-height: 340px;
+      background: #061e4a;
+    }
+    .landing-page .landing-hero-media::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(6, 30, 74, 0.3);
+      pointer-events: none;
+    }
+    .landing-page .landing-hero-media video,
+    .landing-page .landing-hero-media img {
+      @apply absolute inset-0 h-full w-full object-cover;
     }
 
     .landing-page .landing-pair {
@@ -1782,7 +1802,7 @@
         @apply px-2.5 py-1.5;
       }
       .landing-page .landing-hero {
-        @apply pt-2 pb-1;
+        @apply grid-cols-1 gap-5 pt-2 pb-1;
         width: calc(100% - 22px);
       }
       .landing-page .landing-hero h1 {
@@ -1790,6 +1810,15 @@
       }
       .landing-page .landing-hero p {
         @apply mt-3 max-w-[365px] text-[15px] leading-relaxed;
+      }
+      .landing-page .landing-hero-media {
+        min-height: 220px;
+      }
+      .landing-page .landing-hero-media video {
+        display: none;
+      }
+      .landing-page .landing-hero-media img {
+        display: block;
       }
       .landing-page .landing-pair {
         @apply mx-[11px] mt-5 grid grid-cols-1;
@@ -1938,6 +1967,15 @@
       .landing-page .footer-bottom {
         @apply flex-col justify-center gap-2 text-center;
         width: calc(100% - 22px);
+      }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+      .landing-page .landing-hero-media video {
+        display: none;
+      }
+      .landing-page .landing-hero-media img {
+        display: block;
       }
   }
 }
