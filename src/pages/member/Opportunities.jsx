@@ -23,7 +23,7 @@ export default function Opportunities() {
   return (
     <div className="card">
       <h2>Collaboration opportunities</h2>
-      <p className="card-lede">Posted by the Steeze team for verified members.</p>
+      <p className="card-lede">Posted by the Clout team for verified members.</p>
       {items.length === 0 ? (
         <div className="empty"><h3>Nothing posted yet</h3><p>Check back soon &mdash; new opportunities appear here as the team adds them.</p></div>
       ) : (

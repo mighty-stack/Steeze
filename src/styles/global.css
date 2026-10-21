@@ -87,9 +87,6 @@
   .wordmark-icon {
     @apply h-9 w-9 flex-none object-contain;
   }
-  .wordmark-text {
-    @apply h-[22px] w-auto object-contain;
-  }
   .wordmark-label {
     @apply text-xl font-bold tracking-tight;
   }
@@ -1792,8 +1789,8 @@
       .landing-page .site-nav .wordmark-icon {
         @apply h-8 w-8;
       }
-      .landing-page .site-nav .wordmark-text {
-        @apply h-[18px];
+      .landing-page .site-nav .wordmark-label {
+        @apply text-lg;
       }
       .landing-page .site-nav-links {
         @apply gap-1 text-[11px];

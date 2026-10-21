@@ -9,7 +9,7 @@ export default function ProjectNav({ user, unseen = 0, onLogout, landing = false
 
   return (
     <header className="site-nav">
-      <Wordmark to={home} tone="reversed" brandName={landing ? 'Clout' : 'Steeze'} />
+      <Wordmark to={home} tone="reversed" />
       <nav className="site-nav-links" aria-label="Primary navigation">
         {!user ? landing ? (
           <>
@@ -36,7 +36,7 @@ export default function ProjectNav({ user, unseen = 0, onLogout, landing = false
           <>
             <NavLink to="/app" end className={({ isActive }) => cx(isActive && 'active')}>Profile</NavLink>
             <NavLink to="/app/opportunities" className={({ isActive }) => cx(isActive && 'active')}>Opportunities</NavLink>
-            <NavLink to="/app/about" className={({ isActive }) => cx(isActive && 'active')}>About Steeze</NavLink>
+            <NavLink to="/app/about" className={({ isActive }) => cx(isActive && 'active')}>About Clout</NavLink>
           </>
         )}
       </nav>

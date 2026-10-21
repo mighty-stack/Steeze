@@ -1,23 +1,23 @@
 // Copy shown on the landing page and in the member dashboard. Edit here to change it everywhere.
 export const ABOUT = [
-  'Steeze keeps a reviewed list of brands and content creators. Members get a profile they control, and the team behind Steeze uses it to see who is out there and who is a fit for a collaboration.',
+  'Clout keeps a reviewed list of brands and content creators. Members get a profile they control, and the team behind Clout uses it to see who is out there and who is a fit for a collaboration.',
   'Membership is by review. That keeps the list useful for everyone on it.',
 ];
 
 export const HOW_IT_WORKS = [
   { title: 'Register', text: 'Enter the access code you were given, then fill in a short three-step form as a brand or creator.' },
-  { title: 'We review', text: 'The Steeze team checks your details. You will get an email when you are verified.' },
+  { title: 'We review', text: 'The Clout team checks your details. You will get an email when you are verified.' },
   { title: 'See opportunities', text: 'Log in to manage your profile and view current collaboration opportunities.' },
 ];
 
 export const PROCESS_NODES = [
   { title: 'Brand or creator', text: 'Registers a profile', symbol: 'B', tone: 'brand' },
-  { title: 'Steeze', text: 'Reviews every profile', symbol: '✓', tone: 'klout' },
+  { title: 'Clout', text: 'Reviews every profile', symbol: '✓', tone: 'klout' },
   { title: 'Verified member', text: 'Sees opportunities', symbol: '★', tone: 'verified' },
 ];
 
 export const BENEFITS_INTRO = [
-  'Why brands and creators choose Steeze',
+  'Why brands and creators choose Clout',
   'A more considered way to meet, built around reviewed profiles and clear expectations.',
 ];
 
@@ -31,10 +31,10 @@ export const BENEFITS = [
 export const FAQ_INTRO = ['Frequently asked questions'];
 
 export const FAQS = [
-  { question: 'How long does the review take?', answer: 'The Steeze team reviews each registration. Timing can vary, and we will email you when your profile has been reviewed.' },
+  { question: 'How long does the review take?', answer: 'The Clout team reviews each registration. Timing can vary, and we will email you when your profile has been reviewed.' },
   { question: 'Is registration free?', answer: 'Yes. Registering and maintaining a member profile is free.' },
   { question: 'Can I update my profile later?', answer: 'Yes. Once you are approved, you can log in and update your profile details.' },
-  { question: 'What happens after approval?', answer: 'Your profile becomes available to the Steeze team, and you can log in to view current collaboration opportunities.' },
+  { question: 'What happens after approval?', answer: 'Your profile becomes available to the Clout team, and you can log in to view current collaboration opportunities.' },
 ];
 
 export const CONTACT_EMAIL = 'hello@example.com';

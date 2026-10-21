@@ -8,8 +8,6 @@ import {
   FOOTER_DESCRIPTION, FOOTER_LINKS, FOOTER_SOCIALS,
 } from '../lib/content.js';
 
-const cloutCopy = (text) => text.replaceAll('Steeze', 'Clout');
-
 function SocialIcon({ name }) {
   if (name === 'instagram') {
     return <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle className="solid" cx="18" cy="6" r="1" /></svg>;
@@ -120,15 +118,15 @@ export default function Landing() {
           <div className="landing-about-copy">
             <h2>What Clout does</h2>
             <div>
-              {ABOUT.map((paragraph) => <p key={paragraph}>{cloutCopy(paragraph)}</p>)}
+              {ABOUT.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
             </div>
           </div>
           <div className="process-diagram" aria-hidden="true">
             {PROCESS_NODES.map((node) => (
               <div className="process-node" key={node.title}>
                 <div className={`process-icon ${node.tone}`}>{node.symbol}</div>
-                <strong>{cloutCopy(node.title)}</strong>
-                <span>{cloutCopy(node.text)}</span>
+                <strong>{node.title}</strong>
+                <span>{node.text}</span>
               </div>
             ))}
           </div>
@@ -141,7 +139,7 @@ export default function Landing() {
               <li className="thread-step" key={step.title}>
                 <span className="thread-number">{index + 1}</span>
                 <strong>{step.title}</strong>
-                <span className="thread-copy">{cloutCopy(step.text)}</span>
+                <span className="thread-copy">{step.text}</span>
               </li>
             ))}
           </ol>
@@ -178,7 +176,7 @@ export default function Landing() {
                     aria-hidden={!isOpen}
                     inert={!isOpen}
                   >
-                    <div><p>{cloutCopy(item.answer)}</p></div>
+                    <div><p>{item.answer}</p></div>
                   </div>
                 </article>
               );
@@ -198,7 +196,7 @@ export default function Landing() {
       <footer className="site">
         <div className="footer-main">
           <div className="footer-brand">
-            <Wordmark tone="reversed" brandName="Clout" />
+            <Wordmark tone="reversed" />
             <p>{FOOTER_DESCRIPTION}</p>
           </div>
           {Object.entries(FOOTER_LINKS).map(([title, links]) => (

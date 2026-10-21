@@ -157,7 +157,7 @@ export default function Profile() {
       <div className="grid-2">
         <div className="card">
           <div className="flex justify-between items-start gap-3">
-            <div><h2>Your profile</h2><p className="card-lede">What brands and the Steeze team see about you.</p></div>
+            <div><h2>Your profile</h2><p className="card-lede">What brands and the Clout team see about you.</p></div>
             {!editing && <button className="btn line sm" onClick={() => setEditing(true)} disabled={!options}>Edit</button>}
           </div>
           {editing ? (

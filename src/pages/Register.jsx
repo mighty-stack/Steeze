@@ -209,7 +209,7 @@ export default function Register({ kind }) {
   return (
     <AuthLayout
       theme={flow.theme} heading={flow.heading} sub={flow.sub} aside={stepper}
-      footnote="Your details are only visible to you and the Steeze team."
+      footnote="Your details are only visible to you and the Clout team."
       top={<span>Already registered? <Link to="/login">Log in</Link></span>}
     >
       <div className="formwrap">

@@ -4,21 +4,17 @@ import { subscribeSlow } from '../api/client.js';
 
 export const cx = (...c) => c.filter(Boolean).join(' ');
 
-export const Wordmark = ({ to = '/', tone = 'default', brandName = 'Steeze' }) => {
+export const Wordmark = ({ to = '/', tone = 'default', brandName = 'Clout' }) => {
   const assets = {
-    default: ['/steeze-icon.png', '/steeze-wordmark.png'],
-    reversed: ['/steeze-icon-reversed.png', '/steeze-wordmark-reversed.png'],
-    mono: ['/steeze-icon-white.png', '/steeze-wordmark-reversed.png'],
+    default: '/steeze-icon.png',
+    reversed: '/steeze-icon-reversed.png',
+    mono: '/steeze-icon-white.png',
   };
-  const [icon, wordmark] = assets[tone] || assets.default;
+  const icon = assets[tone] || assets.default;
   return (
     <Link to={to} className="wordmark" aria-label={`${brandName} home`}>
       <img className="wordmark-icon" src={icon} alt="" />
-      {brandName === 'Steeze' ? (
-        <img className="wordmark-text" src={wordmark} alt="Steeze" />
-      ) : (
-        <span className="wordmark-label">{brandName}</span>
-      )}
+      <span className="wordmark-label">{brandName}</span>
     </Link>
   );
 };
