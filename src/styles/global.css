@@ -90,6 +90,9 @@
   .wordmark-text {
     @apply h-[22px] w-auto object-contain;
   }
+  .wordmark-label {
+    @apply text-xl font-bold tracking-tight;
+  }
 
   .link {
     @apply text-blue-deep font-semibold underline underline-offset-[3px] bg-transparent border-0 p-0 cursor-pointer;

@@ -9,7 +9,7 @@ export default function ProjectNav({ user, unseen = 0, onLogout, landing = false
 
   return (
     <header className="site-nav">
-      <Wordmark to={home} tone="reversed" />
+      <Wordmark to={home} tone="reversed" brandName={landing ? 'Clout' : 'Steeze'} />
       <nav className="site-nav-links" aria-label="Primary navigation">
         {!user ? landing ? (
           <>
