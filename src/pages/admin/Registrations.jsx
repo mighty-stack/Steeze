@@ -61,7 +61,7 @@ export default function Registrations() {
 
   const [list, setList] = useState(null); // { items, total, pages }
   const [listError, setListError] = useState('');
-  const [selectedId, setSelectedId] = useState(null);
+  const [selectedId, setSelectedId] = useState(() => params.get('open') || null);
   const [detail, setDetail] = useState(null);
   const [detailError, setDetailError] = useState('');
   const [busyAction, setBusyAction] = useState('');
@@ -114,6 +114,26 @@ export default function Registrations() {
     } catch (err) {
       setDetailError(err.message);
     }
+  };
+
+  const openUserId = params.get('open') || '';
+  const openedQueryId = useRef('');
+  useEffect(() => {
+    if (openUserId && openedQueryId.current !== openUserId) {
+      openedQueryId.current = openUserId;
+      openDetail(openUserId);
+    }
+    // The query parameter is the trigger; openDetail intentionally captures the current list state.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [openUserId]);
+
+  const closeDetail = () => {
+    setSelectedId(null);
+    setDetail(null);
+    setParams((current) => {
+      current.delete('open');
+      return current;
+    }, { replace: true });
   };
 
   const clearUnseenFilter = () => setParams((p) => { p.delete('unseen'); return p; }, { replace: true });
@@ -254,7 +274,7 @@ export default function Registrations() {
                 <h2>{selected?.displayName || detail?.user?.displayName}</h2>
                 <div className="meta">{selected?.role === 'brand' ? 'Brand' : 'Creator'} &middot; Registered {formatDate(selected?.createdAt || detail?.user?.createdAt)}</div>
               </div>
-              <button className="close" onClick={() => setSelectedId(null)} aria-label="Close">&times;</button>
+              <button className="close" onClick={closeDetail} aria-label="Close">&times;</button>
             </div>
 
             {detailError && <div className="form-error mt-4">{detailError}</div>}

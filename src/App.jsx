@@ -23,6 +23,7 @@ import AdminLayout from './components/AdminLayout.jsx';
 import AdminRegistrations from './pages/admin/Registrations.jsx';
 import AdminOptions from './pages/admin/Options.jsx';
 import AdminOpportunities from './pages/admin/Opportunities.jsx';
+import AdminOpportunityInterests from './pages/admin/OpportunityInterests.jsx';
 import AdminAdmins from './pages/admin/Admins.jsx';
 import AdminAccessCodes from './pages/admin/AccessCodes.jsx';
 
@@ -61,6 +62,7 @@ export default function App() {
                 <Route path="access-codes" element={<AdminAccessCodes />} />
                 <Route path="options" element={<AdminOptions />} />
                 <Route path="opportunities" element={<AdminOpportunities />} />
+                <Route path="opportunities/:id/interests" element={<AdminOpportunityInterests />} />
                 <Route path="admins" element={<AdminAdmins />} />
               </Route>
             </Route>

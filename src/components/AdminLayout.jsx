@@ -22,7 +22,9 @@ export default function AdminLayout() {
             Registrations {stats?.unseen > 0 && <span className="count-badge">{stats.unseen} new</span>}
           </NavLink>
           <NavLink to="/admin/access-codes" className={({ isActive }) => cx(isActive && 'on')}>Access codes</NavLink>
-          <NavLink to="/admin/opportunities" className={({ isActive }) => cx(isActive && 'on')}>Opportunities</NavLink>
+          <NavLink to="/admin/opportunities" className={({ isActive }) => cx(isActive && 'on')}>
+            Opportunities {stats?.unseenInterests > 0 && <span className="count-badge">{stats.unseenInterests} new</span>}
+          </NavLink>
           <NavLink to="/admin/options" className={({ isActive }) => cx(isActive && 'on')}>Categories and locations</NavLink>
           <NavLink to="/admin/admins" className={({ isActive }) => cx(isActive && 'on')}>Admins</NavLink>
         </nav>
