@@ -50,7 +50,7 @@ export default function Landing() {
       <main>
         <section className="landing-hero">
           <div className="landing-hero-copy">
-            <h1>Brands and creators, reviewed and in one place.</h1>
+            <h1>Brands and creators, together in one place.</h1>
             <p>Register your brand or your channel. The Clout team checks every profile before it goes live, then shares collaboration opportunities with verified members.</p>
           </div>
           <div className="landing-hero-media" aria-hidden="true">

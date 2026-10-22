@@ -123,8 +123,7 @@ export default function Registrations() {
     setBusyAction(action);
     try {
       let res;
-      if (action === 'verify') res = await api(`/admin/users/${id}/verify`, { method: 'POST' });
-      else if (action === 'reject') res = await api(`/admin/users/${id}/reject`, { method: 'POST', body: { reason: extra } });
+      if (action === 'reject') res = await api(`/admin/users/${id}/reject`, { method: 'POST', body: { reason: extra } });
       else if (action === 'deactivate') res = await api(`/admin/users/${id}/deactivate`, { method: 'POST' });
       else if (action === 'reactivate') res = await api(`/admin/users/${id}/reactivate`, { method: 'POST' });
       else if (action === 'delete') { await api(`/admin/users/${id}`, { method: 'DELETE' }); }
@@ -136,7 +135,7 @@ export default function Registrations() {
         setDetail((d) => ({ ...d, user: res.user }));
         setList((l) => l && { ...l, items: l.items.map((u) => (u.id === id ? { ...u, ...res.user } : u)) });
         setModal(null);
-        toast({ verify: 'Account verified.', reject: 'Registration rejected.', deactivate: 'Account deactivated.', reactivate: 'Account reactivated.' }[action]);
+        toast({ reject: 'Registration rejected.', deactivate: 'Account deactivated.', reactivate: 'Account reactivated.' }[action]);
       }
       refreshStats();
       load();
@@ -267,7 +266,7 @@ export default function Registrations() {
                 <div className="meta mt-2">
                   {detail.user.referral
                     ? `Referred by ${detail.user.referral.ownerName} (${detail.user.referral.code})`
-                    : 'No code (registered before access codes)'}
+                    : 'No access code'}
                 </div>
                 {detail.user.verificationStatus === 'rejected' && detail.user.rejectionReason && (
                   <div className="drawer note">Reason: {detail.user.rejectionReason}</div>
@@ -297,9 +296,6 @@ export default function Registrations() {
                 )}
 
                 <div className="act">
-                  {detail.user.verificationStatus !== 'verified' && (
-                    <Button className="blue" loading={busyAction === 'verify'} onClick={() => act('verify', detail.user.id)}>Verify this account</Button>
-                  )}
                   <div className="row2">
                     <button className="btn line sm" onClick={() => setModal('edit')}>Edit details</button>
                     {detail.user.verificationStatus !== 'rejected' && <button className="btn line sm" onClick={() => setModal('reject')}>Reject</button>}

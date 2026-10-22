@@ -18,14 +18,14 @@ const ACCOUNT_INIT = { email: '', password: '', confirm: '' };
 const FLOWS = {
   brand: {
     theme: 'brand', heading: 'Register your brand',
-    sub: 'Three short steps. The team reviews every registration before it goes live.',
+    sub: 'Three short steps. Verify your email to activate your account.',
     endpoint: '/auth/register/brand', initial: { ...emptyBrand, ...ACCOUNT_INIT }, payload: brandPayload,
     steps: [
       { label: 'Your business', short: 'Business', title: 'Tell us about your business', lede: 'The basics that identify your brand.', rules: brandRules.business,
         render: (f, o) => (
           <>
             <TextField
-              label="Access code" {...f.bind('accessCode')} hint="Given to you by the team that invited you."
+              label="Access code" optional {...f.bind('accessCode')} hint="Enter one if you were given a code."
               autoCapitalize="characters" autoCorrect="off" spellCheck="false" inputClassName="access-code"
             />
             <BrandBusinessFields form={f} options={o} />
@@ -39,14 +39,14 @@ const FLOWS = {
   },
   creator: {
     theme: 'creator', heading: 'Register as a creator',
-    sub: 'Three short steps. The team reviews every registration before it goes live.',
+    sub: 'Three short steps. Verify your email to activate your account.',
     endpoint: '/auth/register/creator', initial: { ...emptyCreator, ...ACCOUNT_INIT }, payload: creatorPayload,
     steps: [
       { label: 'About you', short: 'You', title: 'Tell us about you', lede: 'Who you are and what you create.', rules: creatorRules.about,
         render: (f, o) => (
           <>
             <TextField
-              label="Access code" {...f.bind('accessCode')} hint="Given to you by the team that invited you."
+              label="Access code" optional {...f.bind('accessCode')} hint="Enter one if you were given a code."
               autoCapitalize="characters" autoCorrect="off" spellCheck="false" inputClassName="access-code"
             />
             <CreatorAboutFields form={f} options={o} />
@@ -60,10 +60,10 @@ const FLOWS = {
   },
 };
 
-const draftKey = (kind) => `klout-draft-${kind}`;
+const draftKey = (kind) => `clout-draft-${kind}`;
 function loadDraft(kind, initial) {
   try {
-    const raw = sessionStorage.getItem(draftKey(kind));
+    const raw = sessionStorage.getItem(draftKey(kind)) || sessionStorage.getItem(`klout-draft-${kind}`);
     if (!raw) return { values: initial, step: 0 };
     const d = JSON.parse(raw);
     return { values: { ...initial, ...d.values, password: '', confirm: '' }, step: Math.min(d.step ?? 0, 1) };
@@ -134,7 +134,7 @@ export default function Register({ kind }) {
       focusFirstError();
       return;
     }
-    if (step === 0) {
+    if (step === 0 && form.values.accessCode.trim()) {
       setBusy(true);
       try {
         await api('/auth/check-access-code', {

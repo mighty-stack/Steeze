@@ -52,7 +52,7 @@ export default function Login() {
       top={<span>New here? <Link to="/register/brand">Register a brand</Link> or <Link to="/register/creator">a creator</Link></span>}
     >
       {blocked ? (
-        <PendingNotice code={blocked.code} message={blocked.message} onBack={() => setBlocked(null)} />
+        <PendingNotice code={blocked.code} email={form.values.email} message={blocked.message} onBack={() => setBlocked(null)} />
       ) : (
         <div className="formwrap">
           <h2>Log in</h2>

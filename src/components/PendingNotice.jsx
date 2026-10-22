@@ -2,15 +2,15 @@ import { Link } from 'react-router-dom';
 
 const COPY = {
   registered: {
-    tone: 'wait', icon: '\u23F3', title: 'Registration received',
-    body: 'Thanks for registering. The Clout team reviews every registration before it goes live.',
-    steps: ['We check your details.', 'You get an email as soon as your account is verified.', 'Then you can log in, manage your profile and see opportunities.'],
-    note: 'You cannot log in until your account is verified.',
+    tone: 'wait', icon: '\u2709', title: 'Check your inbox',
+    body: 'Thanks for registering. We sent a link to verify your email address.',
+    steps: ['Open the verification email we sent you.', 'Click the link to verify your email.', 'Then you can log in and use your account.'],
+    note: 'The link expires after 24 hours. You cannot log in until your email is verified.',
   },
   ACCOUNT_PENDING: {
-    tone: 'wait', icon: '\u23F3', title: 'Your account is under review',
-    body: 'Your details are correct, but the Clout team has not verified your registration yet.',
-    steps: ['You will get an email as soon as you are verified.', 'After that, log in here as usual.'],
+    tone: 'wait', icon: '\u2709', title: 'Verify your email',
+    body: 'Your email address still needs to be verified before you can log in.',
+    steps: ['Open the verification email we sent you.', 'Click its link, then log in again.'],
   },
   ACCOUNT_REJECTED: {
     tone: 'bad', icon: '!', title: 'Registration not approved',
@@ -33,6 +33,9 @@ export default function PendingNotice({ code = 'registered', email, message, onB
       {c.steps && <ol>{c.steps.map((s) => <li key={s}>{s}</li>)}</ol>}
       {email && code === 'registered' && <p>We sent a confirmation to <b>{email}</b>.</p>}
       {c.note && <p><b>{c.note}</b></p>}
+      {(code === 'registered' || (code === 'ACCOUNT_PENDING' && email)) && (
+        <p><Link className="link" to="/resend-verification" state={{ email }}>Resend verification email</Link></p>
+      )}
       <div className="row-actions">
         {onBack ? <button className="btn line" onClick={onBack}>Back to login</button> : <Link className="btn ink" to="/">Back to home</Link>}
       </div>

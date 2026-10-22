@@ -10,6 +10,8 @@ import Registered from './pages/Registered.jsx';
 import Login from './pages/Login.jsx';
 import ForgotPassword from './pages/ForgotPassword.jsx';
 import ResetPassword from './pages/ResetPassword.jsx';
+import VerifyEmail from './pages/VerifyEmail.jsx';
+import ResendVerification from './pages/ResendVerification.jsx';
 import NotFound from './pages/NotFound.jsx';
 
 import MemberLayout from './components/MemberLayout.jsx';
@@ -32,11 +34,13 @@ export default function App() {
           <SlowBanner />
           <Routes>
             <Route path="/" element={<Landing />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
 
             <Route element={<RedirectIfLoggedIn />}>
               <Route path="/register/brand" element={<Register kind="brand" />} />
               <Route path="/register/creator" element={<Register kind="creator" />} />
               <Route path="/registered" element={<Registered />} />
+              <Route path="/resend-verification" element={<ResendVerification />} />
               <Route path="/login" element={<Login />} />
               <Route path="/forgot-password" element={<ForgotPassword />} />
               <Route path="/reset-password" element={<ResetPassword />} />

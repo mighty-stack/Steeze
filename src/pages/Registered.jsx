@@ -5,7 +5,7 @@ import PendingNotice from '../components/PendingNotice.jsx';
 export default function Registered() {
   const { state } = useLocation();
   return (
-    <AuthLayout heading="You are on the list." sub="Registration is by review. That keeps the list useful for everyone on it.">
+    <AuthLayout heading="Verify your email." sub="One quick click activates your account.">
       <PendingNotice code="registered" email={state?.email} />
     </AuthLayout>
   );

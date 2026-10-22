@@ -1627,7 +1627,7 @@
     .landing-page .process-icon.brand {
       @apply bg-blue-tint text-blue-deep;
     }
-    .landing-page .process-icon.klout {
+    .landing-page .process-icon.clout {
       @apply bg-ink text-white;
     }
     .landing-page .process-icon.verified {
