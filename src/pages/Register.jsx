@@ -176,9 +176,9 @@ export default function Register({ kind }) {
     setBusy(true);
     try {
       const body = { ...flow.payload(form.values), email: form.values.email.trim(), password: form.values.password };
-      await api(flow.endpoint, { method: 'POST', body });
+      const result = await api(flow.endpoint, { method: 'POST', body });
       sessionStorage.removeItem(draftKey(kind));
-      navigate('/registered', { replace: true, state: { email: body.email } });
+      navigate('/registered', { replace: true, state: { email: body.email, emailSent: result.emailSent } });
     } catch (err) {
       if (!(err instanceof ApiError)) throw err;
       const fields = err.fields || {};

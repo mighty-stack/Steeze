@@ -6,7 +6,7 @@ export default function Registered() {
   const { state } = useLocation();
   return (
     <AuthLayout heading="Verify your email." sub="One quick click activates your account.">
-      <PendingNotice code="registered" email={state?.email} />
+      <PendingNotice code="registered" email={state?.email} emailSent={state?.emailSent} />
     </AuthLayout>
   );
 }

@@ -22,8 +22,14 @@ const COPY = {
   },
 };
 
-export default function PendingNotice({ code = 'registered', email, message, onBack }) {
-  const c = COPY[code] || COPY.registered;
+export default function PendingNotice({ code = 'registered', email, emailSent, message, onBack }) {
+  const c = code === 'registered' && emailSent === false
+    ? {
+      ...COPY.registered,
+      title: 'We could not send your verification email.',
+      body: 'Your registration is saved, but the verification email was not accepted for delivery. Try resending the link.',
+    }
+    : COPY[code] || COPY.registered;
   return (
     <section className="notice" aria-live="polite">
       <div className={`icon ${c.tone}`} aria-hidden="true">{c.icon}</div>
@@ -31,7 +37,7 @@ export default function PendingNotice({ code = 'registered', email, message, onB
       <p>{c.body}</p>
       {code === 'ACCOUNT_REJECTED' && message && <p><b>{message.replace(/^Your registration was not approved\.?\s*/, '')}</b></p>}
       {c.steps && <ol>{c.steps.map((s) => <li key={s}>{s}</li>)}</ol>}
-      {email && code === 'registered' && <p>We sent a confirmation to <b>{email}</b>.</p>}
+      {email && code === 'registered' && emailSent !== false && <p>We sent a confirmation to <b>{email}</b>.</p>}
       {c.note && <p><b>{c.note}</b></p>}
       {(code === 'registered' || (code === 'ACCOUNT_PENDING' && email)) && (
         <p><Link className="link" to="/resend-verification" state={{ email }}>Resend verification email</Link></p>
