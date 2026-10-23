@@ -1,4 +1,4 @@
-# Steeze client
+# Clout client
 
 React 19 + Vite + React Router + Tailwind CSS v4.
 

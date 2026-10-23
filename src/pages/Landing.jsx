@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ProjectNav from '../components/ProjectNav.jsx';
 import { Wordmark } from '../components/ui.jsx';
+import HomeChatbot from '../components/HomeChatbot.jsx';
 import { warmUp } from '../api/client.js';
 import {
   ABOUT, HOW_IT_WORKS, PROCESS_NODES, FAQ_INTRO, FAQS, CONTACT_EMAIL,
@@ -229,6 +230,7 @@ export default function Landing() {
           <span>Placeholder copy for design review</span>
         </div>
       </footer>
+      <HomeChatbot />
     </div>
   );
 }

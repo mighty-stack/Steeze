@@ -6,9 +6,9 @@ export const cx = (...c) => c.filter(Boolean).join(' ');
 
 export const Wordmark = ({ to = '/', tone = 'default', brandName = 'Clout' }) => {
   const assets = {
-    default: '/steeze-icon.png',
-    reversed: '/steeze-icon-reversed.png',
-    mono: '/steeze-icon-white.png',
+    default: '/clout-icon.png',
+    reversed: '/clout-icon-reversed.png',
+    mono: '/clout-icon-white.png',
   };
   const icon = assets[tone] || assets.default;
   return (
