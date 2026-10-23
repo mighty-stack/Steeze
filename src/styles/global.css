@@ -1131,6 +1131,12 @@
   .home-chat {
     @apply fixed right-5 bottom-5 z-[100] flex flex-col items-end gap-3;
   }
+  .home-chat-whatsapp {
+    @apply inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#25d366] px-4 font-semibold text-white shadow-lg transition hover:bg-[#1ebe5d] focus-visible:outline-white;
+  }
+  .home-chat-whatsapp svg {
+    @apply h-5 w-5 fill-current;
+  }
   .home-chat-launcher {
     @apply inline-flex h-13 items-center justify-center gap-2.5 rounded-full bg-blue px-5 font-semibold text-white shadow-lg transition hover:bg-blue-deep focus-visible:outline-white;
   }

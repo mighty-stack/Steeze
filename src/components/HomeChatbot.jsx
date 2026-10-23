@@ -8,6 +8,8 @@ const GREETING = {
   text: 'Hi! I’m the Clout guide. Ask me about joining, verification, your profile, or opportunities.',
 };
 
+const WHATSAPP_URL = 'https://wa.me/2348168053286?text=Hi%20Clout%2C%20I%20have%20a%20question.';
+
 export default function HomeChatbot() {
   const [open, setOpen] = useState(false);
   const [question, setQuestion] = useState('');
@@ -98,6 +100,12 @@ export default function HomeChatbot() {
       )}
 
       <span className="sr-only" aria-live="polite">{announcement}</span>
+      <a className="home-chat-whatsapp" href={WHATSAPP_URL} target="_blank" rel="noreferrer">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20.5 3.5A11.8 11.8 0 0 0 12.1 0C5.6 0 .3 5.3.3 11.8c0 2.1.6 4.1 1.6 5.9L.2 24l6.5-1.7a11.9 11.9 0 0 0 5.4 1.3h.1c6.5 0 11.8-5.3 11.8-11.8 0-3.1-1.2-6-3.5-8.3Zm-8.4 18.1h-.1a9.8 9.8 0 0 1-5-1.4l-.4-.2-3.9 1 1-3.8-.3-.4a9.8 9.8 0 0 1-1.5-5.2C1.9 6.4 6.5 1.8 12.1 1.8c2.7 0 5.2 1.1 7.1 2.9a10 10 0 0 1 2.9 7.1c0 5.4-4.5 9.8-10 9.8Zm5.5-7.4c-.3-.1-1.7-.8-2-.9-.3-.1-.5-.1-.7.2-.2.3-.7.9-.9 1.1-.2.2-.3.2-.6.1-.3-.1-1.2-.4-2.3-1.4-.8-.7-1.4-1.7-1.5-2-.2-.3 0-.4.1-.6l.5-.5c.1-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-.9-2.1c-.2-.5-.5-.4-.7-.4h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.1 3c.1.2 2 3.1 4.8 4.3.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.3.1-1.4-.1-.1-.3-.2-.6-.4Z" />
+        </svg>
+        Chat on WhatsApp
+      </a>
       <button
         type="button"
         className="home-chat-launcher"
