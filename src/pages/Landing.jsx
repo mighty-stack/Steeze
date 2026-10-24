@@ -13,10 +13,12 @@ function SocialIcon({ name }) {
   if (name === 'instagram') {
     return <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4" /><circle className="solid" cx="18" cy="6" r="1" /></svg>;
   }
-  if (name === 'linkedin') {
-    return <svg viewBox="0 0 24 24" aria-hidden="true"><path className="solid" d="M5.2 8.8H2.4V21h2.8V8.8ZM3.8 3a1.7 1.7 0 1 0 0 3.4 1.7 1.7 0 0 0 0-3.4ZM21.6 13.9c0-3.7-2-5.4-4.7-5.4-2.2 0-3.2 1.2-3.8 2V8.8h-2.8V21h2.8v-6.1c0-1.6.3-3.2 2.4-3.2s2.1 1.9 2.1 3.3V21h2.8l1.2-7.1Z" /></svg>;
+  if (name === 'facebook') {
+    return <svg viewBox="0 0 24 24" aria-hidden="true"><path className="solid" d="M13.5 21v-8.2h2.8l.4-3.2h-3.2v-2c0-.9.3-1.5 1.6-1.5h1.7V3.2c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.2H7.3v3.2h2.8V21h3.4Z" /></svg>;
   }
-  return <svg viewBox="0 0 24 24" aria-hidden="true"><path className="solid" d="M18.9 2H22l-6.8 7.8L23.2 22h-6.3L12 14.8 5.7 22H2.5l7.3-8.4L1.9 2h6.5l4.4 6.6L18.9 2Zm-1.1 17.9h1.7L7.4 4H5.6l12.2 15.9Z" /></svg>;
+  if (name === 'tiktok') {
+    return <svg viewBox="0 0 24 24" aria-hidden="true"><path className="solid" d="M19.6 8.1a6.2 6.2 0 0 1-3.9-1.4v7.1a5.5 5.5 0 1 1-5.5-5.5c.4 0 .8 0 1.2.1v3.1a2.5 2.5 0 1 0 1.3 2.2V2h3.1a6.2 6.2 0 0 0 3.8 3.1v3Z" /></svg>;
+  }
 }
 
 export default function Landing() {
@@ -217,7 +219,7 @@ export default function Landing() {
             <ul className="footer-socials" aria-label="Social media">
               {FOOTER_SOCIALS.map((social) => (
                 <li key={social.icon}>
-                  <a href="#" aria-label={`Follow us on ${social.label}`}>
+                  <a href={social.href} target="_blank" rel="noreferrer" aria-label={`Follow us on ${social.label}`}>
                     <SocialIcon name={social.icon} />
                   </a>
                 </li>
@@ -227,7 +229,7 @@ export default function Landing() {
         </div>
         <div className="footer-bottom">
           <span>&copy; {new Date().getFullYear()} Clout</span>
-          <span>Placeholder copy for design review</span>
+          <span>Lagos, Nairobi, Accra, Johannesburg</span>
         </div>
       </footer>
       <HomeChatbot />

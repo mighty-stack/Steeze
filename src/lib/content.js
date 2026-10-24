@@ -56,7 +56,7 @@ export const FOOTER_LINKS = {
 };
 
 export const FOOTER_SOCIALS = [
-  { label: 'X', icon: 'x' },
-  { label: 'Instagram', icon: 'instagram' },
-  { label: 'LinkedIn', icon: 'linkedin' },
+  { label: 'TikTok', icon: 'tiktok', href: 'https://www.tiktok.com/kloutcollabs' },
+  { label: 'Facebook', icon: 'facebook', href: 'https://www.facebook.com/share/1D4vEJmzDN/' },
+  { label: 'Instagram', icon: 'instagram', href: 'https://www.instagram.com/kloutcollabs' },
 ];
