@@ -3,7 +3,6 @@ import { rules, clean, cleanHandle, socialErrors } from './validation.js';
 /* Validation rules grouped by the step/section they belong to. */
 export const brandRules = {
   business: {
-    accessCode: () => undefined,
     brandName: rules.text('Brand name', 2, 80),
     category: rules.choice,
     location: rules.choice,
@@ -15,12 +14,11 @@ export const brandRules = {
     website: rules.website,
     productsServices: rules.longText('Products or services', 10, 1000),
   },
-  interests: { collaborationInterests: rules.interests },
+  interests: { accessCode: () => undefined, collaborationInterests: rules.interests },
 };
 
 export const creatorRules = {
   about: {
-    accessCode: () => undefined,
     fullName: rules.text('Full name', 2, 80),
     creatorName: rules.text('Creator name', 2, 80),
     niche: rules.choice,
@@ -31,7 +29,7 @@ export const creatorRules = {
     audienceNotes: rules.optionalLongText('Audience details', 300),
     contentDescription: rules.longText('Content description', 10, 1000),
   },
-  interests: { collaborationInterests: rules.interests },
+  interests: { accessCode: () => undefined, collaborationInterests: rules.interests },
 };
 
 export const accountRules = {

@@ -22,19 +22,14 @@ const FLOWS = {
     endpoint: '/auth/register/brand', initial: { ...emptyBrand, ...ACCOUNT_INIT }, payload: brandPayload,
     steps: [
       { label: 'Your business', short: 'Business', title: 'Tell us about your business', lede: 'The basics that identify your brand.', rules: brandRules.business,
-        render: (f, o) => (
-          <>
-            <TextField
-              label="Access code" optional {...f.bind('accessCode')} hint="Enter one if you were given a code."
-              autoCapitalize="characters" autoCorrect="off" spellCheck="false" inputClassName="access-code"
-            />
-            <BrandBusinessFields form={f} options={o} />
-          </>
-        ) },
+        render: (f, o) => <BrandBusinessFields form={f} options={o} /> },
       { label: 'Contact and offer', short: 'Contact', title: 'How can we reach you, and what do you offer?', lede: 'We use this to contact you about your registration and to describe your brand to creators.', rules: brandRules.contact,
         render: (f) => <BrandContactFields form={f} /> },
       { label: 'Interests and login', short: 'Login', title: 'Your interests and login', lede: 'Choose what you are open to, then set up how you will log in.', rules: { ...brandRules.interests, ...accountRules },
-        render: (f, o) => (<><InterestFields form={f} options={o} /><AccountFields form={f} emailHint="Prefilled from your contact email. You can use a different one to log in." /></>) },
+        render: (f, o) => (<><TextField
+          label="Access code" optional {...f.bind('accessCode')} hint="Enter one if you were given a code."
+          autoCapitalize="characters" autoCorrect="off" spellCheck="false" inputClassName="access-code"
+        /><InterestFields form={f} options={o} /><AccountFields form={f} emailHint="Prefilled from your contact email. You can use a different one to log in." /></>) },
     ],
   },
   creator: {
@@ -43,19 +38,14 @@ const FLOWS = {
     endpoint: '/auth/register/creator', initial: { ...emptyCreator, ...ACCOUNT_INIT }, payload: creatorPayload,
     steps: [
       { label: 'About you', short: 'You', title: 'Tell us about you', lede: 'Who you are and what you create.', rules: creatorRules.about,
-        render: (f, o) => (
-          <>
-            <TextField
-              label="Access code" optional {...f.bind('accessCode')} hint="Enter one if you were given a code."
-              autoCapitalize="characters" autoCorrect="off" spellCheck="false" inputClassName="access-code"
-            />
-            <CreatorAboutFields form={f} options={o} />
-          </>
-        ) },
+        render: (f, o) => <CreatorAboutFields form={f} options={o} /> },
       { label: 'Your audience', short: 'Audience', title: 'Where can brands find you?', lede: 'Add the accounts you post on and describe your content.', rules: creatorRules.audience,
-        render: (f) => <CreatorAudienceFields form={f} /> },
+        render: (f) => <CreatorAudienceFields form={f} contentPlaceholder="e.g., UGC creator, beauty product reviewer, or food and lifestyle vlogger" /> },
       { label: 'Interests and login', short: 'Login', title: 'Your interests and login', lede: 'Choose what you are open to, then set up how you will log in.', rules: { ...creatorRules.interests, ...accountRules },
-        render: (f, o) => (<><InterestFields form={f} options={o} /><AccountFields form={f} /></>) },
+        render: (f, o) => (<><TextField
+          label="Access code" optional {...f.bind('accessCode')} hint="Enter one if you were given a code."
+          autoCapitalize="characters" autoCorrect="off" spellCheck="false" inputClassName="access-code"
+        /><InterestFields form={f} options={o} /><AccountFields form={f} /></>) },
     ],
   },
 };
@@ -66,7 +56,7 @@ function loadDraft(kind, initial) {
     const raw = sessionStorage.getItem(draftKey(kind)) || sessionStorage.getItem(`klout-draft-${kind}`);
     if (!raw) return { values: initial, step: 0 };
     const d = JSON.parse(raw);
-    return { values: { ...initial, ...d.values, password: '', confirm: '' }, step: Math.min(d.step ?? 0, 1) };
+    return { values: { ...initial, ...d.values, password: '', confirm: '' }, step: Math.min(d.step ?? 0, 2) };
   } catch {
     return { values: initial, step: 0 };
   }
@@ -134,7 +124,7 @@ export default function Register({ kind }) {
       focusFirstError();
       return;
     }
-    if (step === 0 && form.values.accessCode.trim()) {
+    if (step === last && form.values.accessCode.trim()) {
       setBusy(true);
       try {
         await api('/auth/check-access-code', {

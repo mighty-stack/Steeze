@@ -38,7 +38,7 @@ export function CreatorAboutFields({ form, options }) {
   );
 }
 
-export function CreatorAudienceFields({ form }) {
+export function CreatorAudienceFields({ form, contentPlaceholder }) {
   return (
     <>
       <SocialsEditor value={form.values.socials} onChange={(v) => form.set('socials', v)} errors={form.errors} />
@@ -46,7 +46,7 @@ export function CreatorAudienceFields({ form }) {
         label="Audience details" optional {...form.bind('audienceNotes')} maxLength={300} className="min-h-[84px]"
         hint="For example: mostly women aged 18 to 34, based in Lagos."
       />
-      <TextAreaField label="What you create" {...form.bind('contentDescription')} maxLength={1000} hint="Describe your content and style in a few sentences." />
+      <TextAreaField label="What you create" {...form.bind('contentDescription')} maxLength={1000} placeholder={contentPlaceholder} hint="Describe your content and style in a few sentences." />
     </>
   );
 }

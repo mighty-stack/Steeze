@@ -66,8 +66,9 @@ export default function Landing() {
                 loop
                 playsInline
                 poster="/hero_image.webp"
-                src="/coverr-a-girl-presses-record-on-a-camera-and-begins-a-vlog-2609-1080p.mp4"
-              />
+              >
+                <source src="/black_influencer.webm" type="video/webm" />
+              </video>
             )}
           </div>
         </section>
