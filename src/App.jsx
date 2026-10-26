@@ -15,8 +15,10 @@ import ResendVerification from './pages/ResendVerification.jsx';
 import NotFound from './pages/NotFound.jsx';
 
 import MemberLayout from './components/MemberLayout.jsx';
+import MemberDashboard from './pages/member/Dashboard.jsx';
 import MemberProfile from './pages/member/Profile.jsx';
 import MemberOpportunities from './pages/member/Opportunities.jsx';
+import BrandGigInterests from './pages/member/BrandGigInterests.jsx';
 import MemberAbout from './pages/member/About.jsx';
 
 import AdminLayout from './components/AdminLayout.jsx';
@@ -49,8 +51,10 @@ export default function App() {
 
             <Route element={<RequireRole roles={['brand', 'creator']} />}>
               <Route path="/app" element={<MemberLayout />}>
-                <Route index element={<MemberProfile />} />
+                <Route index element={<MemberDashboard />} />
+                <Route path="profile" element={<MemberProfile />} />
                 <Route path="opportunities" element={<MemberOpportunities />} />
+                <Route path="opportunities/:id/interests" element={<BrandGigInterests />} />
                 <Route path="about" element={<MemberAbout />} />
               </Route>
             </Route>

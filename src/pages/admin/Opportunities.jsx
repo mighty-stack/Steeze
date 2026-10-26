@@ -10,10 +10,10 @@ import { Link } from 'react-router-dom';
 
 const AUDIENCES = [{ id: 'both', label: 'Brands and creators' }, { id: 'brands', label: 'Brands only' }, { id: 'creators', label: 'Creators only' }];
 const AUDIENCE_LABEL = Object.fromEntries(AUDIENCES.map((a) => [a.id, a.label]));
-const EMPTY = { title: '', description: '', audience: 'both', published: true, closesAt: '' };
+const EMPTY = { title: '', description: '', audience: 'both', status: 'published', closesAt: '' };
 
 function OpportunityForm({ initial, onCancel, onSave }) {
-  const form = useForm({ ...initial, closesAt: initial.closesAt ? initial.closesAt.slice(0, 10) : '' });
+  const form = useForm({ ...initial, status: initial.status || 'published', closesAt: initial.closesAt ? initial.closesAt.slice(0, 10) : '' });
   const [busy, setBusy] = useState(false);
   const [banner, setBanner] = useState('');
 
@@ -31,7 +31,7 @@ function OpportunityForm({ initial, onCancel, onSave }) {
         title: form.values.title.trim(),
         description: form.values.description.trim(),
         audience: form.values.audience,
-        published: form.values.published,
+        status: form.values.status,
         closesAt: form.values.closesAt || null,
       });
     } catch (err) {
@@ -53,8 +53,14 @@ function OpportunityForm({ initial, onCancel, onSave }) {
         <SelectField label="Visible to" value={form.values.audience} onChange={(v) => form.set('audience', v)} options={AUDIENCES} placeholder="" />
         <TextField label="Closes on" type="date" optional {...form.bind('closesAt')} />
         <label className="flex gap-2.5 items-center font-medium">
-          <input type="checkbox" checked={form.values.published} onChange={(e) => form.set('published', e.target.checked)} />
-          Published (visible to members now)
+          Status
+          <select value={form.values.status} onChange={(e) => form.set('status', e.target.value)} className="input w-full">
+            <option value="draft">Draft</option>
+            <option value="pending_review">Pending review</option>
+            <option value="published">Published</option>
+            <option value="closed">Closed</option>
+            <option value="rejected">Rejected</option>
+          </select>
         </label>
       </form>
     </Modal>
@@ -81,7 +87,8 @@ export default function Opportunities() {
 
   const togglePublish = async (item) => {
     try {
-      await api(`/admin/opportunities/${item.id}`, { method: 'PATCH', body: { published: !item.published } });
+      const nextStatus = item.status === 'published' ? 'draft' : 'published';
+      await api(`/admin/opportunities/${item.id}`, { method: 'PATCH', body: { status: nextStatus } });
       load();
     } catch (err) {
       toast(err.message, 'error');
@@ -135,7 +142,7 @@ export default function Opportunities() {
               <div className="row-actions-inline">
                 <Link className="link" to={`/admin/opportunities/${o.id}/interests`}>View interests ({o.interestCounts?.total || 0})</Link>
                 <button className="btn line sm" onClick={() => toggleClosed(o)}>{o.closed ? 'Reopen' : 'Close'}</button>
-                <button className="btn line sm" onClick={() => togglePublish(o)}>{o.published ? 'Unpublish' : 'Publish'}</button>
+                <button className="btn line sm" onClick={() => togglePublish(o)}>{o.status === 'published' ? 'Unpublish' : 'Publish'}</button>
                 <button className="btn line sm" onClick={() => setEditing(o)}>Edit</button>
                 <button className="btn danger sm" onClick={() => setDeleteTarget(o)}>Delete</button>
               </div>

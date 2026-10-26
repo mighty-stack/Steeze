@@ -23,7 +23,7 @@ export default function AdminLayout() {
           </NavLink>
           <NavLink to="/admin/access-codes" className={({ isActive }) => cx(isActive && 'on')}>Access codes</NavLink>
           <NavLink to="/admin/opportunities" className={({ isActive }) => cx(isActive && 'on')}>
-            Opportunities {stats?.unseenInterests > 0 && <span className="count-badge">{stats.unseenInterests} new</span>}
+            Opportunities {(stats?.pendingGigs ?? 0) > 0 && <span className="count-badge">{stats.pendingGigs} new</span>}
           </NavLink>
           <NavLink to="/admin/options" className={({ isActive }) => cx(isActive && 'on')}>Categories and locations</NavLink>
           <NavLink to="/admin/admins" className={({ isActive }) => cx(isActive && 'on')}>Admins</NavLink>

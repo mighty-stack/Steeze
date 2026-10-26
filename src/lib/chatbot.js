@@ -52,7 +52,7 @@ const TOPICS = [
   },
   {
     keywords: ['opportunity', 'opportunities', 'collaboration', 'campaign', 'apply'],
-    answer: 'After email verification, log in and open Opportunities to see published calls that match your member role. An opportunity may have a closing date; closed or expired calls cannot accept new interest.',
+    answer: 'After email verification, log in and open Opportunities to see live calls that match your member role. An opportunity may have a closing date; closed or expired calls cannot accept new interest.',
     links: [{ label: 'Log in', to: '/login' }],
   },
   {

@@ -854,6 +854,192 @@
     @apply text-[13px] font-bold tracking-wider uppercase text-ink-soft mt-2 -mb-1.5;
   }
 
+  .db-dashboard {
+    @apply mt-7 grid gap-6 min-w-0;
+  }
+  .db-header {
+    @apply flex flex-wrap items-start justify-between gap-4;
+  }
+  .db-header h1 {
+    @apply text-[34px] tracking-tight leading-tight font-bold;
+    overflow-wrap: anywhere;
+  }
+  .db-header-actions {
+    @apply flex flex-wrap items-center gap-3;
+  }
+  .db-section {
+    @apply grid gap-3;
+  }
+  .db-section h2,
+  .db-panel h2 {
+    @apply text-xl tracking-tight font-bold;
+  }
+  .db-attention {
+    @apply bg-white rounded-2xl border border-line p-4.5 grid gap-3;
+  }
+  .db-attention-list {
+    @apply list-none;
+  }
+  .db-attention-list li {
+    @apply flex flex-wrap items-start justify-between gap-3 border-b border-line pb-3;
+  }
+  .db-attention-list li:last-child {
+    @apply border-b-0 pb-0;
+  }
+  .db-attention-copy {
+    @apply min-w-0 flex-1;
+    overflow-wrap: anywhere;
+  }
+  .db-progress-copy {
+    @apply flex flex-wrap justify-between items-center gap-2 text-sm;
+  }
+  .db-progress-track {
+    @apply h-2.5 rounded-full bg-mist overflow-hidden;
+  }
+  .db-progress-track span {
+    @apply block h-full rounded-full bg-blue transition-[width] duration-300;
+  }
+  .db-checklist {
+    @apply grid gap-1.5 list-disc pl-5 text-sm text-ink-soft;
+  }
+  .db-good {
+    @apply text-sm text-ink-soft;
+  }
+  .db-stat-grid {
+    @apply grid grid-cols-2 gap-3;
+  }
+  .db-stat {
+    @apply min-w-0 bg-white rounded-2xl border border-line p-4 flex flex-col gap-1 hover:border-blue transition-colors;
+  }
+  .db-stat > span {
+    @apply text-sm text-ink-soft;
+  }
+  .db-stat strong {
+    @apply text-[28px] leading-tight tracking-tight;
+  }
+  .db-stat small {
+    @apply text-xs text-ink-soft;
+  }
+  .db-stat-wide {
+    @apply col-span-2 bg-white rounded-2xl p-4;
+  }
+  .db-list-grid {
+    @apply grid gap-4;
+  }
+  .db-panel {
+    @apply min-w-0 bg-white rounded-2xl border border-line p-4.5;
+  }
+  .db-panel-heading {
+    @apply flex flex-wrap justify-between items-center gap-2 mb-3;
+  }
+  .db-page-heading {
+    @apply flex flex-wrap justify-between items-end gap-4 mt-7;
+  }
+  .db-page-heading h2 {
+    @apply text-2xl tracking-tight font-bold;
+  }
+  .db-gig-filters {
+    @apply mt-0;
+  }
+  .db-filter-clear {
+    @apply justify-self-start;
+  }
+  .db-rows {
+    @apply list-none;
+  }
+  .db-rows li {
+    @apply flex items-center justify-between gap-3 border-t border-line py-3;
+  }
+  .db-row-link {
+    @apply min-w-0 flex-1 grid gap-0.5;
+  }
+  .db-row-title {
+    @apply font-semibold leading-snug;
+    overflow-wrap: anywhere;
+  }
+  .db-row-link small {
+    @apply text-sm text-ink-soft;
+    overflow-wrap: anywhere;
+  }
+  .db-empty {
+    @apply grid gap-2 py-4 text-ink-soft;
+  }
+  .db-creator-facts {
+    @apply mt-4 grid gap-2.5 text-sm;
+  }
+  .db-creator-facts > div {
+    @apply grid gap-1;
+    grid-template-columns: minmax(120px, 0.4fr) minmax(0, 1fr);
+  }
+  .db-creator-facts dt {
+    @apply text-ink-soft;
+  }
+  .db-creator-facts dd {
+    @apply font-medium;
+    overflow-wrap: anywhere;
+  }
+  .db-interest-message {
+    @apply mt-3 whitespace-pre-line text-ink-soft;
+  }
+  .db-interest-subsection {
+    @apply mt-4 grid gap-1.5 text-sm;
+  }
+  .db-interest-subsection h3 {
+    @apply font-bold;
+  }
+  .db-portfolio-list {
+    @apply list-none grid gap-2;
+  }
+  .db-portfolio-list li {
+    @apply flex flex-wrap gap-2 items-center;
+  }
+  .db-portfolio-list small {
+    @apply text-ink-soft;
+  }
+  .db-contact-detail {
+    @apply mt-4 border-t border-line pt-3 text-sm;
+  }
+  .db-fallback {
+    @apply text-sm text-ink-soft;
+  }
+  .db-inline-error,
+  .db-error {
+    @apply grid gap-3 bg-white rounded-2xl border border-line p-5;
+  }
+  .db-error {
+    @apply mt-7;
+  }
+  .db-error h1 {
+    @apply text-2xl font-bold;
+  }
+  .db-inline-error {
+    @apply bg-bad-bg text-bad-fg;
+  }
+  .db-skeleton {
+    @apply mt-7 grid gap-5;
+  }
+  .db-skeleton-banner,
+  .db-skeleton-stat,
+  .db-skeleton-list {
+    @apply rounded-2xl bg-white;
+    animation: db-pulse 1.4s ease-in-out infinite;
+  }
+  .db-skeleton-banner {
+    @apply h-24;
+  }
+  .db-skeleton-stat {
+    @apply h-24;
+  }
+  .db-skeleton-lists {
+    @apply grid gap-4;
+  }
+  .db-skeleton-list {
+    @apply h-52;
+  }
+  @keyframes db-pulse {
+    50% { opacity: 0.45; }
+  }
+
   /* ---------- admin ---------- */
   .adm {
     @apply grid min-h-screen;
@@ -1457,6 +1643,14 @@
   }
   .benefit-slide {
     animation: none;
+  }
+}
+@media (min-width: 900px) {
+  .db-stat-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .db-list-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 @layer components {
