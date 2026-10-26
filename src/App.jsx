@@ -22,6 +22,7 @@ import BrandGigInterests from './pages/member/BrandGigInterests.jsx';
 import MemberAbout from './pages/member/About.jsx';
 
 import AdminLayout from './components/AdminLayout.jsx';
+import AdminOverview from './pages/admin/Overview.jsx';
 import AdminRegistrations from './pages/admin/Registrations.jsx';
 import AdminOptions from './pages/admin/Options.jsx';
 import AdminOpportunities from './pages/admin/Opportunities.jsx';
@@ -61,7 +62,7 @@ export default function App() {
 
             <Route element={<RequireRole roles={['admin']} />}>
               <Route path="/admin" element={<AdminLayout />}>
-                <Route index element={<AdminRegistrations />} />
+                <Route index element={<AdminOverview />} />
                 <Route path="registrations" element={<AdminRegistrations />} />
                 <Route path="access-codes" element={<AdminAccessCodes />} />
                 <Route path="options" element={<AdminOptions />} />

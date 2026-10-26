@@ -9,7 +9,7 @@ import { useAuth } from '../context/Auth.jsx';
 import { ApiError } from '../api/client.js';
 import { rules } from '../lib/validation.js';
 
-const HOME = { admin: '/admin/registrations', brand: '/app', creator: '/app' };
+const HOME = { admin: '/admin', brand: '/app', creator: '/app' };
 const BLOCKED = ['ACCOUNT_PENDING', 'ACCOUNT_REJECTED', 'ACCOUNT_DEACTIVATED'];
 
 export default function Login() {

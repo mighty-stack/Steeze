@@ -1124,6 +1124,169 @@
   .adm-head p {
     @apply text-ink-soft mt-1 text-[15px];
   }
+  .adm-overview {
+    display: grid;
+    align-content: start;
+    gap: 24px;
+  }
+  .adm-overview-head {
+    align-items: center;
+  }
+  .adm-overview-actions,
+  .adm-overview-ranges {
+    @apply flex items-center gap-2;
+  }
+  .adm-overview-ranges {
+    @apply rounded-full bg-white border border-line p-1;
+  }
+  .adm-overview-ranges button {
+    @apply rounded-full border-0 bg-transparent px-3 py-1.5 text-sm font-semibold text-ink-soft whitespace-nowrap;
+  }
+  .adm-overview-ranges button.adm-overview-range-active {
+    @apply bg-ink text-white;
+  }
+  .adm-overview-section {
+    @apply grid gap-3;
+    min-width: 0;
+  }
+  .adm-overview-section > h2,
+  .adm-overview-section-head h2 {
+    @apply text-xl font-bold tracking-tight;
+  }
+  .adm-overview-section-head {
+    @apply flex items-center justify-between gap-3 flex-wrap;
+  }
+  .adm-overview-attention,
+  .adm-overview-list {
+    @apply grid gap-2;
+  }
+  .adm-overview-attention-item {
+    @apply flex items-center justify-between gap-4 rounded-xl border border-line bg-white px-4 py-3.5 font-semibold;
+  }
+  .adm-overview-attention-item:hover,
+  .adm-overview-row:hover {
+    @apply bg-blue-tint;
+  }
+  .adm-overview-attention-item.adm-overview-high {
+    border-color: #efb7b7;
+    background: #fff4f4;
+    color: #7d2020;
+  }
+  .adm-overview-attention-item strong {
+    @apply text-lg;
+  }
+  .adm-overview-calm,
+  .adm-overview-empty,
+  .adm-overview-error {
+    @apply rounded-2xl border border-line bg-white p-5;
+  }
+  .adm-overview-empty p,
+  .adm-overview-error p {
+    @apply mt-1.5 text-ink-soft;
+  }
+  .adm-overview-empty > div {
+    @apply flex gap-2.5 flex-wrap mt-4;
+  }
+  .adm-overview-empty .btn {
+    @apply no-underline;
+  }
+  .adm-overview-stats,
+  .adm-overview-gig-stats {
+    @apply grid grid-cols-2 gap-3;
+  }
+  .adm-overview-stat,
+  .adm-overview-gig-stat {
+    @apply grid gap-1 rounded-2xl border border-line bg-white p-4;
+  }
+  .adm-overview-stat > span:first-child,
+  .adm-overview-gig-stat span {
+    @apply text-sm text-ink-soft;
+  }
+  .adm-overview-stat strong,
+  .adm-overview-gig-stat strong {
+    @apply text-[28px] leading-tight font-bold tracking-tight;
+  }
+  .adm-overview-change {
+    @apply inline-flex items-center gap-1 text-sm font-semibold text-ink;
+  }
+  .adm-overview-change svg {
+    @apply w-4 h-4 fill-none stroke-current stroke-2;
+  }
+  .adm-overview-card {
+    @apply rounded-2xl border border-line bg-white p-4;
+    min-width: 0;
+  }
+  .adm-overview-chart {
+    min-width: 0;
+  }
+  .adm-overview-legend {
+    @apply flex items-center gap-4 text-sm text-ink-soft mb-2;
+  }
+  .adm-overview-legend span {
+    @apply inline-flex items-center gap-1.5;
+  }
+  .adm-overview-legend i {
+    @apply inline-block w-2.5 h-2.5 rounded-sm;
+  }
+  .adm-overview-brand-key,
+  .adm-overview-brand-bar {
+    fill: #035dfc;
+  }
+  .adm-overview-creator-key,
+  .adm-overview-creator-bar {
+    fill: #6d79a5;
+  }
+  .adm-overview-svg {
+    @apply block w-full;
+    height: auto;
+    overflow: visible;
+  }
+  .adm-overview-axis {
+    stroke: #d9ddec;
+    stroke-width: 1;
+  }
+  .adm-overview-date-label {
+    fill: #4a5170;
+    font-size: 12px;
+  }
+  .adm-overview-row {
+    @apply flex items-center justify-between gap-3 rounded-xl px-3 py-3;
+    min-width: 0;
+  }
+  .adm-overview-person {
+    @apply grid min-w-0 gap-0.5;
+  }
+  .adm-overview-person strong,
+  .adm-overview-person small {
+    @apply truncate;
+  }
+  .adm-overview-person small {
+    @apply text-sm text-ink-soft;
+  }
+  .adm-overview-row time,
+  .adm-overview-row > span:not(.pill):last-child {
+    @apply flex-none text-sm text-ink-soft;
+  }
+  .adm-overview-gig-stats {
+    @apply mb-3;
+  }
+  .adm-overview-unavailable {
+    @apply text-sm text-ink-soft;
+  }
+  .adm-overview-error {
+    @apply flex items-center justify-between gap-4;
+    border-color: #efb7b7;
+  }
+  .adm-overview-error h2 {
+    @apply font-bold;
+  }
+  .adm-overview-loading {
+    @apply grid grid-cols-2 gap-3;
+  }
+  .adm-overview-loading div {
+    @apply h-24 rounded-2xl bg-white;
+    animation: db-pulse 1.4s ease-in-out infinite;
+  }
   .head-actions {
     @apply flex gap-2.5 flex-wrap;
   }

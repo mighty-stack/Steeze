@@ -5,7 +5,7 @@ import { initial } from '../lib/format.js';
 export default function ProjectNav({ user, unseen = 0, onLogout, landing = false }) {
   const admin = user?.role === 'admin';
   const member = user && !admin;
-  const home = admin ? '/admin/registrations' : member ? '/app' : '/';
+  const home = admin ? '/admin' : member ? '/app' : '/';
 
   return (
     <header className="site-nav">
@@ -24,6 +24,7 @@ export default function ProjectNav({ user, unseen = 0, onLogout, landing = false
           </>
         ) : admin ? (
           <>
+            <NavLink to="/admin" end className={({ isActive }) => cx(isActive && 'active')}>Overview</NavLink>
             <NavLink to="/admin/registrations" className={({ isActive }) => cx(isActive && 'active')}>
               Registrations {unseen > 0 && <span className="count-badge">{unseen} new</span>}
             </NavLink>

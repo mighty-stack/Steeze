@@ -16,8 +16,9 @@ export default function AdminLayout() {
   return (
     <div className="adm">
       <aside className="rail admin-rail">
-        <Wordmark to="/admin/registrations" tone="reversed" />
+        <Wordmark to="/admin" tone="reversed" />
         <nav aria-label="Admin navigation">
+          <NavLink to="/admin" end className={({ isActive }) => cx(isActive && 'on')}>Overview</NavLink>
           <NavLink to="/admin/registrations" className={({ isActive }) => cx(isActive && 'on')}>
             Registrations {stats?.unseen > 0 && <span className="count-badge">{stats.unseen} new</span>}
           </NavLink>

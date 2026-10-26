@@ -1,16 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useToast } from '../../context/Toast.jsx';
-import { api, ApiError } from '../../api/client.js';
+import { api, ApiError, qs } from '../../api/client.js';
 import { useForm, focusFirstError } from '../../components/useForm.js';
 import { TextField, TextAreaField, SelectField } from '../../components/fields.jsx';
 import { Button, Modal, ConfirmDialog, Splash, Pill } from '../../components/ui.jsx';
 import { formatDate } from '../../lib/format.js';
 import { rules } from '../../lib/validation.js';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 
 const AUDIENCES = [{ id: 'both', label: 'Brands and creators' }, { id: 'brands', label: 'Brands only' }, { id: 'creators', label: 'Creators only' }];
 const AUDIENCE_LABEL = Object.fromEntries(AUDIENCES.map((a) => [a.id, a.label]));
 const EMPTY = { title: '', description: '', audience: 'both', status: 'published', closesAt: '' };
+const OPPORTUNITY_STATUSES = ['draft', 'pending_review', 'published', 'closed', 'rejected'];
 
 function OpportunityForm({ initial, onCancel, onSave }) {
   const form = useForm({ ...initial, status: initial.status || 'published', closesAt: initial.closesAt ? initial.closesAt.slice(0, 10) : '' });
@@ -69,13 +70,31 @@ function OpportunityForm({ initial, onCancel, onSave }) {
 
 export default function Opportunities() {
   const toast = useToast();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const requestedStatus = searchParams.get('status');
+  const [status, setStatus] = useState(() => OPPORTUNITY_STATUSES.includes(requestedStatus) ? requestedStatus : '');
   const [items, setItems] = useState(null);
   const [error, setError] = useState('');
   const [editing, setEditing] = useState(null); // {} for new, object for existing, null for closed
   const [deleteTarget, setDeleteTarget] = useState(null);
 
-  const load = () => api('/admin/opportunities').then((d) => setItems(d.items)).catch((e) => setError(e.message));
-  useEffect(() => { load(); }, []);
+  const load = useCallback(() => api(`/admin/opportunities${qs({ status })}`).then((d) => {
+    setItems(d.items);
+    setError('');
+  }).catch((e) => setError(e.message)), [status]);
+  useEffect(() => { setItems(null); load(); }, [load]);
+  useEffect(() => {
+    setStatus(OPPORTUNITY_STATUSES.includes(requestedStatus) ? requestedStatus : '');
+  }, [requestedStatus]);
+
+  const changeStatus = (value) => {
+    setStatus(value);
+    setSearchParams((current) => {
+      if (value) current.set('status', value);
+      else current.delete('status');
+      return current;
+    }, { replace: true });
+  };
 
   const save = async (body) => {
     if (editing.id) await api(`/admin/opportunities/${editing.id}`, { method: 'PATCH', body });
@@ -119,7 +138,13 @@ export default function Opportunities() {
     <section className="adm-body">
       <div className="adm-head">
         <div><h1>Opportunities</h1><p>Post collaboration opportunities for verified members to see.</p></div>
-        <button className="btn blue sm" onClick={() => setEditing({ ...EMPTY })}>New opportunity</button>
+        <div className="head-actions">
+          <select className="select input" value={status} onChange={(event) => changeStatus(event.target.value)} aria-label="Filter opportunities by status">
+            <option value="">All statuses</option>
+            {OPPORTUNITY_STATUSES.map((value) => <option value={value} key={value}>{value.replace('_', ' ')}</option>)}
+          </select>
+          <button className="btn blue sm" onClick={() => setEditing({ ...EMPTY })}>New opportunity</button>
+        </div>
       </div>
 
       {error && <div className="form-error mt-4">{error}</div>}

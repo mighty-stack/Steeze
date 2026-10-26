@@ -34,7 +34,18 @@ export default function Registrations() {
   const [accessCodeLabel, setAccessCodeLabel] = useState('');
   const [accessCodeLabelError, setAccessCodeLabelError] = useState('');
 
-  const [tab, setTab] = useState(() => (params.get('unseen') === 'true' ? 'all' : 'all'));
+  const [tab, setTab] = useState(() => {
+    if (params.get('status') === 'pending') return 'pending';
+    if (params.get('role') === 'brand' || params.get('role') === 'creator') return params.get('role');
+    return 'all';
+  });
+  const requestedStatus = params.get('status');
+  const requestedRole = params.get('role');
+  useEffect(() => {
+    if (requestedStatus === 'pending') setTab('pending');
+    else if (requestedRole === 'brand' || requestedRole === 'creator') setTab(requestedRole);
+    else if (requestedStatus || requestedRole) setTab('all');
+  }, [requestedStatus, requestedRole]);
   const [q, setQ] = useState('');
   const debouncedQ = useDebounced(q, 350);
   const [category, setCategory] = useState('');
@@ -75,6 +86,8 @@ export default function Registrations() {
     location,
     ...(onlyUnseen ? { unseen: 'true' } : {}),
     ...(accessCodeId ? { accessCode: accessCodeId } : {}),
+    ...(params.get('from') ? { from: params.get('from') } : {}),
+    ...(params.get('to') ? { to: params.get('to') } : {}),
   };
 
   const load = useCallback(async () => {

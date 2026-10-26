@@ -8,7 +8,7 @@ export function RequireRole({ roles }) {
   const location = useLocation();
   if (loading) return <Splash />;
   if (!user) return <Navigate to="/login" replace state={{ from: location.pathname }} />;
-  if (!roles.includes(user.role)) return <Navigate to={user.role === 'admin' ? '/admin/registrations' : '/app'} replace />;
+  if (!roles.includes(user.role)) return <Navigate to={user.role === 'admin' ? '/admin' : '/app'} replace />;
   return <Outlet />;
 }
 
@@ -16,6 +16,6 @@ export function RequireRole({ roles }) {
 export function RedirectIfLoggedIn() {
   const { user, loading } = useAuth();
   if (loading) return <Splash />;
-  if (user) return <Navigate to={user.role === 'admin' ? '/admin/registrations' : '/app'} replace />;
+  if (user) return <Navigate to={user.role === 'admin' ? '/admin' : '/app'} replace />;
   return <Outlet />;
 }
