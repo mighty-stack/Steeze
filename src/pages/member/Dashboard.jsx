@@ -5,6 +5,8 @@ import { useAuth } from '../../context/Auth.jsx';
 import { Button, Pill } from '../../components/ui.jsx';
 import { formatDate } from '../../lib/format.js';
 import { STATUS } from '../../lib/format.js';
+import LevelBadge from '../../components/LevelBadge.jsx';
+import { SCORE_NAME } from '../../lib/content.js';
 
 const INTEREST_STATUS = {
   pending: { label: 'Interest sent', tone: 'wait' },
@@ -67,6 +69,7 @@ function CreatorDashboard({ data, displayName }) {
         </div>
         <div className="db-header-actions">
           <Pill tone={STATUS.verified?.tone || 'ok'}>{STATUS.verified?.label || 'Verified'}</Pill>
+          {data.standing && <Link className="db-standing-summary" to="/app/score"><LevelBadge level={data.standing.level} /><span>{SCORE_NAME}: {data.standing.score}</span></Link>}
           <Link className="btn blue sm" to="/app/opportunities">Browse opportunities</Link>
         </div>
       </header>

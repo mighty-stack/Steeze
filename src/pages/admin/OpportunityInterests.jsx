@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useOutletContext, useParams } from 'react-router-dom';
 import { api, download, qs } from '../../api/client.js';
 import { useToast } from '../../context/Toast.jsx';
-import { Button, Pill, Splash, cx } from '../../components/ui.jsx';
+import { Button, Modal, Pill, Splash, cx } from '../../components/ui.jsx';
 import { formatDate } from '../../lib/format.js';
 
 const PAGE_SIZE = 20;
@@ -12,12 +12,16 @@ const FILTERS = [
   { key: 'shortlisted', label: 'Shortlisted' },
   { key: 'declined', label: 'Declined' },
   { key: 'withdrawn', label: 'Withdrawn' },
+  { key: 'completed', label: 'Completed' },
+  { key: 'not_completed', label: 'Not completed' },
 ];
 const STATUS = {
   pending: { label: 'Pending', tone: 'wait' },
   shortlisted: { label: 'Shortlisted', tone: 'ok' },
   declined: { label: 'Declined', tone: 'bad' },
   withdrawn: { label: 'Withdrawn', tone: 'off' },
+  completed: { label: 'Completed', tone: 'ok' },
+  not_completed: { label: 'Not completed', tone: 'bad' },
 };
 
 export default function OpportunityInterests() {
@@ -31,6 +35,10 @@ export default function OpportunityInterests() {
   const [notes, setNotes] = useState({});
   const [busyId, setBusyId] = useState('');
   const [exporting, setExporting] = useState(false);
+  const [outcomeItem, setOutcomeItem] = useState(null);
+  const [outcome, setOutcome] = useState('completed');
+  const [rating, setRating] = useState(5);
+  const [review, setReview] = useState('');
 
   const load = async () => {
     setError('');
@@ -108,6 +116,34 @@ export default function OpportunityInterests() {
     setStatus(value);
   };
 
+  const recordOutcome = async (event) => {
+    event.preventDefault();
+    if (!outcomeItem) return;
+    setBusyId(outcomeItem.id);
+    try {
+      await api(`/admin/interests/${outcomeItem.id}/outcome`, {
+        method: 'POST',
+        body: { result: outcome, ...(outcome === 'completed' ? { rating, ...(review.trim() ? { review: review.trim() } : {}) } : {}) },
+      });
+      toast(outcome === 'completed' ? 'Gig completion and rating recorded.' : 'Gig outcome recorded.');
+      setOutcomeItem(null);
+      setList(null);
+      await load();
+      refreshStats();
+    } catch (err) {
+      toast(err.message || 'Could not record the gig outcome.', 'error');
+    } finally {
+      setBusyId('');
+    }
+  };
+
+  const openOutcome = (item) => {
+    setOutcomeItem(item);
+    setOutcome('completed');
+    setRating(5);
+    setReview('');
+  };
+
   return (
     <section className="adm-body">
       <div className="adm-head">
@@ -157,6 +193,7 @@ export default function OpportunityInterests() {
               <tbody>
                 {list.items.map((item) => {
                   const state = STATUS[item.status];
+                  const canUpdateStatus = ['pending', 'shortlisted', 'declined'].includes(item.status);
                   const profileUrl = `/admin/registrations?open=${encodeURIComponent(item.user?.id || '')}`;
                   return (
                     <tr key={item.id}>
@@ -169,7 +206,11 @@ export default function OpportunityInterests() {
                       <td>{item.user?.location || '—'}</td>
                       <td className="max-w-[260px] whitespace-pre-wrap">{item.message || '—'}</td>
                       <td className="whitespace-nowrap">{formatDate(item.createdAt, { day: 'numeric', month: 'short', year: 'numeric' })}</td>
-                      <td><Pill tone={state?.tone || 'off'}>{state?.label || item.status}</Pill></td>
+                      <td>
+                        <Pill tone={state?.tone || 'off'}>{state?.label || item.status}</Pill>
+                        {item.rating && <div className="sub">{item.rating}/5 rating{item.voided ? ' · voided' : ''}</div>}
+                        {item.review && <div className="sub">{item.review}</div>}
+                      </td>
                       <td className="min-w-[230px]">
                         <textarea
                           className="textarea min-h-[72px] text-sm"
@@ -185,13 +226,16 @@ export default function OpportunityInterests() {
                       </td>
                       <td>
                         <div className="flex flex-wrap gap-1.5">
-                          {item.status !== 'shortlisted' && item.status !== 'withdrawn' && (
+                          {item.role === 'creator' && item.status === 'shortlisted' && (
+                            <Button className="blue sm" disabled={Boolean(busyId)} onClick={() => openOutcome(item)}>Record outcome</Button>
+                          )}
+                          {canUpdateStatus && item.status !== 'shortlisted' && (
                             <Button className="blue sm" loading={busyId === item.id} disabled={Boolean(busyId)} onClick={() => updateStatus(item, 'shortlisted')}>Shortlist</Button>
                           )}
-                          {item.status !== 'declined' && item.status !== 'withdrawn' && (
+                          {canUpdateStatus && item.status !== 'declined' && (
                             <Button className="line sm" loading={busyId === item.id} disabled={Boolean(busyId)} onClick={() => updateStatus(item, 'declined')}>Decline</Button>
                           )}
-                          {item.status !== 'pending' && item.status !== 'withdrawn' && (
+                          {['shortlisted', 'declined'].includes(item.status) && (
                             <Button className="line sm" loading={busyId === item.id} disabled={Boolean(busyId)} onClick={() => updateStatus(item, 'pending')}>Reset</Button>
                           )}
                         </div>
@@ -210,6 +254,39 @@ export default function OpportunityInterests() {
             </div>
           </div>
         </div>
+      )}
+      {outcomeItem && (
+        <Modal title="Record gig outcome" onClose={() => setOutcomeItem(null)} footer={null}>
+          <form className="standing-outcome-form" onSubmit={recordOutcome}>
+            <p>Record the outcome for {outcomeItem.user?.displayName || 'this creator'}.</p>
+            <label className="field"><span>Outcome</span>
+              <select className="input" value={outcome} onChange={(event) => setOutcome(event.target.value)}>
+                <option value="completed">Gig completed</option>
+                <option value="not_completed">Gig not completed</option>
+              </select>
+            </label>
+            {outcome === 'completed' && (
+              <>
+                <fieldset className="standing-rating-options">
+                  <legend>Rate the collaboration</legend>
+                  {[1, 2, 3, 4, 5].map((value) => (
+                    <label key={value}>
+                      <input type="radio" name="admin-standing-rating" value={value} checked={rating === value} onChange={() => setRating(value)} />
+                      <span aria-hidden="true">{value} ★</span><span className="sr-only">{value} out of 5 stars</span>
+                    </label>
+                  ))}
+                </fieldset>
+                <label className="field"><span>Private review for platform standing (optional)</span>
+                  <textarea className="textarea" maxLength={500} value={review} onChange={(event) => setReview(event.target.value)} />
+                </label>
+              </>
+            )}
+            <div className="standing-outcome-actions">
+              <button className="btn line" type="button" disabled={Boolean(busyId)} onClick={() => setOutcomeItem(null)}>Cancel</button>
+              <Button className="blue" type="submit" loading={busyId === outcomeItem.id}>Save outcome</Button>
+            </div>
+          </form>
+        </Modal>
       )}
     </section>
   );

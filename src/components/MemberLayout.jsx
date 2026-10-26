@@ -16,6 +16,8 @@ export default function MemberLayout() {
       ? 'Gig interests'
       : location.pathname.startsWith('/app/opportunities')
         ? user?.role === 'brand' ? 'My opportunities' : 'Opportunities'
+        : location.pathname.startsWith('/app/score')
+          ? 'My Score'
         : 'About Clout';
   return (
     <>

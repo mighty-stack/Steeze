@@ -20,6 +20,7 @@ import MemberProfile from './pages/member/Profile.jsx';
 import MemberOpportunities from './pages/member/Opportunities.jsx';
 import BrandGigInterests from './pages/member/BrandGigInterests.jsx';
 import MemberAbout from './pages/member/About.jsx';
+import MemberScore from './pages/member/Score.jsx';
 
 import AdminLayout from './components/AdminLayout.jsx';
 import AdminOverview from './pages/admin/Overview.jsx';
@@ -57,6 +58,7 @@ export default function App() {
                 <Route path="opportunities" element={<MemberOpportunities />} />
                 <Route path="opportunities/:id/interests" element={<BrandGigInterests />} />
                 <Route path="about" element={<MemberAbout />} />
+                <Route path="score" element={<MemberScore />} />
               </Route>
             </Route>
 

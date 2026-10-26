@@ -5,10 +5,12 @@ import { useToast } from '../../context/Toast.jsx';
 import { useAdminOptions } from '../../lib/useAdminOptions.js';
 import { Button, Pill, ConfirmDialog, cx } from '../../components/ui.jsx';
 import { relativeDay, formatDate, initial, compactNumber, platformLabel, STATUS, statusOf } from '../../lib/format.js';
+import LevelBadge from '../../components/LevelBadge.jsx';
 import EditProfileModal from './EditProfileModal.jsx';
 import RejectModal from './RejectModal.jsx';
 
 const PAGE_SIZE = 20;
+const CREATOR_LEVELS = ['intern', 'emerging', 'rising', 'established', 'professional'];
 const TABS = [
   { key: 'all', label: 'All', query: {} },
   { key: 'brand', label: 'Brands', query: { role: 'brand' } },
@@ -25,6 +27,144 @@ function useDebounced(value, ms) {
   return debounced;
 }
 
+function CreatorStandingPanel({ userId, onChanged }) {
+  const toast = useToast();
+  const [data, setData] = useState(null);
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState('');
+  const [level, setLevel] = useState('intern');
+  const [reason, setReason] = useState('');
+  const [voidReasons, setVoidReasons] = useState({});
+  const onChangedRef = useRef(onChanged);
+  onChangedRef.current = onChanged;
+
+  const load = useCallback(async () => {
+    setError('');
+    try {
+      const result = await api(`/admin/standings/${userId}`);
+      setData(result);
+      if (result.standing) {
+        setLevel(result.standing.level);
+        onChangedRef.current?.(result.standing);
+      }
+    } catch (err) {
+      setError(err.message || 'Could not load creator standing.');
+    }
+  }, [userId]);
+  useEffect(() => { load(); }, [load]);
+
+  const act = async (action, outcomeId) => {
+    const busyKey = outcomeId ? `${action}-${outcomeId}` : action;
+    setBusy(busyKey);
+    try {
+      let result;
+      if (action === 'set-level') {
+        result = await api(`/admin/standings/${userId}/level`, { method: 'PATCH', body: { level, reason } });
+      } else if (action === 'clear-pin') {
+        result = await api(`/admin/standings/${userId}/level-pin`, { method: 'DELETE' });
+      } else if (action === 'recompute') {
+        result = await api(`/admin/standings/${userId}/recompute`, { method: 'POST' });
+      } else if (action === 'void') {
+        result = await api(`/admin/interests/${outcomeId}/void`, { method: 'POST', body: { reason: voidReasons[outcomeId] || '' } });
+      } else if (action === 'unvoid') {
+        result = await api(`/admin/interests/${outcomeId}/unvoid`, { method: 'POST' });
+      }
+      if (result?.standing) onChangedRef.current?.(result.standing);
+      toast({
+        'set-level': 'Creator level updated and pinned.',
+        'clear-pin': 'Level pin cleared.',
+        recompute: 'Creator score recomputed.',
+        void: 'Outcome voided.',
+        unvoid: 'Outcome restored.',
+      }[action]);
+      await load();
+    } catch (err) {
+      toast(err.message || 'Could not update creator standing.', 'error');
+    } finally {
+      setBusy('');
+    }
+  };
+
+  return (
+    <section className="standing-admin-panel" aria-labelledby="standing-admin-heading">
+      <h3 id="standing-admin-heading">Steeze Score and level</h3>
+      {error && <div className="form-error" role="alert">{error}<button className="link ml-2" onClick={load}>Retry</button></div>}
+      {!data && !error && <p className="muted">Loading creator standing…</p>}
+      {data && (
+        <>
+          {data.standing ? (
+            <>
+              <div className="standing-admin-facts">
+                <div><LevelBadge level={data.standing.level} />{data.standing.levelPinned && <Pill tone="wait">Pinned</Pill>}</div>
+                <p>Score: <strong>{data.standing.score}</strong> / 100</p>
+                <p>
+                  Completed gigs: <strong>{data.standing.stats?.completed || 0}</strong>
+                  {' · '}Ratings: <strong>{data.standing.stats?.ratingsCount || 0}</strong>
+                  {' · '}Average: <strong>{data.standing.stats?.averageRating?.toFixed(1) || '—'}</strong>
+                  {' · '}Reliability: <strong>{Math.round((data.standing.stats?.reliability || 0) * 100)}%</strong>
+                </p>
+                {data.standing.eligibleForProfessional && <p>Eligible for Professional review.</p>}
+              </div>
+              <ul className="standing-admin-breakdown">
+                {(data.standing.breakdown || []).map((item) => (
+                  <li key={item.key}><span>{item.key}</span><strong>{item.points} / {item.max}</strong></li>
+                ))}
+              </ul>
+            </>
+          ) : <p className="muted">No standing has been computed yet.</p>}
+
+          <form className="standing-admin-controls" onSubmit={(event) => { event.preventDefault(); act('set-level'); }}>
+            <label className="field"><span>Override level</span>
+              <select className="input" value={level} onChange={(event) => setLevel(event.target.value)}>
+                {CREATOR_LEVELS.map((item) => <option key={item} value={item}>{item}</option>)}
+              </select>
+            </label>
+            <label className="field"><span>Reason (required)</span>
+              <input className="input" maxLength={300} value={reason} onChange={(event) => setReason(event.target.value)} />
+            </label>
+            <div className="standing-admin-outcome-actions">
+              <Button className="blue sm" type="submit" loading={busy === 'set-level'} disabled={!reason.trim() || Boolean(busy)}>Set and pin level</Button>
+              <Button type="button" className="line sm" loading={busy === 'recompute'} disabled={Boolean(busy)} onClick={() => act('recompute')}>Recompute score</Button>
+              {data.standing?.levelPinned && <Button type="button" className="line sm" loading={busy === 'clear-pin'} disabled={Boolean(busy)} onClick={() => act('clear-pin')}>Clear pin</Button>}
+            </div>
+          </form>
+
+          <div>
+            <h4>Recorded gig outcomes</h4>
+            {data.outcomes.length ? (
+              <ul className="standing-admin-outcomes">
+                {data.outcomes.map((item) => (
+                  <li key={item.id}>
+                    <strong>{item.opportunity?.title || 'Gig unavailable'}</strong>
+                    <span>{item.opportunity?.brandName || 'Brand'} · {item.status.replace('_', ' ')}{item.rating ? ` · ${item.rating}/5` : ''}</span>
+                    {item.review && <span>{item.review}</span>}
+                    {item.voided && <span>Voided: {item.voidedReason}</span>}
+                    {item.voided ? (
+                      <Button className="line sm" loading={busy === `unvoid-${item.id}`} disabled={Boolean(busy)} onClick={() => act('unvoid', item.id)}>Restore outcome</Button>
+                    ) : (
+                      <div className="standing-admin-outcome-actions">
+                        <input
+                          className="input"
+                          maxLength={300}
+                          placeholder="Reason for voiding"
+                          value={voidReasons[item.id] || ''}
+                          onChange={(event) => setVoidReasons((current) => ({ ...current, [item.id]: event.target.value }))}
+                          aria-label={`Reason for voiding ${item.opportunity?.title || 'gig'} outcome`}
+                        />
+                        <Button className="line sm" loading={busy === `void-${item.id}`} disabled={!voidReasons[item.id]?.trim() || Boolean(busy)} onClick={() => act('void', item.id)}>Void outcome</Button>
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            ) : <p className="muted">No recorded gig outcomes.</p>}
+          </div>
+        </>
+      )}
+    </section>
+  );
+}
+
 export default function Registrations() {
   const { refreshStats } = useOutletContext();
   const toast = useToast();
@@ -37,19 +177,26 @@ export default function Registrations() {
   const [tab, setTab] = useState(() => {
     if (params.get('status') === 'pending') return 'pending';
     if (params.get('role') === 'brand' || params.get('role') === 'creator') return params.get('role');
+    if (params.get('level') || params.get('minScore')) return 'creator';
     return 'all';
   });
   const requestedStatus = params.get('status');
   const requestedRole = params.get('role');
+  const requestedLevel = params.get('level');
+  const requestedMinScore = params.get('minScore');
   useEffect(() => {
     if (requestedStatus === 'pending') setTab('pending');
     else if (requestedRole === 'brand' || requestedRole === 'creator') setTab(requestedRole);
+    else if (requestedLevel || requestedMinScore) setTab('creator');
     else if (requestedStatus || requestedRole) setTab('all');
-  }, [requestedStatus, requestedRole]);
+  }, [requestedStatus, requestedRole, requestedLevel, requestedMinScore]);
   const [q, setQ] = useState('');
   const debouncedQ = useDebounced(q, 350);
   const [category, setCategory] = useState('');
   const [location, setLocation] = useState('');
+  const [level, setLevel] = useState(() => params.get('level') || '');
+  const [minScore, setMinScore] = useState(() => params.get('minScore') || '');
+  const [sort, setSort] = useState(() => params.get('sort') || '');
   const [page, setPage] = useState(1);
   const onlyUnseen = params.get('unseen') === 'true';
 
@@ -86,6 +233,9 @@ export default function Registrations() {
     location,
     ...(onlyUnseen ? { unseen: 'true' } : {}),
     ...(accessCodeId ? { accessCode: accessCodeId } : {}),
+    ...(level ? { level } : {}),
+    ...(minScore ? { minScore } : {}),
+    ...(sort ? { sort } : {}),
     ...(params.get('from') ? { from: params.get('from') } : {}),
     ...(params.get('to') ? { to: params.get('to') } : {}),
   };
@@ -100,7 +250,7 @@ export default function Registrations() {
       if (id === requestId.current) setListError(err.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tab, debouncedQ, category, location, page, onlyUnseen, accessCodeId]);
+  }, [tab, debouncedQ, category, location, page, onlyUnseen, accessCodeId, level, minScore, sort]);
 
   useEffect(() => { setList(null); load(); }, [load]);
   useEffect(() => {
@@ -114,7 +264,7 @@ export default function Registrations() {
       window.removeEventListener('focus', refreshWhenVisible);
     };
   }, [load]);
-  useEffect(() => { setPage(1); }, [tab, debouncedQ, category, location, onlyUnseen, accessCodeId]);
+  useEffect(() => { setPage(1); }, [tab, debouncedQ, category, location, onlyUnseen, accessCodeId, level, minScore, sort]);
 
   const openDetail = async (id) => {
     setSelectedId(id);
@@ -218,6 +368,14 @@ export default function Registrations() {
           <option value="">Location</option>
           {options?.location.map((o) => <option key={o.id} value={o.id}>{o.label}</option>)}
         </select>
+        <select className="select input" value={level} onChange={(e) => { setLevel(e.target.value); if (e.target.value) setTab('creator'); }} aria-label="Filter by creator level">
+          <option value="">All creator levels</option>
+          {CREATOR_LEVELS.map((item) => <option key={item} value={item}>{item}</option>)}
+        </select>
+        <input className="input" type="number" min="0" max="100" value={minScore} onChange={(e) => { setMinScore(e.target.value); if (e.target.value) setTab('creator'); }} placeholder="Minimum score" aria-label="Minimum creator score" />
+        <select className="select input" value={sort} onChange={(e) => setSort(e.target.value)} aria-label="Sort registrations">
+          <option value="">Newest first</option><option value="score">Highest score</option>
+        </select>
       </div>
       {onlyUnseen && (
         <div className="filter-note">
@@ -251,6 +409,9 @@ export default function Registrations() {
                         <button className="row-btn">
                           <div className="nm">{!u.seenByAdmin && <span className="newdot" title="New" />}{u.displayName}</div>
                           <div className="sub">{u.email}</div>
+                          {u.role === 'creator' && u.standingScore !== null && u.standingScore !== undefined && (
+                            <div className="sub">{u.standingLevel || 'Intern'} · Steeze Score {u.standingScore}</div>
+                          )}
                         </button>
                       </td>
                       <td className="ty"><span className={cx('dot', u.role === 'brand' ? 'b' : 'c')} />{u.role === 'brand' ? 'Brand' : 'Creator'}</td>
@@ -326,6 +487,17 @@ export default function Registrations() {
                     <div><dt>Content</dt><dd>{detail.profile.contentDescription}</dd></div>
                     <div><dt>Wants to do</dt><dd><span className="chip-list">{detail.profile.collaborationInterests.map((o) => <span key={o.id} className="chip-static">{o.label}</span>)}</span></dd></div>
                   </dl>
+                )}
+
+                {detail.user.role === 'creator' && (
+                  <CreatorStandingPanel
+                    key={detail.user.id}
+                    userId={detail.user.id}
+                    onChanged={(standing) => setDetail((current) => current && ({
+                      ...current,
+                      user: { ...current.user, standingLevel: standing.level, standingScore: standing.score },
+                    }))}
+                  />
                 )}
 
                 <div className="act">

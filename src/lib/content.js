@@ -60,3 +60,26 @@ export const FOOTER_SOCIALS = [
   { label: 'Facebook', icon: 'facebook', href: 'https://www.facebook.com/share/1D4vEJmzDN/' },
   { label: 'Instagram', icon: 'instagram', href: 'https://www.instagram.com/kloutcollabs' },
 ];
+
+export const SCORE_NAME = 'Steeze Score';
+
+export const LEVEL_LABELS = {
+  intern: 'Creator Intern',
+  emerging: 'Emerging Creator',
+  rising: 'Rising Creator',
+  established: 'Established Creator',
+  professional: 'Professional Creator',
+};
+
+export const STANDING_COMPONENT_LABELS = {
+  profile: 'Profile completeness',
+  portfolio: 'Portfolio',
+  activity: 'Platform activity',
+  completedGigs: 'Completed gigs',
+  ratings: 'Brand ratings',
+  reliability: 'Reliability',
+  collaborationActivity: 'Collaboration activity',
+  contentActivity: 'Content activity',
+  campaignPerformance: 'Campaign performance',
+  growth: 'Growth',
+};

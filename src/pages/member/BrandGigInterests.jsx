@@ -1,7 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { api } from '../../api/client.js';
-import { Button, Pill } from '../../components/ui.jsx';
+import { Button, Modal, Pill } from '../../components/ui.jsx';
+import { useToast } from '../../context/Toast.jsx';
+import LevelBadge from '../../components/LevelBadge.jsx';
 import { formatDate, fullNumber, platformLabel } from '../../lib/format.js';
 
 const INTEREST_STATUS = {
@@ -9,13 +11,20 @@ const INTEREST_STATUS = {
   shortlisted: { label: 'Shortlisted', tone: 'ok' },
   declined: { label: 'Not selected', tone: 'bad' },
   withdrawn: { label: 'Withdrawn', tone: 'off' },
+  completed: { label: 'Completed', tone: 'ok' },
+  not_completed: { label: 'Not completed', tone: 'bad' },
 };
-
 export default function BrandGigInterests() {
   const { id } = useParams();
   const [items, setItems] = useState(null);
   const [gigTitle, setGigTitle] = useState('');
   const [error, setError] = useState('');
+  const [outcomeInterest, setOutcomeInterest] = useState(null);
+  const [outcome, setOutcome] = useState('completed');
+  const [rating, setRating] = useState(5);
+  const [review, setReview] = useState('');
+  const [savingOutcome, setSavingOutcome] = useState(false);
+  const toast = useToast();
   const load = useCallback(async () => {
     setError('');
     try {
@@ -27,6 +36,32 @@ export default function BrandGigInterests() {
     }
   }, [id]);
   useEffect(() => { load(); }, [load]);
+
+  const openOutcome = (item) => {
+    setOutcomeInterest(item);
+    setOutcome('completed');
+    setRating(5);
+    setReview('');
+  };
+
+  const saveOutcome = async (event) => {
+    event.preventDefault();
+    if (!outcomeInterest) return;
+    setSavingOutcome(true);
+    try {
+      await api(`/brand/interests/${outcomeInterest.id}/outcome`, {
+        method: 'POST',
+        body: { result: outcome, ...(outcome === 'completed' ? { rating, ...(review.trim() ? { review: review.trim() } : {}) } : {}) },
+      });
+      setOutcomeInterest(null);
+      toast(outcome === 'completed' ? 'Gig completion and rating recorded.' : 'Gig outcome recorded.');
+      await load();
+    } catch (err) {
+      toast(err.message || 'Could not record this gig outcome.', 'error');
+    } finally {
+      setSavingOutcome(false);
+    }
+  };
 
   return (
     <section className="db-dashboard" aria-labelledby="gig-interest-heading">
@@ -46,6 +81,14 @@ export default function BrandGigInterests() {
             </div>
             <Pill tone={INTEREST_STATUS[item.status]?.tone || 'off'}>{INTEREST_STATUS[item.status]?.label || item.status}</Pill>
           </div>
+          {item.creator && (
+            <div className="db-standing-facts">
+              {item.creator.level && <LevelBadge level={item.creator.level} />}
+              {item.creator.score !== null && <span>Steeze Score: <strong>{item.creator.score}</strong></span>}
+              <span>Completed gigs: <strong>{item.creator.completedGigs}</strong></span>
+              {item.creator.averageRating !== null && <span>Average rating: <strong>{item.creator.averageRating.toFixed(1)} / 5</strong></span>}
+            </div>
+          )}
           <p className="db-fallback">Applied {formatDate(item.createdAt)}</p>
           {item.message && <p className="db-interest-message">{item.message}</p>}
           {item.creator && (
@@ -87,8 +130,51 @@ export default function BrandGigInterests() {
             </div>
           )}
           {item.email && <p className="db-contact-detail">Email: <a className="link" href={`mailto:${item.email}`}>{item.email}</a></p>}
+          {item.status === 'shortlisted' && !item.completedAt && (
+            <Button className="blue sm" onClick={() => openOutcome(item)}>Record gig outcome</Button>
+          )}
         </article>
       ))}
+      {outcomeInterest && (
+        <Modal
+          title="Record gig outcome"
+          onClose={() => !savingOutcome && setOutcomeInterest(null)}
+          footer={null}
+        >
+          <form className="standing-outcome-form" onSubmit={saveOutcome}>
+            <p>Record the outcome for {outcomeInterest.creator?.creatorName || 'this creator'}.</p>
+            <label className="field">
+              <span>Outcome</span>
+              <select className="input" value={outcome} onChange={(event) => setOutcome(event.target.value)}>
+                <option value="completed">Gig completed</option>
+                <option value="not_completed">Gig not completed</option>
+              </select>
+            </label>
+            {outcome === 'completed' && (
+              <>
+                <fieldset className="standing-rating-options">
+                  <legend>Rate the collaboration</legend>
+                  {[1, 2, 3, 4, 5].map((value) => (
+                    <label key={value}>
+                      <input type="radio" name="standing-rating" value={value} checked={rating === value} onChange={() => setRating(value)} />
+                      <span aria-hidden="true">{value} ★</span>
+                      <span className="sr-only">{value} out of 5 stars</span>
+                    </label>
+                  ))}
+                </fieldset>
+                <label className="field">
+                  <span>Private review for platform standing (optional)</span>
+                  <textarea className="textarea" maxLength={500} value={review} onChange={(event) => setReview(event.target.value)} />
+                </label>
+              </>
+            )}
+            <div className="standing-outcome-actions">
+              <button className="btn line" type="button" disabled={savingOutcome} onClick={() => setOutcomeInterest(null)}>Cancel</button>
+              <Button className="blue" type="submit" loading={savingOutcome}>Save outcome</Button>
+            </div>
+          </form>
+        </Modal>
+      )}
     </section>
   );
 }
