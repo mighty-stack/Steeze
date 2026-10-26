@@ -77,7 +77,7 @@ function CreatorDashboard({ data, displayName }) {
           <div className="db-attention">
             <div className="db-progress-copy">
               <strong>{completeness.percent}% profile complete</strong>
-              <Link className="link" to="/app/profile">Improve your profile</Link>
+              <Link className="btn line sm" to="/app/profile">Improve your profile</Link>
             </div>
             <div className="db-progress-track" role="progressbar" aria-label="Profile completeness" aria-valuenow={completeness.percent} aria-valuemin="0" aria-valuemax="100">
               <span style={{ width: `${completeness.percent}%` }} />
@@ -111,7 +111,7 @@ function CreatorDashboard({ data, displayName }) {
 
       <div className="db-list-grid">
         <section className="db-panel" aria-labelledby="creator-applications-heading">
-          <div className="db-panel-heading"><h2 id="creator-applications-heading">Your applications</h2><Link className="link" to="/app/opportunities?view=mine">See all</Link></div>
+          <div className="db-panel-heading"><h2 id="creator-applications-heading">Your applications</h2><Link className="btn line sm" to="/app/opportunities?view=mine">See all</Link></div>
           {data.applications === null ? <SectionFallback /> : data.applications.length ? (
             <ul className="db-rows">
               {data.applications.map((application) => (
@@ -128,12 +128,12 @@ function CreatorDashboard({ data, displayName }) {
               ))}
             </ul>
           ) : (
-            <div className="db-empty"><p>You haven't applied to anything yet.</p><Link className="link" to="/app/opportunities">Browse opportunities</Link></div>
+            <div className="db-empty"><p>You haven't applied to anything yet.</p><Link className="btn blue sm" to="/app/opportunities">Browse opportunities</Link></div>
           )}
         </section>
 
         <section className="db-panel" aria-labelledby="creator-recommended-heading">
-          <div className="db-panel-heading"><h2 id="creator-recommended-heading">Recommended for you</h2><Link className="link" to="/app/opportunities">Browse all</Link></div>
+          <div className="db-panel-heading"><h2 id="creator-recommended-heading">Recommended for you</h2><Link className="btn line sm" to="/app/opportunities">Browse all</Link></div>
           {data.recommended === null ? <SectionFallback /> : data.recommended.length ? (
             <ul className="db-rows">
               {data.recommended.map((item) => (
@@ -147,7 +147,7 @@ function CreatorDashboard({ data, displayName }) {
               ))}
             </ul>
           ) : (
-            <div className="db-empty"><p>No recommendations right now.</p><Link className="link" to="/app/opportunities">Browse opportunities</Link></div>
+            <div className="db-empty"><p>No recommendations right now.</p><Link className="btn blue sm" to="/app/opportunities">Browse opportunities</Link></div>
           )}
         </section>
       </div>
@@ -178,12 +178,12 @@ function BrandDashboard({ data, displayName }) {
               <li key={`${item.type}-${index}`}>
                 <span className="db-attention-copy">{item.text}</span>
                 <StatusPill status={item.type} map={ATTENTION_STATUS} />
-                <Link className="link" to={item.link}>Review</Link>
+                <Link className="btn line sm" to={item.link}>Review</Link>
               </li>
             ))}
           </ul>
         ) : (
-          <div className="db-attention"><p>Nothing needs your attention right now.</p><Link className="link" to="/app/opportunities?view=mine">Review your gigs</Link></div>
+          <div className="db-attention"><p>Nothing needs your attention right now.</p><Link className="btn line sm" to="/app/opportunities?view=mine">Review your gigs</Link></div>
         )}
       </section>
 
@@ -202,7 +202,7 @@ function BrandDashboard({ data, displayName }) {
 
       <div className="db-list-grid">
         <section className="db-panel" aria-labelledby="brand-interest-heading">
-          <div className="db-panel-heading"><h2 id="brand-interest-heading">New interest</h2><Link className="link" to="/app/opportunities?view=mine&status=new">See all</Link></div>
+          <div className="db-panel-heading"><h2 id="brand-interest-heading">New interest</h2><Link className="btn line sm" to="/app/opportunities?view=mine&status=new">See all</Link></div>
           {data.newInterests === null ? <SectionFallback /> : data.newInterests.length ? (
             <ul className="db-rows">
               {data.newInterests.map((interest) => (
@@ -216,7 +216,7 @@ function BrandDashboard({ data, displayName }) {
                 </li>
               ))}
             </ul>
-          ) : <div className="db-empty"><p>No new interest yet.</p><Link className="link" to="/app/opportunities?view=mine">Review your gigs</Link></div>}
+          ) : <div className="db-empty"><p>No new interest yet.</p><Link className="btn line sm" to="/app/opportunities?view=mine">Review your gigs</Link></div>}
         </section>
 
         <section className="db-panel" aria-labelledby="brand-gigs-heading">

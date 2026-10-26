@@ -191,7 +191,7 @@ export default function Overview() {
           </section>
 
           <section className="adm-overview-section" aria-labelledby="adm-overview-recent">
-            <div className="adm-overview-section-head"><h2 id="adm-overview-recent">Recent registrations</h2><Link className="link" to="/admin/registrations">View all</Link></div>
+            <div className="adm-overview-section-head"><h2 id="adm-overview-recent">Recent registrations</h2><Link className="btn line sm" to="/admin/registrations">View all</Link></div>
             {data.recentRegistrations === null ? <SectionUnavailable /> : data.recentRegistrations.length ? (
               <div className="adm-overview-card adm-overview-list">
                 {data.recentRegistrations.map((member) => {
