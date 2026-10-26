@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthLayout from '../components/AuthLayout.jsx';
 import PendingNotice from '../components/PendingNotice.jsx';
 import { Button } from '../components/ui.jsx';
@@ -15,7 +15,6 @@ const BLOCKED = ['ACCOUNT_PENDING', 'ACCOUNT_REJECTED', 'ACCOUNT_DEACTIVATED'];
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const { state } = useLocation();
   const form = useForm({ email: '', password: '' });
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -33,9 +32,7 @@ export default function Login() {
     setBusy(true);
     try {
       const user = await login(form.values.email.trim(), form.values.password);
-      const from = state?.from;
-      const allowed = from && (user.role === 'admin' ? from.startsWith('/admin') : from.startsWith('/app'));
-      navigate(allowed ? from : HOME[user.role], { replace: true });
+      navigate(HOME[user.role], { replace: true });
     } catch (err) {
       if (!(err instanceof ApiError)) throw err;
       if (BLOCKED.includes(err.code)) setBlocked(err);
