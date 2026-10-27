@@ -66,7 +66,11 @@ export default function DashboardLayout({ user, admin = false, stats, onLogout, 
   }, [mobileOpen]);
 
   return (
-    <div className={cx('dashboard-layout', admin && 'admin-dashboard', collapsed && 'sidebar-collapsed')}>
+    <div className={cx(
+      'dashboard-layout',
+      admin ? 'admin-dashboard' : user?.role === 'brand' ? 'brand-dashboard' : 'creator-dashboard',
+      collapsed && 'sidebar-collapsed',
+    )}>
       {mobileOpen && (
         <button
           type="button"
