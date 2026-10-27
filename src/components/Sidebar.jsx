@@ -51,6 +51,17 @@ export default function Sidebar({
   onToggleCollapsed,
 }) {
   const displayName = user?.displayName || (admin ? 'Admin' : 'Member');
+  const accountRole = admin
+    ? 'Administrator'
+    : `${user?.role === 'brand' ? 'Brand' : 'Creator'} · ${user?.verificationStatus}`;
+  const handleLogout = () => {
+    onClose();
+    if (typeof onLogout !== 'function') {
+      console.warn('Sidebar was rendered without an onLogout handler.');
+      return;
+    }
+    onLogout();
+  };
 
   useEffect(() => {
     if (!open) return undefined;
@@ -138,10 +149,15 @@ export default function Sidebar({
             </div>
             <div className="dashboard-sidebar-identity">
               <b title={displayName}>{displayName}</b>
-              <small>{admin ? 'Admin' : `${user?.role === 'brand' ? 'Brand' : 'Creator'} · ${user?.verificationStatus}`}</small>
+              <small>{accountRole}</small>
             </div>
           </div>
-          <button type="button" className="btn line sm dashboard-logout" onClick={onLogout} title="Log out">
+          <button
+            type="button"
+            className="dashboard-logout"
+            onClick={handleLogout}
+            title="Log out"
+          >
             <span className="dashboard-logout-label">Log out</span>
             <span className="dashboard-logout-icon" aria-hidden="true">↪</span>
           </button>

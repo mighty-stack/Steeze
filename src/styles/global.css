@@ -2973,16 +2973,6 @@
       color: #fff;
     }
 
-    .brand-dashboard .dashboard-logout {
-      border-color: #fff;
-      color: #fff;
-    }
-
-    .brand-dashboard .dashboard-logout:hover {
-      background: #fff;
-      color: #061e4a;
-    }
-
     .creator-dashboard .dashboard-sidebar {
       background: #035dfc;
       border-color: #024bc9;
@@ -3014,16 +3004,6 @@
     .creator-dashboard .dashboard-sidebar-link.on .dashboard-sidebar-icon {
       background: #024bc9;
       color: #fff;
-    }
-
-    .creator-dashboard .dashboard-logout {
-      border-color: #fff;
-      color: #fff;
-    }
-
-    .creator-dashboard .dashboard-logout:hover {
-      background: #fff;
-      color: #035dfc;
     }
 
     .dashboard-sidebar-account {
@@ -3116,14 +3096,25 @@
       color: #edeff7;
     }
 
-    .admin-dashboard .dashboard-logout {
-      border-color: white;
-      color: white;
+    .dashboard-sidebar .dashboard-logout {
+      display: flex;
+      width: 100%;
+      min-height: 44px;
+      margin: 0;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      border-radius: 10px;
+      background: transparent;
+      color: #edeff7;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background-color 150ms ease;
     }
 
-    .admin-dashboard .dashboard-logout:hover {
-      background: white;
-      color: #101528;
+    .dashboard-sidebar .dashboard-logout:hover {
+      background: rgba(255, 255, 255, 0.12);
     }
 
     .dashboard-main {

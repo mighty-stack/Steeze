@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { ConfirmDialog } from './ui.jsx';
 import { useAuth } from '../context/Auth.jsx';
 import DashboardLayout from './DashboardLayout.jsx';
@@ -8,7 +8,17 @@ import DashboardLayout from './DashboardLayout.jsx';
 export default function MemberLayout() {
   const { user, logout } = useAuth();
   const location = useLocation();
+  const navigate = useNavigate();
   const [confirmingLogout, setConfirmingLogout] = useState(false);
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (error) {
+      console.error('Failed to invalidate the server session during logout.', error);
+    } finally {
+      navigate('/login', { replace: true });
+    }
+  };
   const isOverview = location.pathname === '/app';
   const pageTitle = location.pathname.startsWith('/app/profile')
     ? 'Your profile'
@@ -31,7 +41,7 @@ export default function MemberLayout() {
       {confirmingLogout && (
         <ConfirmDialog
           title="Log out?" message="You will need to log in again to access your dashboard." confirmLabel="Log out"
-          danger={false} onClose={() => setConfirmingLogout(false)} onConfirm={logout}
+          danger={false} onClose={() => setConfirmingLogout(false)} onConfirm={handleLogout}
         />
       )}
     </>
