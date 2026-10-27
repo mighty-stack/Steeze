@@ -1,4 +1,4 @@
-const BASE = import.meta.env.PROD ? '' : (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+const BASE = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
 const TIMEOUT_MS = 90_000; // a sleeping Render free-tier server can take up to ~60s to wake
 const SLOW_AFTER_MS = 4_000;
 

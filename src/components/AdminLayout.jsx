@@ -9,15 +9,44 @@ export default function AdminLayout() {
   const { user, logout } = useAuth();
   const [stats, setStats] = useState(null);
   const [confirmingLogout, setConfirmingLogout] = useState(false);
+  const [navOpen, setNavOpen] = useState(false);
 
   const refreshStats = () => api('/admin/stats').then(setStats).catch(() => {});
   useEffect(() => { refreshStats(); }, []);
+  useEffect(() => {
+    if (!navOpen) return undefined;
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') setNavOpen(false);
+    };
+    window.addEventListener('keydown', closeOnEscape);
+    return () => window.removeEventListener('keydown', closeOnEscape);
+  }, [navOpen]);
 
   return (
     <div className="adm">
-      <aside className="rail admin-rail">
+      <div className="admin-mobile-bar">
         <Wordmark to="/admin" tone="reversed" />
-        <nav aria-label="Admin navigation">
+        <button
+          type="button"
+          className="admin-menu-button"
+          aria-expanded={navOpen}
+          aria-controls="admin-sidebar"
+          onClick={() => setNavOpen((open) => !open)}
+        >
+          {navOpen ? 'Close menu' : 'Menu'}
+        </button>
+      </div>
+      {navOpen && (
+        <button
+          type="button"
+          className="admin-sidebar-backdrop"
+          aria-label="Close admin navigation"
+          onClick={() => setNavOpen(false)}
+        />
+      )}
+      <aside id="admin-sidebar" className={cx('rail admin-rail', navOpen && 'open')}>
+        <Wordmark to="/admin" tone="reversed" />
+        <nav aria-label="Admin navigation" onClick={() => setNavOpen(false)}>
           <NavLink to="/admin" end className={({ isActive }) => cx(isActive && 'on')}>Overview</NavLink>
           <NavLink to="/admin/registrations" className={({ isActive }) => cx(isActive && 'on')}>
             Registrations {stats?.unseen > 0 && <span className="count-badge">{stats.unseen} new</span>}

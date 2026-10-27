@@ -101,8 +101,8 @@ export default function Register({ kind }) {
       <AuthLayout theme={flow.theme} heading={flow.heading} sub={flow.sub}>
         {optionsError ? (
           <div className="formwrap">
-            <div className="form-error">{optionsError}</div>
-            <button className="btn blue mt-4" onClick={reload}>Try again</button>
+            <div className="form-error" role="alert">{optionsError}</div>
+            <button type="button" className="btn blue mt-4" onClick={reload}>Try again</button>
           </div>
         ) : <Splash />}
       </AuthLayout>

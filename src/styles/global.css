@@ -2630,3 +2630,192 @@
       }
   }
 }
+
+@layer components {
+  .admin-mobile-bar,
+  .admin-menu-button,
+  .dashboard-menu-button,
+  .admin-sidebar-backdrop,
+  .dashboard-nav-backdrop {
+    display: none;
+  }
+
+  @media (max-width: 900px) {
+    .admin-mobile-bar {
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 64px;
+      padding: 10px 16px;
+      background: #101528;
+      box-sizing: border-box;
+    }
+
+    .admin-menu-button,
+    .dashboard-menu-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 40px;
+      padding: 8px 14px;
+      border: 1px solid currentColor;
+      border-radius: 10px;
+      background: transparent;
+      color: white;
+      font: inherit;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .adm {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .adm > .admin-rail {
+      position: fixed;
+      z-index: 92;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: min(300px, 86vw);
+      height: 100dvh;
+      padding: 24px 20px;
+      border: 0;
+      flex-direction: column;
+      flex-wrap: nowrap;
+      align-items: stretch;
+      gap: 28px;
+      overflow-y: auto;
+      box-sizing: border-box;
+      transform: translateX(-105%);
+      visibility: hidden;
+      transition: transform 180ms ease, visibility 180ms;
+    }
+
+    .adm > .admin-rail.open {
+      transform: translateX(0);
+      visibility: visible;
+    }
+
+    .adm > .admin-rail nav {
+      display: grid;
+      order: 0;
+      width: auto;
+      overflow: visible;
+    }
+
+    .adm > .admin-rail nav a {
+      white-space: normal;
+    }
+
+    .adm > .admin-rail .who {
+      display: grid;
+      margin: auto 0 0;
+      padding-top: 16px;
+      border-top: 1px solid #4a5170;
+      text-align: left;
+    }
+
+    .adm > .admin-rail .who b {
+      display: block;
+    }
+
+    .adm > .admin-rail .who > .btn {
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .admin-sidebar-backdrop,
+    .dashboard-nav-backdrop {
+      position: fixed;
+      z-index: 91;
+      inset: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      border: 0;
+      background: rgb(16 21 40 / 55%);
+    }
+
+    .dashboard-nav {
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      flex-wrap: nowrap;
+      min-height: 64px;
+      padding: 10px 16px;
+    }
+
+    .dashboard-nav .dashboard-menu-button {
+      position: relative;
+      z-index: 94;
+      margin-left: auto;
+    }
+
+    .dashboard-nav-links {
+      position: fixed;
+      z-index: 92;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      display: flex;
+      width: min(300px, 86vw);
+      padding: 88px 20px 136px;
+      flex-direction: column;
+      align-items: stretch;
+      justify-content: flex-start;
+      gap: 6px;
+      overflow-y: auto;
+      background: #101528;
+      box-sizing: border-box;
+      transform: translateX(-105%);
+      visibility: hidden;
+      transition: transform 180ms ease, visibility 180ms;
+    }
+
+    .dashboard-nav.menu-open .dashboard-nav-links {
+      transform: translateX(0);
+      visibility: visible;
+    }
+
+    .dashboard-nav-links a {
+      padding: 12px 14px;
+      border-radius: 10px;
+      color: white;
+      white-space: normal;
+    }
+
+    .dashboard-nav-links a:hover,
+    .dashboard-nav-links a.active {
+      background: #202947;
+    }
+
+    .dashboard-nav-account {
+      position: fixed;
+      z-index: 93;
+      bottom: 0;
+      left: 0;
+      display: none;
+      width: min(300px, 86vw);
+      padding: 18px 20px;
+      border-top: 1px solid #4a5170;
+      background: #101528;
+      box-sizing: border-box;
+    }
+
+    .dashboard-nav.menu-open .dashboard-nav-account {
+      display: flex;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .adm > .admin-rail,
+    .dashboard-nav-links {
+      transition: none;
+    }
+  }
+}
