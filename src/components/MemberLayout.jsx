@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { ConfirmDialog } from './ui.jsx';
 import { useAuth } from '../context/Auth.jsx';
-import ProjectNav from './ProjectNav.jsx';
+import DashboardLayout from './DashboardLayout.jsx';
 
 export default function MemberLayout() {
   const { user, logout } = useAuth();
@@ -21,12 +21,13 @@ export default function MemberLayout() {
         : 'About Clout';
   return (
     <>
-      <ProjectNav user={user} onLogout={() => setConfirmingLogout(true)} />
-      <div className="app-wrap">
-        {!isOverview && <h1>{pageTitle}</h1>}
-        {!isOverview && <p className="lede">Manage your profile and see what is available to verified members.</p>}
-        <Outlet />
-      </div>
+      <DashboardLayout user={user} onLogout={() => setConfirmingLogout(true)}>
+        <div className="app-wrap">
+          {!isOverview && <h1>{pageTitle}</h1>}
+          {!isOverview && <p className="lede">Manage your profile and see what is available to verified members.</p>}
+          <Outlet />
+        </div>
+      </DashboardLayout>
       {confirmingLogout && (
         <ConfirmDialog
           title="Log out?" message="You will need to log in again to access your dashboard." confirmLabel="Log out"

@@ -1,81 +1,31 @@
 import { useEffect, useState } from 'react';
-import { NavLink, Outlet } from 'react-router-dom';
-import { ConfirmDialog, Wordmark, cx } from './ui.jsx';
+import { Outlet } from 'react-router-dom';
+import { ConfirmDialog } from './ui.jsx';
 import { useAuth } from '../context/Auth.jsx';
 import { api } from '../api/client.js';
-import { initial } from '../lib/format.js';
+import DashboardLayout from './DashboardLayout.jsx';
 
 export default function AdminLayout() {
   const { user, logout } = useAuth();
   const [stats, setStats] = useState(null);
   const [confirmingLogout, setConfirmingLogout] = useState(false);
-  const [navOpen, setNavOpen] = useState(false);
 
   const refreshStats = () => api('/admin/stats').then(setStats).catch(() => {});
   useEffect(() => { refreshStats(); }, []);
-  useEffect(() => {
-    if (!navOpen) return undefined;
-    const closeOnEscape = (event) => {
-      if (event.key === 'Escape') setNavOpen(false);
-    };
-    window.addEventListener('keydown', closeOnEscape);
-    return () => window.removeEventListener('keydown', closeOnEscape);
-  }, [navOpen]);
 
   return (
-    <div className="adm">
-      <div className="admin-mobile-bar">
-        <Wordmark to="/admin" tone="reversed" />
-        <button
-          type="button"
-          className="admin-menu-button"
-          aria-expanded={navOpen}
-          aria-controls="admin-sidebar"
-          onClick={() => setNavOpen((open) => !open)}
-        >
-          {navOpen ? 'Close menu' : 'Menu'}
-        </button>
-      </div>
-      {navOpen && (
-        <button
-          type="button"
-          className="admin-sidebar-backdrop"
-          aria-label="Close admin navigation"
-          onClick={() => setNavOpen(false)}
-        />
-      )}
-      <aside id="admin-sidebar" className={cx('rail admin-rail', navOpen && 'open')}>
-        <Wordmark to="/admin" tone="reversed" />
-        <nav aria-label="Admin navigation" onClick={() => setNavOpen(false)}>
-          <NavLink to="/admin" end className={({ isActive }) => cx(isActive && 'on')}>Overview</NavLink>
-          <NavLink to="/admin/registrations" className={({ isActive }) => cx(isActive && 'on')}>
-            Registrations {stats?.unseen > 0 && <span className="count-badge">{stats.unseen} new</span>}
-          </NavLink>
-          <NavLink to="/admin/access-codes" className={({ isActive }) => cx(isActive && 'on')}>Access codes</NavLink>
-          <NavLink to="/admin/opportunities" className={({ isActive }) => cx(isActive && 'on')}>
-            Opportunities {(stats?.pendingGigs ?? 0) > 0 && <span className="count-badge">{stats.pendingGigs} new</span>}
-          </NavLink>
-          <NavLink to="/admin/options" className={({ isActive }) => cx(isActive && 'on')}>Categories and locations</NavLink>
-          <NavLink to="/admin/admins" className={({ isActive }) => cx(isActive && 'on')}>Admins</NavLink>
-        </nav>
-        <div className="who">
-          <div className="admin-rail-person">
-            <div className="avatar b" aria-hidden="true">{initial(user?.displayName || 'Admin')}</div>
-            <div className="admin-rail-identity">
-              <b title={user?.displayName}>{user?.displayName || 'Admin'}</b>
-              <small>Admin</small>
-            </div>
-          </div>
-          <button type="button" className="btn line sm" onClick={() => setConfirmingLogout(true)}>Log out</button>
+    <>
+      <DashboardLayout admin user={user} stats={stats} onLogout={() => setConfirmingLogout(true)}>
+        <div className="adm-body">
+          <Outlet context={{ refreshStats }} />
         </div>
-      </aside>
-      <Outlet context={{ refreshStats }} />
+      </DashboardLayout>
       {confirmingLogout && (
         <ConfirmDialog
           title="Log out?" message="You will need to log in again to access the admin dashboard." confirmLabel="Log out"
           danger={false} onClose={() => setConfirmingLogout(false)} onConfirm={logout}
         />
       )}
-    </div>
+    </>
   );
 }
