@@ -67,18 +67,6 @@ export default function DashboardLayout({ user, admin = false, stats, onLogout, 
 
   return (
     <div className={cx('dashboard-layout', admin && 'admin-dashboard', collapsed && 'sidebar-collapsed')}>
-      <div className="dashboard-mobile-bar">
-        <Wordmark to={home} tone="reversed" />
-        <button
-          type="button"
-          className="dashboard-sidebar-toggle mobile-toggle"
-          aria-expanded={mobileOpen}
-          aria-controls="dashboard-sidebar"
-          onClick={() => setMobileOpen((open) => !open)}
-        >
-          {mobileOpen ? 'Close menu' : 'Menu'}
-        </button>
-      </div>
       {mobileOpen && (
         <button
           type="button"
@@ -95,12 +83,22 @@ export default function DashboardLayout({ user, admin = false, stats, onLogout, 
           <Wordmark to={home} tone="reversed" />
           <button
             type="button"
-            className="dashboard-sidebar-toggle collapse-toggle"
+            className="dashboard-sidebar-toggle desktop-collapse-toggle"
             aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             aria-expanded={!collapsed}
             onClick={() => setCollapsed((value) => !value)}
           >
             <span aria-hidden="true">{collapsed ? '»' : '«'}</span>
+          </button>
+          <button
+            type="button"
+            className="dashboard-sidebar-toggle mobile-expand-toggle"
+            aria-label={mobileOpen ? 'Collapse sidebar' : 'Expand sidebar'}
+            aria-expanded={mobileOpen}
+            aria-controls="dashboard-sidebar"
+            onClick={() => setMobileOpen((open) => !open)}
+          >
+            <span aria-hidden="true">{mobileOpen ? '«' : '»'}</span>
           </button>
         </div>
         <nav aria-label={`${admin ? 'Admin' : user?.role === 'brand' ? 'Brand' : 'Creator'} navigation`}>
