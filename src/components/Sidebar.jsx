@@ -57,14 +57,18 @@ export default function Sidebar({
     const closeOnEscape = (event) => {
       if (event.key === 'Escape') onClose();
     };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     window.addEventListener('keydown', closeOnEscape);
-    return () => window.removeEventListener('keydown', closeOnEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', closeOnEscape);
+    };
   }, [open, onClose]);
 
   return (
     <>
       <header className="dashboard-mobile-bar">
-        <Wordmark to={home} tone="reversed" />
         <button
           type="button"
           className="dashboard-mobile-menu-toggle"
@@ -75,6 +79,15 @@ export default function Sidebar({
         >
           <MenuIcon />
         </button>
+        <Wordmark to={home} tone="reversed" />
+        <div
+          className={cx('avatar', 'dashboard-mobile-avatar', admin || user?.role === 'brand' ? 'b' : 'c')}
+          role="img"
+          aria-label={`Signed in as ${displayName}`}
+          title={displayName}
+        >
+          {initial(displayName)}
+        </div>
       </header>
       {open && (
         <button
@@ -86,7 +99,7 @@ export default function Sidebar({
       )}
       <aside
         id="dashboard-sidebar"
-        className={cx('rail dashboard-sidebar', open && 'open')}
+        className={cx('dashboard-sidebar', open && 'open')}
         aria-label={`${admin ? 'Admin' : user?.role === 'brand' ? 'Brand' : 'Creator'} navigation`}
       >
         <div className="dashboard-sidebar-heading">
