@@ -8,6 +8,7 @@ export function AuthProvider({ children }) {
   const [profile, setProfile] = useState(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileError, setProfileError] = useState('');
+  const [authError, setAuthError] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const refreshProfile = useCallback(async () => {
@@ -28,17 +29,23 @@ export function AuthProvider({ children }) {
   }, []);
 
   const refresh = useCallback(async () => {
+    setLoading(true);
+    setAuthError(null);
     try {
       const { user: u } = await api('/auth/me');
       setUser(u);
+      setAuthError(null);
       if (u.role === 'brand' || u.role === 'creator') await refreshProfile();
       else setProfile(null);
       return u;
     } catch (err) {
-      // 401 (no session) and 403 (deactivated, rejected) both mean "not signed in".
-      if (!(err instanceof ApiError) || ![0, 401, 403].includes(err.status)) console.error(err);
-      setUser(null);
-      setProfile(null);
+      if (err instanceof ApiError && err.status === 401) {
+        setUser(null);
+        setProfile(null);
+        return null;
+      }
+      setAuthError(err instanceof Error ? err : new Error('Unable to verify your session.'));
+      console.error('Unable to verify the current session.', err);
       return null;
     } finally {
       setLoading(false);
@@ -52,6 +59,7 @@ export function AuthProvider({ children }) {
   const login = useCallback(async (email, password) => {
     const { user: u } = await api('/auth/login', { method: 'POST', body: { email, password } });
     setUser(u);
+    setAuthError(null);
     if (u.role === 'brand' || u.role === 'creator') await refreshProfile();
     else setProfile(null);
     return u;
@@ -64,12 +72,13 @@ export function AuthProvider({ children }) {
       setUser(null);
       setProfile(null);
       setProfileError('');
+      setAuthError(null);
     }
   }, []);
 
   const value = useMemo(() => ({
-    user, profile, profileLoading, profileError, loading, login, logout, refresh, refreshProfile, setUser, setProfile,
-  }), [user, profile, profileLoading, profileError, loading, login, logout, refresh, refreshProfile]);
+    user, profile, profileLoading, profileError, authError, loading, login, logout, refresh, refreshProfile, setUser, setProfile,
+  }), [user, profile, profileLoading, profileError, authError, loading, login, logout, refresh, refreshProfile]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 

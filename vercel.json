@@ -1,4 +1,12 @@
 {
+  "redirects": [
+    {
+      "source": "/:path*",
+      "has": [{ "type": "host", "value": "cloutlabs.name.ng" }],
+      "destination": "https://www.cloutlabs.name.ng/:path*",
+      "statusCode": 301
+    }
+  ],
   "rewrites": [
     { "source": "/api/:path*", "destination": "https://klout-server.onrender.com/api/:path*" },
     { "source": "/health", "destination": "https://klout-server.onrender.com/health" },

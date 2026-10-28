@@ -27,4 +27,6 @@ specificity. Before naming a new shared class, quickly check it isn't a real Tai
 ```bash
 npm run build   # outputs to dist/, deploy to Vercel (vercel.json handles SPA routing)
 ```
-Set `VITE_API_URL` (see `.env.example`) to your API's origin in production.
+Production API requests use the same-origin `/api` rewrite in `vercel.json`, so session cookies
+remain first-party on `www.cloutlabs.name.ng`. Do not set `VITE_API_URL` in the production
+deployment; the Vercel rewrite forwards API and health requests to the server.

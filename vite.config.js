@@ -2,9 +2,8 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
-// In development the API runs on :4000. Proxying /api keeps everything same-origin, so login
-// cookies work without any CORS or SameSite setup. In production the client talks to
-// VITE_API_URL (https://api.yourdomain.com) instead.
+// In development the API runs on :4000. Production uses the Vercel /api rewrite, keeping
+// authentication cookies first-party on the canonical frontend domain.
 const proxy = { '/api': 'http://localhost:4000', '/health': 'http://localhost:4000' };
 
 export default defineConfig({
