@@ -84,7 +84,7 @@ export default function BrandGigInterests() {
           {item.creator && (
             <div className="db-standing-facts">
               {item.creator.level && <LevelBadge level={item.creator.level} />}
-              {item.creator.score !== null && <span>Steeze Score: <strong>{item.creator.score}</strong></span>}
+              {item.creator.score !== null && <span>CloutLabs score: <strong>{item.creator.score}</strong></span>}
               <span>Completed gigs: <strong>{item.creator.completedGigs}</strong></span>
               {item.creator.averageRating !== null && <span>Average rating: <strong>{item.creator.averageRating.toFixed(1)} / 5</strong></span>}
             </div>

@@ -1,13 +1,22 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'motion/react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useGSAP } from '@gsap/react';
 import ProjectNav from '../components/ProjectNav.jsx';
 import { Wordmark } from '../components/ui.jsx';
 import HomeChatbot from '../components/HomeChatbot.jsx';
 import { warmUp } from '../api/client.js';
 import {
-  ABOUT, HOW_IT_WORKS, PROCESS_NODES, FAQ_INTRO, FAQS, CONTACT_EMAIL,
+  ABOUT, HOW_IT_WORKS, OFFERS, LANDING_HERO, LANDING_PANELS, SEAM_CARDS, LANDING_COPY, FAQ_INTRO, FAQS,
   FOOTER_DESCRIPTION, FOOTER_LINKS, FOOTER_SOCIALS,
 } from '../lib/content.js';
+import OfferDeck from '../components/OfferDeck.jsx';
+
+gsap.registerPlugin(ScrollTrigger, useGSAP);
+
+const MotionLink = motion(Link);
 
 function SocialIcon({ name }) {
   if (name === 'instagram') {
@@ -23,6 +32,7 @@ function SocialIcon({ name }) {
 
 export default function Landing() {
   const [openFaq, setOpenFaq] = useState(null);
+  const landingRef = useRef(null);
   const [useStaticHero, setUseStaticHero] = useState(() => (
     typeof window !== 'undefined'
     && (window.matchMedia('(max-width: 760px)').matches
@@ -32,6 +42,105 @@ export default function Landing() {
   useEffect(() => {
     warmUp();
   }, []);
+
+  useGSAP(() => {
+    const media = gsap.matchMedia();
+    let active = true;
+
+    media.add('(prefers-reduced-motion: reduce)', () => {});
+    media.add('(prefers-reduced-motion: no-preference)', () => {
+      const intro = gsap.timeline();
+      intro
+        .from('.landing-hero h1 .hero-word', {
+          y: 22,
+          autoAlpha: 0,
+          stagger: 0.045,
+          duration: 0.58,
+          ease: 'power2.out',
+        })
+        .from('.landing-hero-copy > p', {
+          y: 16,
+          autoAlpha: 0,
+          duration: 0.5,
+          ease: 'power2.out',
+        }, '-=0.2')
+        .from('.landing-side', {
+          y: 24,
+          autoAlpha: 0,
+          stagger: 0.12,
+          duration: 0.48,
+          ease: 'power2.out',
+        }, '-=0.12')
+        .fromTo('.sample-brand', {
+          y: 16,
+          scale: 0.9,
+          rotation: -9,
+          autoAlpha: 0,
+        }, {
+          y: 0,
+          scale: 1,
+          rotation: -3,
+          autoAlpha: 1,
+          duration: 0.42,
+          ease: 'back.out(1.7)',
+        }, '-=0.05')
+        .fromTo('.sample-creator', {
+          y: 16,
+          scale: 0.9,
+          rotation: 9,
+          autoAlpha: 0,
+        }, {
+          y: 0,
+          scale: 1,
+          rotation: 3,
+          autoAlpha: 1,
+          duration: 0.42,
+          ease: 'back.out(1.7)',
+        }, '<')
+        .fromTo('.match-badge', {
+          scale: 0.55,
+          autoAlpha: 0,
+        }, {
+          scale: 1,
+          autoAlpha: 1,
+          duration: 0.32,
+          ease: 'back.out(1.8)',
+        }, '-=0.18')
+        .fromTo('.match-arc', { autoAlpha: 0 }, {
+          autoAlpha: 1,
+          duration: 0.38,
+        }, '<');
+
+      gsap.timeline({
+        scrollTrigger: {
+          trigger: '.landing-thread',
+          start: 'top 75%',
+          once: true,
+        },
+      })
+        .fromTo('.thread-line', { scaleX: 0 }, {
+          scaleX: 1,
+          duration: 0.8,
+          ease: 'power2.out',
+        })
+        .from('.thread-number', {
+          scale: 0.55,
+          autoAlpha: 0,
+          stagger: 0.12,
+          duration: 0.35,
+          ease: 'back.out(1.7)',
+        }, '-=0.25');
+    });
+
+    document.fonts.ready.then(() => {
+      if (active) ScrollTrigger.refresh();
+    });
+
+    return () => {
+      active = false;
+      media.revert();
+    };
+  }, { scope: landingRef });
 
   useEffect(() => {
     const mobile = window.matchMedia('(max-width: 760px)');
@@ -47,14 +156,20 @@ export default function Landing() {
   }, []);
 
   return (
-    <div className="landing-page">
+    <div className="landing-page" ref={landingRef}>
       <ProjectNav landing />
 
       <main>
         <section className="landing-hero">
           <div className="landing-hero-copy">
-            <h1>Brands and creators, together in one place.</h1>
-            <p>Register your brand or your channel. The CloutLabs team checks every profile before it goes live, then shares collaboration opportunities with verified members.</p>
+            <h1>
+              {LANDING_HERO.title.split(' ').map((word, index, words) => (
+                <span className="hero-word" key={`${word}-${index}`}>
+                  {word}{index < words.length - 1 ? ' ' : ''}
+                </span>
+              ))}
+            </h1>
+            <p>{LANDING_HERO.description}</p>
           </div>
           <div className="landing-hero-media" aria-hidden="true">
             {useStaticHero ? (
@@ -74,70 +189,57 @@ export default function Landing() {
         </section>
 
         <section className="landing-pair" id="register" aria-label="Choose how you want to join">
-          <article className="landing-side brand">
-            <div>
-              <h2>I run a brand or business</h2>
-              <p>Tell us what you sell, where you operate and the kind of creators you want to work with.</p>
-              <Link className="btn white" to="/register/brand">Register your brand</Link>
-            </div>
-          </article>
-
-          <article className="landing-side creator">
-            <div>
-              <h2>I create content</h2>
-              <p>Share your niche, your platforms and your audience so brands can see who you are.</p>
-              <Link className="btn white" to="/register/creator">Register as a creator</Link>
-            </div>
-          </article>
+          {LANDING_PANELS.map((panel) => (
+            <article className={`landing-side ${panel.kind}`} key={panel.kind}>
+              <motion.div whileHover={{ y: -4 }} whileTap={{ scale: 0.99 }}>
+                <h2>{panel.title}</h2>
+                <p>{panel.text}</p>
+                <p className="panel-offers">{panel.offers}</p>
+                <MotionLink className="btn white" to={panel.to} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                  {panel.cta}
+                </MotionLink>
+              </motion.div>
+            </article>
+          ))}
 
           <div className="seam-cards" aria-hidden="true">
             <svg className="match-arc" viewBox="0 0 500 80" preserveAspectRatio="none">
               <path d="M4 65 C125 5 375 5 496 65" />
             </svg>
-            <div className="sample sample-brand">
-              <div className="sample-row">
-                <div className="avatar b">A</div>
-                <div><strong>Adaeze Skin Lab</strong><small>Beauty and personal care</small></div>
-              </div>
-              <div className="sample-facts">
-                <span><b>Location</b>&nbsp;Lagos, Nigeria</span>
-                <span><b>Looking for</b>&nbsp;Product reviews, giveaways</span>
-              </div>
-            </div>
-            <div className="sample sample-creator">
-              <div className="sample-row">
-                <div className="avatar c">T</div>
-                <div><strong>Tomi Cooks</strong><small>Food and home cooking</small></div>
-              </div>
-              <div className="sample-facts">
-                <span><b>Location</b>&nbsp;Accra, Ghana</span>
-                <span><b>TikTok</b>&nbsp;48,200 followers</span>
-              </div>
-            </div>
+            {SEAM_CARDS.map((card) => (
+              <motion.div className="sample-interaction" whileHover={{ y: -5 }} whileTap={{ scale: 0.98 }} key={card.kind}>
+                <div className={`sample sample-${card.kind}`}>
+                  <div className="sample-row">
+                    <div className={`avatar ${card.kind === 'brand' ? 'b' : 'c'}`}>{card.name[0]}</div>
+                    <div><strong>{card.name}</strong><small>{card.description}</small></div>
+                  </div>
+                  <div className="sample-facts"><span>{card.fact}</span></div>
+                </div>
+              </motion.div>
+            ))}
             <div className="match-badge">✓</div>
           </div>
         </section>
 
         <section className="landing-about" id="about">
-          <div className="landing-about-copy">
-            <h2>What CloutLabs does</h2>
+          <motion.div
+            className="landing-about-copy"
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.55, ease: 'easeOut' }}
+          >
+            <h2>{LANDING_COPY.aboutHeading}</h2>
             <div>
               {ABOUT.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
             </div>
-          </div>
-          <div className="process-diagram" aria-hidden="true">
-            {PROCESS_NODES.map((node) => (
-              <div className="process-node" key={node.title}>
-                <div className={`process-icon ${node.tone}`}>{node.symbol}</div>
-                <strong>{node.title}</strong>
-                <span>{node.text}</span>
-              </div>
-            ))}
-          </div>
+          </motion.div>
+          <OfferDeck offers={OFFERS} />
         </section>
 
         <section className="landing-thread">
-          <h3>How joining works</h3>
+          <h3>{LANDING_COPY.stepsHeading}</h3>
+          <div className="thread-line" aria-hidden="true" />
           <ol className="thread-list">
             {HOW_IT_WORKS.map((step, index) => (
               <li className="thread-step" key={step.title}>
@@ -190,21 +292,37 @@ export default function Landing() {
 
         <section className="landing-contact" id="contact" aria-labelledby="landing-contact-title">
           <div>
-            <h2 id="landing-contact-title">Get in touch</h2>
-            <p>Have a question about joining CloutLabs or finding the right collaboration? Our team is happy to help.</p>
+            <h2 id="landing-contact-title">{LANDING_COPY.contactHeading}</h2>
+            <p>{LANDING_COPY.contactDescription}</p>
           </div>
-          <a className="btn white" href={`mailto:${CONTACT_EMAIL}`}>Contact us</a>
+          <MotionLink className="btn white" to="/register/brand" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+            {LANDING_COPY.contactCta}
+          </MotionLink>
         </section>
       </main>
 
       <footer className="site">
         <div className="footer-main">
-          <div className="footer-brand">
-            <Wordmark tone="reversed" />
+          <motion.div
+            className="footer-brand"
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.55, ease: 'easeOut' }}
+          >
+            <Wordmark tone="reversed" brandName={LANDING_COPY.footerName} />
             <p>{FOOTER_DESCRIPTION}</p>
-          </div>
+          </motion.div>
           {Object.entries(FOOTER_LINKS).map(([title, links]) => (
-            <nav className="footer-links" aria-label={title} key={title}>
+            <motion.nav
+              className="footer-links"
+              aria-label={title}
+              key={title}
+              initial={{ opacity: 0, y: 18 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, amount: 0.3 }}
+              transition={{ duration: 0.55, ease: 'easeOut' }}
+            >
               <p className="footer-title">{title}</p>
               <ul>
                 {links.map((link) => (
@@ -213,9 +331,15 @@ export default function Landing() {
                   </li>
                 ))}
               </ul>
-            </nav>
+            </motion.nav>
           ))}
-          <div className="footer-follow">
+          <motion.div
+            className="footer-follow"
+            initial={{ opacity: 0, y: 18 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.55, ease: 'easeOut' }}
+          >
             <p className="footer-title">Follow</p>
             <ul className="footer-socials" aria-label="Social media">
               {FOOTER_SOCIALS.map((social) => (
@@ -226,11 +350,11 @@ export default function Landing() {
                 </li>
               ))}
             </ul>
-          </div>
+          </motion.div>
         </div>
         <div className="footer-bottom">
-          <span>&copy; {new Date().getFullYear()} CloutLabs</span>
-          <span>Lagos, Nairobi, Accra, Johannesburg</span>
+          <span>&copy; {new Date().getFullYear()} {LANDING_COPY.footerName}</span>
+          <span>{LANDING_COPY.footerBottom}</span>
         </div>
       </footer>
       <HomeChatbot />

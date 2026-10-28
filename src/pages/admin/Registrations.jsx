@@ -87,7 +87,7 @@ function CreatorStandingPanel({ userId, onChanged }) {
 
   return (
     <section className="standing-admin-panel" aria-labelledby="standing-admin-heading">
-      <h3 id="standing-admin-heading">Steeze Score and level</h3>
+      <h3 id="standing-admin-heading">CloutLabs score and level</h3>
       {error && <div className="form-error" role="alert">{error}<button className="link ml-2" onClick={load}>Retry</button></div>}
       {!data && !error && <p className="muted">Loading creator standing…</p>}
       {data && (
@@ -410,7 +410,7 @@ export default function Registrations() {
                           <div className="nm">{!u.seenByAdmin && <span className="newdot" title="New" />}{u.displayName}</div>
                           <div className="sub">{u.email}</div>
                           {u.role === 'creator' && u.standingScore !== null && u.standingScore !== undefined && (
-                            <div className="sub">{u.standingLevel || 'Intern'} · Steeze Score {u.standingScore}</div>
+                            <div className="sub">{u.standingLevel || 'Intern'} · CloutLabs score {u.standingScore}</div>
                           )}
                         </button>
                       </td>

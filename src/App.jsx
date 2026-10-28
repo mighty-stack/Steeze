@@ -1,10 +1,10 @@
+import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/Auth.jsx';
 import { ToastProvider } from './context/Toast.jsx';
-import { SlowBanner } from './components/ui.jsx';
+import { SlowBanner, Splash } from './components/ui.jsx';
 import { RequireRole, RedirectIfLoggedIn } from './components/Guards.jsx';
 
-import Landing from './pages/Landing.jsx';
 import Register from './pages/Register.jsx';
 import Registered from './pages/Registered.jsx';
 import Login from './pages/Login.jsx';
@@ -31,6 +31,8 @@ import AdminOpportunityInterests from './pages/admin/OpportunityInterests.jsx';
 import AdminAdmins from './pages/admin/Admins.jsx';
 import AdminAccessCodes from './pages/admin/AccessCodes.jsx';
 
+const Landing = lazy(() => import('./pages/Landing.jsx'));
+
 export default function App() {
   return (
     <BrowserRouter>
@@ -38,7 +40,7 @@ export default function App() {
         <AuthProvider>
           <SlowBanner />
           <Routes>
-            <Route path="/" element={<Landing />} />
+            <Route path="/" element={<Suspense fallback={<Splash />}><Landing /></Suspense>} />
             <Route path="/verify-email" element={<VerifyEmail />} />
 
             <Route element={<RedirectIfLoggedIn />}>

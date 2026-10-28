@@ -5,15 +5,21 @@ import PendingNotice from '../components/PendingNotice.jsx';
 
 export default function Registered() {
   const { state } = useLocation();
-  if (state?.role === 'creator' && state.emailSent !== false) {
+  if (state?.role === 'creator') {
     return (
       <AuthLayout theme="creator" heading="Application received! 🎉">
         <div className="formwrap">
           <ApplicationReceived firstName={state.firstName} />
-          <p className="verification-reminder">
-            To activate your account, verify your email using the link we sent to <strong>{state.email}</strong>.
-          </p>
-          <p><Link className="link" to="/resend-verification" state={{ email: state.email }}>Resend verification email</Link></p>
+          {state.emailSent === false ? (
+            <div className="form-error mt-4" role="alert">
+              We received your application, but couldn't send the verification email. Use the link below to request another.
+            </div>
+          ) : (
+            <p className="verification-reminder">
+              To activate your account, verify your email using the link we sent to <strong>{state.email}</strong>.
+            </p>
+          )}
+          <p className="mt-3"><Link className="link" to="/resend-verification" state={{ email: state.email }}>Resend verification email</Link></p>
         </div>
       </AuthLayout>
     );

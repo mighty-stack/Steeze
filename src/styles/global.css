@@ -2177,8 +2177,15 @@
       @apply min-w-0;
     }
     .landing-page .landing-hero h1 {
-      @apply max-w-[640px] text-[68px] leading-[1.02] tracking-tight font-bold;
-      font-stretch: 92%;
+      @apply max-w-[640px] text-[62px] leading-[1.12] tracking-normal font-bold;
+      font-stretch: 96%;
+    }
+    .landing-page .landing-hero h1 .hero-word {
+      display: inline-block;
+      margin-right: 0.18em;
+    }
+    .landing-page .landing-hero h1 .hero-word:last-child {
+      margin-right: 0;
     }
     .landing-page .landing-hero p {
       @apply mt-6 max-w-[530px] text-lg leading-relaxed text-ink-soft;
@@ -2209,11 +2216,11 @@
       @apply relative flex flex-col justify-between px-12 pt-11 pb-10;
       min-height: 410px;
     }
-    .landing-page .landing-side.brand {
+    .landing-page .landing-side.creator {
       @apply bg-blue text-white;
       border-radius: var(--radius-lg) 0 0 var(--radius-lg);
     }
-    .landing-page .landing-side.creator {
+    .landing-page .landing-side.brand {
       @apply bg-gold text-white;
       border-radius: 0 var(--radius-lg) var(--radius-lg) 0;
     }
@@ -2229,6 +2236,9 @@
     }
     .landing-page .landing-side.creator p {
       color: #dce0ff;
+    }
+    .landing-page .landing-side .panel-offers {
+      @apply text-sm font-medium;
     }
 
     .landing-page .seam-cards {
@@ -2250,6 +2260,10 @@
       @apply relative z-[1] w-[230px] rounded-2xl bg-white px-4 py-4 text-ink;
       min-height: 132px;
       box-shadow: 0 16px 28px rgba(16, 21, 40, 0.18);
+    }
+    .landing-page .sample-interaction {
+      position: relative;
+      z-index: 1;
     }
     .landing-page .sample-brand {
       transform: rotate(-3deg);
@@ -2299,37 +2313,74 @@
     .landing-page .landing-about-copy p + p {
       @apply mt-4;
     }
-    .landing-page .process-diagram {
-      @apply relative grid grid-cols-3 gap-4;
+    .landing-page .offer-deck {
+      @apply relative mx-auto min-w-0;
+      width: min(100%, 390px);
     }
-    .landing-page .process-diagram::before {
-      @apply absolute left-[16%] right-[16%] top-8 border-t-2 border-dashed border-line;
-      content: '';
+    .landing-page .offer-stage {
+      @apply relative mx-auto overflow-hidden;
+      width: min(100%, 390px);
+      height: 568px;
     }
-    .landing-page .process-node {
-      @apply relative z-[1] flex flex-col items-center text-center;
+    .landing-page .offer-card {
+      @apply absolute left-0 top-0 flex flex-col overflow-hidden rounded-[24px] bg-white;
+      width: 100%;
+      height: 540px;
+      touch-action: pan-y;
+      user-select: none;
+      transform-origin: top center;
+      box-shadow: 0 14px 34px color-mix(in srgb, var(--color-ink) 18%, transparent);
     }
-    .landing-page .process-icon {
-      @apply mb-3 grid h-16 w-16 place-items-center rounded-full text-sm font-bold;
+    .landing-page .offer-photo {
+      @apply relative w-full flex-none overflow-hidden;
+      aspect-ratio: 4 / 3;
     }
-    .landing-page .process-icon.brand {
-      @apply bg-blue-tint text-blue-deep;
+    .landing-page .offer-photo img {
+      @apply absolute inset-0 h-full w-full object-cover;
+      pointer-events: none;
     }
-    .landing-page .process-icon.clout {
-      @apply bg-ink text-white;
+    .landing-page .offer-photo-fallback {
+      @apply grid h-full w-full place-items-center text-6xl font-bold text-white;
+      background: linear-gradient(135deg, var(--color-blue-deep), var(--color-blue));
     }
-    .landing-page .process-icon.verified {
-      @apply bg-gold-tint text-gold-ink text-lg;
+    .landing-page .offer-copy {
+      @apply flex min-h-0 flex-1 flex-col items-start px-5 py-4;
     }
-    .landing-page .process-node strong {
-      @apply text-sm font-bold;
+    .landing-page .offer-tag {
+      @apply rounded-full bg-blue-tint px-3 py-1 text-xs font-semibold text-blue-deep;
     }
-    .landing-page .process-node > span {
-      @apply mt-2 text-[13px] text-ink-soft;
+    .landing-page .offer-title {
+      @apply mt-2 text-xl font-bold leading-tight tracking-tight text-ink;
+    }
+    .landing-page .offer-description {
+      @apply mt-1.5 text-sm leading-[1.35] text-ink-soft;
+      display: -webkit-box;
+      overflow: hidden;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 4;
+    }
+    .landing-page .offer-status {
+      @apply mt-auto rounded-full px-3 py-1 text-xs font-semibold;
+    }
+    .landing-page .offer-status.live {
+      @apply bg-ok-bg text-ok-fg;
+    }
+    .landing-page .offer-status.soon {
+      @apply bg-wait-bg text-wait-fg;
+    }
+    .landing-page .offer-controls {
+      @apply flex flex-wrap items-center justify-center gap-2;
+      margin-top: 4px;
+    }
+    .landing-page .offer-control {
+      @apply rounded-full border border-line bg-white px-3 py-2 text-sm font-semibold text-ink transition-[background-color,color,transform] duration-150 hover:bg-ink hover:text-white active:translate-y-px;
+    }
+    .landing-page .offer-position {
+      @apply min-w-12 text-center text-sm font-semibold text-ink-soft;
     }
 
     .landing-page .landing-thread {
-      @apply mx-auto mt-[82px] pb-[100px];
+      @apply relative mx-auto mt-[82px] pb-[100px];
       width: min(1176px, calc(100% - 48px));
     }
     .landing-page .landing-thread h3 {
@@ -2339,9 +2390,10 @@
     .landing-page .thread-list {
       @apply relative grid list-none grid-cols-3 gap-8;
     }
-    .landing-page .thread-list::before {
-      @apply absolute left-[16px] right-[16px] top-[21px] border-t-2 border-line;
-      content: '';
+    .landing-page .thread-line {
+      @apply absolute left-4 right-4 border-t-2 border-line;
+      top: 91px;
+      transform-origin: left center;
     }
     .landing-page .thread-step {
       @apply relative z-[1] flex flex-col items-start;
@@ -2494,7 +2546,7 @@
         width: calc(100% - 22px);
       }
       .landing-page .landing-hero h1 {
-        @apply max-w-[360px] text-[38px] leading-[1.04];
+        @apply max-w-[360px] text-[36px] leading-[1.14] tracking-normal;
       }
       .landing-page .landing-hero p {
         @apply mt-3 max-w-[365px] text-[15px] leading-relaxed;
@@ -2516,11 +2568,11 @@
         @apply px-7 pt-7 pb-8;
         min-height: 0;
       }
-      .landing-page .landing-side.brand {
+      .landing-page .landing-side.creator {
         min-height: 234px;
         border-radius: var(--radius-lg) var(--radius-lg) 0 0;
       }
-      .landing-page .landing-side.creator {
+      .landing-page .landing-side.brand {
         min-height: 214px;
         border-radius: 0 0 var(--radius-lg) var(--radius-lg);
       }
@@ -2529,6 +2581,9 @@
       }
       .landing-page .landing-side p {
         @apply mt-2 mb-3 max-w-[270px] text-[13px] leading-relaxed;
+      }
+      .landing-page .landing-side .panel-offers {
+        @apply text-[12px];
       }
       .landing-page .landing-side .btn {
         @apply h-10 px-4 text-[13px];
@@ -2578,18 +2633,27 @@
       .landing-page .landing-about-copy p + p {
         @apply mt-3;
       }
-      .landing-page .process-diagram {
-        @apply grid-cols-1 gap-5 py-1;
+      .landing-page .offer-deck {
+        width: min(100%, 320px);
       }
-      .landing-page .process-diagram::before {
-        @apply bottom-[12%] left-1/2 right-auto top-[12%] border-l-2 border-t-0;
-        width: 0;
+      .landing-page .offer-stage {
+        width: 100%;
+        height: 568px;
       }
-      .landing-page .process-icon {
-        @apply mb-2 h-12 w-12;
+      .landing-page .offer-card {
+        height: 540px;
       }
-      .landing-page .process-node > span {
-        @apply mt-1 text-xs;
+      .landing-page .offer-copy {
+        @apply px-4 py-3.5;
+      }
+      .landing-page .offer-title {
+        @apply text-lg;
+      }
+      .landing-page .offer-description {
+        @apply text-[13px];
+      }
+      .landing-page .offer-control {
+        @apply px-2.5 py-2 text-[13px];
       }
       .landing-page .landing-thread {
         @apply mt-10 pb-10;
@@ -2601,7 +2665,7 @@
       .landing-page .thread-list {
         @apply grid-cols-1 gap-5;
       }
-      .landing-page .thread-list::before {
+      .landing-page .thread-line {
         @apply hidden;
       }
       .landing-page .thread-number {
