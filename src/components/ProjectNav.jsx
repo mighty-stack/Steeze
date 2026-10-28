@@ -72,7 +72,7 @@ export default function ProjectNav({ user, unseen = 0, onLogout, landing = false
             </NavLink>
             <NavLink to="/app/profile" onClick={() => setNavOpen(false)} className={({ isActive }) => cx(isActive && 'active')}>Profile</NavLink>
             {user.role === 'creator' && <NavLink to="/app/score" onClick={() => setNavOpen(false)} className={({ isActive }) => cx(isActive && 'active')}>My Score</NavLink>}
-            <NavLink to="/app/about" onClick={() => setNavOpen(false)} className={({ isActive }) => cx(isActive && 'active')}>About Clout</NavLink>
+            <NavLink to="/app/about" onClick={() => setNavOpen(false)} className={({ isActive }) => cx(isActive && 'active')}>About CloutLabs</NavLink>
           </>
         )}
       </nav>

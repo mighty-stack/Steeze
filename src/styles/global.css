@@ -700,6 +700,19 @@
   .notice .row-actions {
     @apply mt-7 flex gap-3 flex-wrap;
   }
+  .application-received {
+    min-width: 0;
+    max-width: 100%;
+  }
+  .application-received h2 {
+    @apply text-2xl tracking-tight leading-tight font-bold;
+    overflow-wrap: anywhere;
+  }
+  .application-received p,
+  .verification-reminder {
+    @apply mt-3 text-ink-soft;
+    overflow-wrap: anywhere;
+  }
 
   /* ---------- toasts / banners / modal ---------- */
   .toasts {

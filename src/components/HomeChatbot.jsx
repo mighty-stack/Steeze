@@ -1,14 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { answerCloutQuestion, CHAT_SUGGESTIONS } from '../lib/chatbot.js';
+import { WHATSAPP_URL } from '../lib/contact.js';
 
 const GREETING = {
   id: 'greeting',
   from: 'assistant',
-  text: 'Hi! I’m the Clout guide. Ask me about joining, verification, your profile, or opportunities.',
+  text: 'Hi! I’m the CloutLabs guide. Ask me about joining, verification, your profile, or opportunities.',
 };
-
-const WHATSAPP_URL = 'https://wa.me/2348168053286?text=Hi%20Clout%2C%20I%20have%20a%20question.';
 
 export default function HomeChatbot() {
   const [open, setOpen] = useState(false);
@@ -50,7 +49,7 @@ export default function HomeChatbot() {
         <section id="home-chat-panel" className="home-chat-panel" role="dialog" aria-labelledby="home-chat-title">
           <header className="home-chat-header">
             <div>
-              <strong id="home-chat-title">Clout guide</strong>
+              <strong id="home-chat-title">CloutLabs guide</strong>
               <span>Help with the platform</span>
             </div>
             <button type="button" className="home-chat-close" onClick={() => setOpen(false)} aria-label="Close chat">
@@ -83,7 +82,7 @@ export default function HomeChatbot() {
           </div>
 
           <form className="home-chat-form" onSubmit={submit}>
-            <label className="sr-only" htmlFor="home-chat-question">Ask the Clout guide</label>
+            <label className="sr-only" htmlFor="home-chat-question">Ask the CloutLabs guide</label>
             <input
               id="home-chat-question"
               ref={inputRef}
@@ -114,7 +113,7 @@ export default function HomeChatbot() {
         onClick={() => setOpen((current) => !current)}
       >
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11.5a7.5 7.5 0 0 1-8 7.5 8.7 8.7 0 0 1-3.4-.7L4 20l1.3-3.7A7.2 7.2 0 0 1 4 12c0-4.1 3.6-7.5 8-7.5s8 3.1 8 7Z" /><path d="M8 12h.01M12 12h.01M16 12h.01" /></svg>
-        {open ? 'Close help' : 'Ask Clout'}
+        {open ? 'Close help' : 'Ask CloutLabs'}
       </button>
     </div>
   );

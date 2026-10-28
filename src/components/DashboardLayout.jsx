@@ -36,7 +36,7 @@ export default function DashboardLayout({ user, admin = false, stats, onLogout, 
       },
       { to: '/app/profile', label: 'Profile', icon: 'PR' },
       ...(user?.role === 'creator' ? [{ to: '/app/score', label: 'My Score', icon: 'SC' }] : []),
-      { to: '/app/about', label: 'About Clout', icon: 'AB' },
+      { to: '/app/about', label: 'About CloutLabs', icon: 'AB' },
     ];
 
   const closeMobileSidebar = useCallback(() => setMobileOpen(false), []);

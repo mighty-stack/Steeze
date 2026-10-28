@@ -1,6 +1,6 @@
 // Copy shown on the landing page and in the member dashboard. Edit here to change it everywhere.
 export const ABOUT = [
-  'Clout brings brands and content creators together. Members get a profile they control, and the team behind Clout uses it to see who is out there and who is a fit for a collaboration.',
+  'CloutLabs brings brands and content creators together. Members get a profile they control, and the team behind CloutLabs uses it to see who is out there and who is a fit for a collaboration.',
   'Email verification keeps member accounts tied to real addresses.',
 ];
 
@@ -17,7 +17,7 @@ export const PROCESS_NODES = [
 ];
 
 export const BENEFITS_INTRO = [
-  'Why brands and creators choose Clout',
+  'Why brands and creators choose CloutLabs',
   'A more considered way to meet, built around verified email addresses and clear expectations.',
 ];
 

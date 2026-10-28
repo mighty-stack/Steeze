@@ -4,7 +4,7 @@ import { subscribeSlow } from '../api/client.js';
 
 export const cx = (...c) => c.filter(Boolean).join(' ');
 
-export const Wordmark = ({ to = '/', tone = 'default', brandName = 'Clout' }) => {
+export const Wordmark = ({ to = '/', tone = 'default', brandName = 'CloutLabs' }) => {
   const assets = {
     default: '/clout-icon.png',
     reversed: '/clout-icon-reversed.png',

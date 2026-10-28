@@ -168,7 +168,15 @@ export default function Register({ kind }) {
       const body = { ...flow.payload(form.values), email: form.values.email.trim(), password: form.values.password };
       const result = await api(flow.endpoint, { method: 'POST', body });
       sessionStorage.removeItem(draftKey(kind));
-      navigate('/registered', { replace: true, state: { email: body.email, emailSent: result.emailSent } });
+      navigate('/registered', {
+        replace: true,
+        state: {
+          email: body.email,
+          emailSent: result.emailSent,
+          role: kind,
+          firstName: kind === 'creator' ? form.values.fullName.trim().split(/\s+/)[0] : '',
+        },
+      });
     } catch (err) {
       if (!(err instanceof ApiError)) throw err;
       const fields = err.fields || {};
@@ -199,7 +207,7 @@ export default function Register({ kind }) {
   return (
     <AuthLayout
       theme={flow.theme} heading={flow.heading} sub={flow.sub} aside={stepper}
-      footnote="Your details are only visible to you and the Clout team."
+      footnote="Your details are only visible to you and the CloutLabs team."
       top={<span>Already registered? <Link to="/login">Log in</Link></span>}
     >
       <div className="formwrap">

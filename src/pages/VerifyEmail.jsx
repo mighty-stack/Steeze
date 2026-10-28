@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import AuthLayout from '../components/AuthLayout.jsx';
+import ApplicationReceived from '../components/ApplicationReceived.jsx';
 import { Button } from '../components/ui.jsx';
 import { ApiError, api } from '../api/client.js';
 
@@ -10,6 +11,8 @@ export default function VerifyEmail() {
   const started = useRef(false);
   const [busy, setBusy] = useState(Boolean(token));
   const [done, setDone] = useState(false);
+  const [firstName, setFirstName] = useState('');
+  const [creatorVerified, setCreatorVerified] = useState(false);
   const [dead, setDead] = useState(!token);
   const [error, setError] = useState('');
 
@@ -18,7 +21,9 @@ export default function VerifyEmail() {
     setError('');
     setDead(false);
     try {
-      await api('/auth/verify-email', { method: 'POST', body: { token } });
+      const result = await api('/auth/verify-email', { method: 'POST', body: { token } });
+      setFirstName(result.firstName || '');
+      setCreatorVerified(result.role === 'creator');
       setDone(true);
     } catch (err) {
       if (err instanceof ApiError && err.code === 'INVALID_TOKEN') setDead(true);
@@ -40,11 +45,14 @@ export default function VerifyEmail() {
         {busy ? (
           <p className="lede" role="status">Verifying your email&hellip;</p>
         ) : done ? (
-          <>
-            <h2>Email verified</h2>
-            <p className="lede">Your account is ready. You can now log in.</p>
-            <div className="mt-6"><Link className="btn blue" to="/login">Log in</Link></div>
-          </>
+          creatorVerified ? (
+            <ApplicationReceived firstName={firstName} />
+          ) : (
+            <>
+              <h2>Email verified</h2>
+              <p className="lede">Your account is ready. You can now log in.</p>
+            </>
+          )
         ) : dead ? (
           <>
             <h2>This link has expired</h2>
@@ -59,6 +67,11 @@ export default function VerifyEmail() {
               <Button className="blue" onClick={verify}>Try again</Button>
               <Link className="link" to="/resend-verification">Request a new link</Link>
             </div>
+          </>
+        )}
+        {done && (
+          <>
+            <div className="mt-6"><Link className="btn blue" to="/login">Log in</Link></div>
           </>
         )}
       </div>

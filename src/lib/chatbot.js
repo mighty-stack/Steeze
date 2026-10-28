@@ -3,7 +3,7 @@ import { FAQS } from './content.js';
 const TOPICS = [
   {
     keywords: ['what is clout', 'about clout', 'what does clout do', 'platform', 'how does clout work'],
-    answer: 'Clout brings brands and content creators together. Members create a profile, verify their email, and can then view relevant collaboration opportunities.',
+    answer: 'CloutLabs brings brands and content creators together. Members create a profile, verify their email, and can then view relevant collaboration opportunities.',
   },
   {
     keywords: ['brand', 'business', 'company', 'business owner'],
@@ -25,7 +25,7 @@ const TOPICS = [
   },
   {
     keywords: ['free', 'cost', 'price', 'pricing', 'pay', 'payment', 'fee'],
-    answer: 'Registering and maintaining a Clout member profile is free.',
+    answer: 'Registering and maintaining a CloutLabs member profile is free.',
   },
   {
     keywords: ['access code', 'referral code', 'invite code'],
@@ -43,7 +43,7 @@ const TOPICS = [
   },
   {
     keywords: ['pending', 'review', 'approved', 'approval', 'how long'],
-    answer: 'You need to verify your email before you can log in. Clout checks member profiles before they go live; the site does not specify a review turnaround time.',
+    answer: 'You need to verify your email before you can log in. CloutLabs checks member profiles before they go live; the site does not specify a review turnaround time.',
   },
   {
     keywords: ['edit profile', 'update profile', 'change profile', 'profile details'],
@@ -67,7 +67,7 @@ const TOPICS = [
   },
   {
     keywords: ['shortlist', 'shortlisted', 'selected', 'not selected', 'declined'],
-    answer: 'You can see your own interest status in Opportunities. If you are shortlisted, the Clout team will contact you by email; there is no in-app messaging.',
+    answer: 'You can see your own interest status in Opportunities. If you are shortlisted, the CloutLabs team will contact you by email; there is no in-app messaging.',
     links: [{ label: 'Log in', to: '/login' }],
   },
   {
@@ -82,7 +82,7 @@ const TOPICS = [
       'in-app messaging',
       'messaging',
     ],
-    answer: 'There is no in-app messaging. If a member is shortlisted for an opportunity, the Clout team contacts them by email.',
+    answer: 'There is no in-app messaging. If a member is shortlisted for an opportunity, the CloutLabs team contacts them by email.',
   },
   {
     keywords: ['forgot password', 'reset password', 'password reset', 'cannot log in', 'can’t log in', "can't log in"],
@@ -99,7 +99,7 @@ const TOPICS = [
   },
   {
     keywords: ['contact', 'support', 'help', 'talk to someone', 'team'],
-    answer: 'For help that is not covered here, use the “Get in touch” section on this page to contact the Clout team.',
+    answer: 'For help that is not covered here, use the “Get in touch” section on this page to contact the CloutLabs team.',
     links: [{ label: 'Go to contact section', to: '#contact' }],
   },
 ];
@@ -151,8 +151,8 @@ export function answerCloutQuestion(question) {
   if (faq?.score && faq.score >= 2) return { answer: faq.item.answer };
 
   return {
-    answer: 'I can help with Clout accounts, email verification, profiles, and collaboration opportunities. I’m not sure about that one—please use the contact section and the Clout team can help.',
-    links: [{ label: 'Contact the Clout team', to: '#contact' }],
+    answer: 'I can help with CloutLabs accounts, email verification, profiles, and collaboration opportunities. I’m not sure about that one—please use the contact section and the CloutLabs team can help.',
+    links: [{ label: 'Contact the CloutLabs team', to: '#contact' }],
   };
 }
 

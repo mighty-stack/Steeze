@@ -28,7 +28,7 @@ export default function MemberLayout() {
         ? user?.role === 'brand' ? 'My opportunities' : 'Opportunities'
         : location.pathname.startsWith('/app/score')
           ? 'My Score'
-        : 'About Clout';
+        : 'About CloutLabs';
   return (
     <>
       <DashboardLayout user={user} onLogout={() => setConfirmingLogout(true)}>

@@ -54,7 +54,7 @@ export default function Landing() {
         <section className="landing-hero">
           <div className="landing-hero-copy">
             <h1>Brands and creators, together in one place.</h1>
-            <p>Register your brand or your channel. The Clout team checks every profile before it goes live, then shares collaboration opportunities with verified members.</p>
+            <p>Register your brand or your channel. The CloutLabs team checks every profile before it goes live, then shares collaboration opportunities with verified members.</p>
           </div>
           <div className="landing-hero-media" aria-hidden="true">
             {useStaticHero ? (
@@ -120,7 +120,7 @@ export default function Landing() {
 
         <section className="landing-about" id="about">
           <div className="landing-about-copy">
-            <h2>What Clout does</h2>
+            <h2>What CloutLabs does</h2>
             <div>
               {ABOUT.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
             </div>
@@ -191,7 +191,7 @@ export default function Landing() {
         <section className="landing-contact" id="contact" aria-labelledby="landing-contact-title">
           <div>
             <h2 id="landing-contact-title">Get in touch</h2>
-            <p>Have a question about joining Clout or finding the right collaboration? Our team is happy to help.</p>
+            <p>Have a question about joining CloutLabs or finding the right collaboration? Our team is happy to help.</p>
           </div>
           <a className="btn white" href={`mailto:${CONTACT_EMAIL}`}>Contact us</a>
         </section>
@@ -229,7 +229,7 @@ export default function Landing() {
           </div>
         </div>
         <div className="footer-bottom">
-          <span>&copy; {new Date().getFullYear()} Clout</span>
+          <span>&copy; {new Date().getFullYear()} CloutLabs</span>
           <span>Lagos, Nairobi, Accra, Johannesburg</span>
         </div>
       </footer>

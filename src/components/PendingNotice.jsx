@@ -14,11 +14,11 @@ const COPY = {
   },
   ACCOUNT_REJECTED: {
     tone: 'bad', icon: '!', title: 'Registration not approved',
-    body: 'The Clout team could not approve this registration.',
+    body: 'The CloutLabs team could not approve this registration.',
   },
   ACCOUNT_DEACTIVATED: {
     tone: 'off', icon: '\u2013', title: 'Account deactivated',
-    body: 'This account has been deactivated. If you think this is a mistake, contact the Clout team.',
+    body: 'This account has been deactivated. If you think this is a mistake, contact the CloutLabs team.',
   },
 };
 
