@@ -16,6 +16,8 @@ export function useAdminOptions() {
       const grouped = { category: [], niche: [], location: [], collabInterest: [] };
       const rawGrouped = { category: [], niche: [], location: [], collabInterest: [] };
       for (const o of items) {
+        grouped[o.type] ??= [];
+        rawGrouped[o.type] ??= [];
         grouped[o.type].push({ id: o.id, label: o.active ? o.label : `${o.label} (inactive)` });
         rawGrouped[o.type].push(o);
       }
