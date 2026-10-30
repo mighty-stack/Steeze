@@ -110,9 +110,13 @@ export default function Overview() {
 
   useEffect(() => { load(); }, [load]);
   useEffect(() => {
-    const onFocus = () => { if (!document.hidden) load(); };
-    window.addEventListener('focus', onFocus);
-    return () => window.removeEventListener('focus', onFocus);
+    const refreshWhenVisible = () => { if (!document.hidden) load(); };
+    const interval = window.setInterval(refreshWhenVisible, 30_000);
+    window.addEventListener('focus', refreshWhenVisible);
+    return () => {
+      window.clearInterval(interval);
+      window.removeEventListener('focus', refreshWhenVisible);
+    };
   }, [load]);
 
   const totals = data?.totals;

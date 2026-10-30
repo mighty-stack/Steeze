@@ -44,24 +44,27 @@ export default function Login() {
   };
 
   return (
-    <AuthLayout
-      heading="Welcome back." sub="Log in to manage your profile and see current collaboration opportunities."
-      top={<span>New here? <Link to="/register/brand">Register a brand</Link> or <Link to="/register/creator">a creator</Link></span>}
-    >
-      {blocked ? (
-        <PendingNotice code={blocked.code} email={form.values.email} message={blocked.message} onBack={() => setBlocked(null)} />
-      ) : (
-        <div className="formwrap">
-          <h2>Log in</h2>
-          <form onSubmit={submit} noValidate>
-            {error && <div className="form-error" role="alert">{error}</div>}
-            <TextField label="Email" type="email" {...form.bind('email')} autoComplete="email" inputMode="email" autoFocus />
-            <PasswordField label="Password" {...form.bind('password')} autoComplete="current-password" />
-            <Button type="submit" className="blue block" loading={busy}>Log in</Button>
-            <div className="link-row"><Link className="link" to="/forgot-password">Forgot your password?</Link></div>
-          </form>
-        </div>
-      )}
-    </AuthLayout>
+    <>
+      <meta name="robots" content="noindex" />
+      <AuthLayout
+        heading="Welcome back." sub="Log in to manage your profile and see current collaboration opportunities."
+        top={<span>New here? <Link to="/register/brand">Register a brand</Link> or <Link to="/register/creator">a creator</Link></span>}
+      >
+        {blocked ? (
+          <PendingNotice code={blocked.code} email={form.values.email} message={blocked.message} onBack={() => setBlocked(null)} />
+        ) : (
+          <div className="formwrap">
+            <h2>Log in</h2>
+            <form onSubmit={submit} noValidate>
+              {error && <div className="form-error" role="alert">{error}</div>}
+              <TextField label="Email" type="email" {...form.bind('email')} autoComplete="email" inputMode="email" autoFocus />
+              <PasswordField label="Password" {...form.bind('password')} autoComplete="current-password" />
+              <Button type="submit" className="blue block" loading={busy}>Log in</Button>
+              <div className="link-row"><Link className="link" to="/forgot-password">Forgot your password?</Link></div>
+            </form>
+          </div>
+        )}
+      </AuthLayout>
+    </>
   );
 }

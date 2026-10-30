@@ -26,7 +26,7 @@ export const fullNumber = (n) => new Intl.NumberFormat('en').format(n);
 export const initial = (name) => (name?.trim()?.[0] || '?').toUpperCase();
 
 export const STATUS = {
-  pending: { label: 'Pending', tone: 'wait' },
+  pending: { label: 'Email unverified', tone: 'wait' },
   verified: { label: 'Verified', tone: 'ok' },
   rejected: { label: 'Rejected', tone: 'bad' },
   deactivated: { label: 'Deactivated', tone: 'off' },

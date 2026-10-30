@@ -8,6 +8,7 @@ export default function Registered() {
   if (state?.role === 'creator') {
     return (
       <AuthLayout theme="creator" heading="Application received! 🎉">
+        <meta name="robots" content="noindex" />
         <div className="formwrap">
           <ApplicationReceived firstName={state.firstName} />
           {state.emailSent === false ? (
@@ -26,6 +27,7 @@ export default function Registered() {
   }
   return (
     <AuthLayout heading="Verify your email." sub="One quick click activates your account.">
+      <meta name="robots" content="noindex" />
       <PendingNotice code="registered" email={state?.email} emailSent={state?.emailSent} />
     </AuthLayout>
   );

@@ -33,6 +33,7 @@ function SocialIcon({ name }) {
 export default function Landing() {
   const [openFaq, setOpenFaq] = useState(null);
   const landingRef = useRef(null);
+  const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
   const [useStaticHero, setUseStaticHero] = useState(() => (
     typeof window !== 'undefined'
     && (window.matchMedia('(max-width: 760px)').matches
@@ -41,6 +42,11 @@ export default function Landing() {
 
   useEffect(() => {
     warmUp();
+  }, []);
+
+  useEffect(() => {
+    document.querySelector('meta[name="description"][data-default-seo]')?.remove();
+    document.querySelector('link[rel="canonical"][data-default-seo]')?.remove();
   }, []);
 
   useGSAP(() => {
@@ -157,6 +163,8 @@ export default function Landing() {
 
   return (
     <div className="landing-page" ref={landingRef}>
+      <meta name="description" content="CloutLabs brings creators, brands, and opportunities together. Emerging creators get hired and seen; brands find talent that fits." />
+      <link rel="canonical" href={`${siteUrl}/`} />
       <ProjectNav landing />
 
       <main>

@@ -27,6 +27,17 @@ specificity. Before naming a new shared class, quickly check it isn't a real Tai
 ```bash
 npm run build   # outputs to dist/, deploy to Vercel (vercel.json handles SPA routing)
 ```
+
+Set `VITE_SITE_URL` to the production site's full HTTPS origin, without a trailing slash,
+before building. The build generates `robots.txt` and `sitemap.xml` from this value; the
+sitemap contains only the landing page and the two public registration pages.
+
+```env
+VITE_SITE_URL=https://www.cloutlabs.name.ng
+```
+
+Configure the same `VITE_SITE_URL` in Vercel's build environment.
+
 Production API requests use the same-origin `/api` rewrite in `vercel.json`, so session cookies
 remain first-party on `www.cloutlabs.name.ng`. Do not set `VITE_API_URL` in the production
 deployment; the Vercel rewrite forwards API and health requests to the server.

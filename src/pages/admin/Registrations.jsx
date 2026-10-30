@@ -15,7 +15,7 @@ const TABS = [
   { key: 'all', label: 'All', query: {} },
   { key: 'brand', label: 'Brands', query: { role: 'brand' } },
   { key: 'creator', label: 'Creators', query: { role: 'creator' } },
-  { key: 'pending', label: 'Pending', query: { verificationStatus: 'pending' } },
+  { key: 'pending', label: 'Email unverified', query: { verificationStatus: 'pending' } },
 ];
 
 function useDebounced(value, ms) {

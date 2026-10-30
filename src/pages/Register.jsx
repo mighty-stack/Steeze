@@ -51,6 +51,19 @@ const FLOWS = {
 };
 
 const draftKey = (kind) => `clout-draft-${kind}`;
+const REGISTER_META = {
+  brand: {
+    title: 'Register your brand | CloutLabs',
+    description: 'Register your brand on CloutLabs to connect with creators and explore collaboration opportunities.',
+    path: '/register/brand',
+  },
+  creator: {
+    title: 'Join CloutLabs as a creator | CloutLabs',
+    description: 'Join CloutLabs as a creator to share your profile with brands and explore collaboration opportunities.',
+    path: '/register/creator',
+  },
+};
+
 function loadDraft(kind, initial) {
   try {
     const raw = sessionStorage.getItem(draftKey(kind)) || sessionStorage.getItem(`klout-draft-${kind}`);
@@ -64,6 +77,15 @@ function loadDraft(kind, initial) {
 
 export default function Register({ kind }) {
   const flow = FLOWS[kind];
+  const pageMeta = REGISTER_META[kind];
+  const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
+  const pageHead = (
+    <>
+      <title>{pageMeta.title}</title>
+      <meta name="description" content={pageMeta.description} />
+      <link rel="canonical" href={`${siteUrl}${pageMeta.path}`} />
+    </>
+  );
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const urlCode = searchParams.has('code') ? searchParams.get('code') : null;
@@ -82,6 +104,11 @@ export default function Register({ kind }) {
   const last = flow.steps.length - 1;
   const current = flow.steps[step];
 
+  useEffect(() => {
+    document.querySelector('meta[name="description"][data-default-seo]')?.remove();
+    document.querySelector('link[rel="canonical"][data-default-seo]')?.remove();
+  }, []);
+
   // Keep the draft (never the password) so an accidental refresh does not wipe three steps of typing.
   useEffect(() => {
     const { password, confirm, ...safe } = form.values;
@@ -98,14 +125,17 @@ export default function Register({ kind }) {
 
   if (!options) {
     return (
-      <AuthLayout theme={flow.theme} heading={flow.heading} sub={flow.sub}>
-        {optionsError ? (
-          <div className="formwrap">
-            <div className="form-error" role="alert">{optionsError}</div>
-            <button type="button" className="btn blue mt-4" onClick={reload}>Try again</button>
-          </div>
-        ) : <Splash />}
-      </AuthLayout>
+      <>
+        {pageHead}
+        <AuthLayout theme={flow.theme} heading={flow.heading} sub={flow.sub}>
+          {optionsError ? (
+            <div className="formwrap">
+              <div className="form-error" role="alert">{optionsError}</div>
+              <button type="button" className="btn blue mt-4" onClick={reload}>Try again</button>
+            </div>
+          ) : <Splash />}
+        </AuthLayout>
+      </>
     );
   }
 
@@ -205,26 +235,29 @@ export default function Register({ kind }) {
   );
 
   return (
-    <AuthLayout
-      theme={flow.theme} heading={flow.heading} sub={flow.sub} aside={stepper}
-      footnote="Your details are only visible to you and the CloutLabs team."
-      top={<span>Already registered? <Link to="/login">Log in</Link></span>}
-    >
-      <div className="formwrap">
-        <div className="count">Step {step + 1} of {flow.steps.length}</div>
-        <h2 ref={headingRef} tabIndex={-1}>{current.title}</h2>
-        <p className="lede">{current.lede}</p>
-        <form onSubmit={goNext} noValidate>
-          {banner && <div className="form-error" role="alert">{banner}</div>}
-          {current.render(form, options)}
-          <div className="actions">
-            {step > 0 ? <button type="button" className="btn line" onClick={() => { setBanner(''); setStep(step - 1); }} disabled={busy}>Back</button> : <span />}
-            <Button type="submit" className={kind === 'creator' ? 'ink' : 'blue'} loading={busy}>
-              {step === last ? 'Submit registration' : 'Continue'}
-            </Button>
-          </div>
-        </form>
-      </div>
-    </AuthLayout>
+    <>
+      {pageHead}
+      <AuthLayout
+        theme={flow.theme} heading={flow.heading} sub={flow.sub} aside={stepper}
+        footnote="Your details are only visible to you and the CloutLabs team."
+        top={<span>Already registered? <Link to="/login">Log in</Link></span>}
+      >
+        <div className="formwrap">
+          <div className="count">Step {step + 1} of {flow.steps.length}</div>
+          <h2 ref={headingRef} tabIndex={-1}>{current.title}</h2>
+          <p className="lede">{current.lede}</p>
+          <form onSubmit={goNext} noValidate>
+            {banner && <div className="form-error" role="alert">{banner}</div>}
+            {current.render(form, options)}
+            <div className="actions">
+              {step > 0 ? <button type="button" className="btn line" onClick={() => { setBanner(''); setStep(step - 1); }} disabled={busy}>Back</button> : <span />}
+              <Button type="submit" className={kind === 'creator' ? 'ink' : 'blue'} loading={busy}>
+                {step === last ? 'Submit registration' : 'Continue'}
+              </Button>
+            </div>
+          </form>
+        </div>
+      </AuthLayout>
+    </>
   );
 }
