@@ -167,7 +167,7 @@ function CreatorOpportunities() {
             {item.isOpen && (
               <div className="flex flex-wrap items-center gap-3 mt-4">
                 {!interest || canReapply ? (
-                  <Button className="blue sm" loading={busyId === item.id} disabled={Boolean(busyId)} onClick={() => {
+                  <Button className="primary sm" loading={busyId === item.id} disabled={Boolean(busyId)} onClick={() => {
                     setMessage('');
                     setInterestTarget(item);
                   }}>I'm interested</Button>
@@ -190,7 +190,7 @@ function CreatorOpportunities() {
           footer={(
             <>
               <button className="btn line" onClick={() => setInterestTarget(null)} disabled={Boolean(busyId)}>Cancel</button>
-              <Button className="blue" loading={busyId === interestTarget.id} disabled={Boolean(busyId)} onClick={submitInterest}>Send interest</Button>
+              <Button className="primary" loading={busyId === interestTarget.id} disabled={Boolean(busyId)} onClick={submitInterest}>Send interest</Button>
             </>
           )}
         >
@@ -331,7 +331,7 @@ function BrandOpportunities() {
           <h2 id="brand-opportunities-heading">{view === 'mine' ? 'My opportunities' : 'Opportunities'}</h2>
           <p className="text-ink-soft mt-1">{view === 'mine' ? 'Manage your gigs and review creator interest.' : 'Explore calls and collaborations available to brands.'}</p>
         </div>
-        {view === 'mine' && <Button className="blue sm" onClick={() => setCreating(true)}>Post a gig</Button>}
+        {view === 'mine' && <Button className="primary sm" onClick={() => setCreating(true)}>Post a gig</Button>}
       </div>
       <div className="tabbar" role="tablist" aria-label="Brand opportunities">
         <button type="button" role="tab" aria-selected={view === 'browse'} className={cx(view === 'browse' && 'on')} onClick={() => changeView('browse')}>Browse</button>
@@ -361,7 +361,7 @@ function BrandOpportunities() {
         <div className="card mt-5">
           <h2>{statusFilter ? 'No gigs match this filter' : 'No gigs yet'}</h2>
           <p className="card-lede">Post your first gig to invite creators to collaborate with your brand.</p>
-          <Button className="blue sm mt-4" onClick={() => setCreating(true)}>Post your first gig</Button>
+          <Button className="primary sm mt-4" onClick={() => setCreating(true)}>Post your first gig</Button>
         </div>
       )}
       {items && view === 'mine' && mineItems.map((item) => (
@@ -378,7 +378,7 @@ function BrandOpportunities() {
           </div>
           <div className="flex flex-wrap gap-2.5 mt-4">
             <Link className="btn line sm" to={`/app/opportunities/${item.id}/interests`}>Review interest</Link>
-            {['draft', 'rejected'].includes(item.status) && <Button className="blue sm" loading={busyId === item.id} onClick={() => actOnGig(item, 'submit')}>Submit for review</Button>}
+            {['draft', 'rejected'].includes(item.status) && <Button className="primary sm" loading={busyId === item.id} onClick={() => actOnGig(item, 'submit')}>Submit for review</Button>}
             {item.status === 'pending_review' && <Button className="line sm" loading={busyId === item.id} onClick={() => actOnGig(item, 'withdraw')}>Withdraw submission</Button>}
             {item.status === 'published' && <Button className="line sm" loading={busyId === item.id} onClick={() => actOnGig(item, 'close')}>Close gig</Button>}
             {item.status === 'closed' && <Button className="line sm" loading={busyId === item.id} onClick={() => actOnGig(item, 'reopen')}>Reopen</Button>}
@@ -412,7 +412,7 @@ function BrandOpportunities() {
             </div>
             <div className="flex justify-end gap-2.5">
               <button type="button" className="btn line sm" onClick={() => { setCreating(false); clearCreateParam(); }}>Cancel</button>
-              <Button type="submit" className="blue sm" loading={busyId === 'new'}>Save draft</Button>
+              <Button type="submit" className="primary sm" loading={busyId === 'new'}>Save draft</Button>
             </div>
           </form>
         </Modal>

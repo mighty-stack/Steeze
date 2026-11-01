@@ -131,7 +131,7 @@ export default function Register({ kind }) {
           {optionsError ? (
             <div className="formwrap">
               <div className="form-error" role="alert">{optionsError}</div>
-              <button type="button" className="btn blue mt-4" onClick={reload}>Try again</button>
+              <button type="button" className="btn primary mt-4" onClick={reload}>Try again</button>
             </div>
           ) : <Splash />}
         </AuthLayout>
@@ -251,7 +251,7 @@ export default function Register({ kind }) {
             {current.render(form, options)}
             <div className="actions">
               {step > 0 ? <button type="button" className="btn line" onClick={() => { setBanner(''); setStep(step - 1); }} disabled={busy}>Back</button> : <span />}
-              <Button type="submit" className={kind === 'creator' ? 'ink' : 'blue'} loading={busy}>
+              <Button type="submit" className={kind === 'creator' ? 'ink' : 'primary'} loading={busy}>
                 {step === last ? 'Submit registration' : 'Continue'}
               </Button>
             </div>

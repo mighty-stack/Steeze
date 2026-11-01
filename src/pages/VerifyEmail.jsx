@@ -57,21 +57,21 @@ export default function VerifyEmail() {
           <>
             <h2>This link has expired</h2>
             <p className="lede">Verification links work once and expire after 24 hours. Request a new link to continue.</p>
-            <div className="mt-6"><Link className="btn blue" to="/resend-verification">Request a new link</Link></div>
+            <div className="mt-6"><Link className="btn primary" to="/resend-verification">Request a new link</Link></div>
           </>
         ) : (
           <>
             <h2>Could not verify your email</h2>
             {error && <div className="form-error" role="alert">{error}</div>}
             <div className="mt-6 grid gap-3">
-              <Button className="blue" onClick={verify}>Try again</Button>
+              <Button className="primary" onClick={verify}>Try again</Button>
               <Link className="link" to="/resend-verification">Request a new link</Link>
             </div>
           </>
         )}
         {done && (
           <>
-            <div className="mt-6"><Link className="btn blue" to="/login">Log in</Link></div>
+            <div className="mt-6"><Link className="btn primary" to="/login">Log in</Link></div>
           </>
         )}
       </div>

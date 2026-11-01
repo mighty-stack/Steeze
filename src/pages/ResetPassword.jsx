@@ -49,14 +49,14 @@ export default function ResetPassword() {
               <h2>Password updated</h2>
               <div className="mt-6 grid gap-4">
                 <div className="form-ok" role="status">Your password has been changed and you were signed out everywhere.</div>
-                <Link className="btn blue" to="/login">Log in</Link>
+                <Link className="btn primary" to="/login">Log in</Link>
               </div>
             </>
           ) : dead ? (
             <>
               <h2>This link does not work</h2>
               <p className="lede">Reset links work once and expire after 1 hour. Request a new one to continue.</p>
-              <div className="mt-6"><Link className="btn blue" to="/forgot-password">Request a new link</Link></div>
+              <div className="mt-6"><Link className="btn primary" to="/forgot-password">Request a new link</Link></div>
             </>
           ) : (
             <>
@@ -65,7 +65,7 @@ export default function ResetPassword() {
                 {error && <div className="form-error" role="alert">{error}</div>}
                 <PasswordField label="New password" meter {...form.bind('password')} hint="At least 8 characters, with a letter and a number." />
                 <PasswordField label="Confirm new password" {...form.bind('confirm')} />
-                <Button type="submit" className="blue block" loading={busy}>Update password</Button>
+                <Button type="submit" className="primary block" loading={busy}>Update password</Button>
               </form>
             </>
           )}

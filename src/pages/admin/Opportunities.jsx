@@ -45,7 +45,7 @@ function OpportunityForm({ initial, onCancel, onSave }) {
   return (
     <Modal
       title={initial.id ? 'Edit opportunity' : 'New opportunity'} onClose={onCancel}
-      footer={<><button className="btn line" onClick={onCancel} disabled={busy}>Cancel</button><Button className="blue" loading={busy} type="submit" form="opp-form">Save</Button></>}
+      footer={<><button className="btn line" onClick={onCancel} disabled={busy}>Cancel</button><Button className="primary" loading={busy} type="submit" form="opp-form">Save</Button></>}
     >
       <form id="opp-form" onSubmit={submit} noValidate className="form-grid">
         {banner && <div className="form-error">{banner}</div>}
@@ -143,7 +143,7 @@ export default function Opportunities() {
             <option value="">All statuses</option>
             {OPPORTUNITY_STATUSES.map((value) => <option value={value} key={value}>{value.replace('_', ' ')}</option>)}
           </select>
-          <button className="btn blue sm" onClick={() => setEditing({ ...EMPTY })}>New opportunity</button>
+          <button className="btn primary sm" onClick={() => setEditing({ ...EMPTY })}>New opportunity</button>
         </div>
       </div>
 

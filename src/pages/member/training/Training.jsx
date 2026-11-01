@@ -37,7 +37,7 @@ export default function Training() {
   if (error && !data) return (
     <div className="training-error" role="alert">
       <h2>Training is unavailable</h2><p>{error}</p>
-      <Button className="blue sm" onClick={load}>Retry</Button>
+      <Button className="primary sm" onClick={load}>Retry</Button>
     </div>
   );
   if (!data) return <TrainingSessionSkeleton />;

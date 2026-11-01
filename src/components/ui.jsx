@@ -109,7 +109,7 @@ export function ConfirmDialog({ title, message, confirmLabel, requireText, dange
       footer={
         <>
           <button className="btn line" onClick={onClose} disabled={busy}>Cancel</button>
-          <Button className={danger ? 'danger-solid' : 'blue'} disabled={!ok} loading={busy} onClick={go}>{confirmLabel}</Button>
+          <Button className={danger ? 'danger-solid' : 'primary'} disabled={!ok} loading={busy} onClick={go}>{confirmLabel}</Button>
         </>
       }
     >

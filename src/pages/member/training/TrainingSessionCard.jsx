@@ -81,7 +81,7 @@ export function TrainingSessionCard({ item, detailed = false }) {
 
         <div className="training-session-actions">
           {!item.cancelled && ['upcoming', 'live'].includes(item.phase) && item.joinUrl && (
-            <ExternalLink href={item.joinUrl} className="btn blue sm">
+            <ExternalLink href={item.joinUrl} className="btn primary sm">
               {item.phase === 'live' ? 'Join live class' : 'Join class'}
             </ExternalLink>
           )}

@@ -45,7 +45,7 @@ export default function ForgotPassword() {
             <form onSubmit={submit} noValidate>
               {error && <div className="form-error" role="alert">{error}</div>}
               <TextField label="Email" type="email" {...form.bind('email')} autoComplete="email" inputMode="email" autoFocus />
-              <Button type="submit" className="blue block" loading={busy}>Send reset link</Button>
+              <Button type="submit" className="primary block" loading={busy}>Send reset link</Button>
               <div className="link-row"><Link className="link" to="/login">Back to login</Link></div>
             </form>
           )}

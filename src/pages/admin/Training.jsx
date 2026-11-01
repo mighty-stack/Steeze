@@ -103,10 +103,10 @@ function SessionEditor({ initial, topics, onClose, onSave }) {
       <>
         <button type="button" className="btn line" onClick={onClose} disabled={Boolean(busy)}>Cancel</button>
         {initial
-          ? <Button type="button" className="blue" loading={busy === 'save'} disabled={Boolean(busy)} onClick={() => save(false)}>Save changes</Button>
+          ? <Button type="button" className="primary" loading={busy === 'save'} disabled={Boolean(busy)} onClick={() => save(false)}>Save changes</Button>
           : <Button type="button" className="line" loading={busy === 'save'} disabled={Boolean(busy)} onClick={() => save(false)}>Save as draft</Button>}
-        {!initial && <Button type="button" className="blue" loading={busy === 'publish'} disabled={Boolean(busy)} onClick={() => save(true)}>Publish</Button>}
-        {initial?.status === 'draft' && <Button type="button" className="blue" loading={busy === 'publish'} disabled={Boolean(busy)} onClick={() => save(true)}>Save and publish</Button>}
+        {!initial && <Button type="button" className="primary" loading={busy === 'publish'} disabled={Boolean(busy)} onClick={() => save(true)}>Publish</Button>}
+        {initial?.status === 'draft' && <Button type="button" className="primary" loading={busy === 'publish'} disabled={Boolean(busy)} onClick={() => save(true)}>Save and publish</Button>}
       </>
     )}>
       <form className="training-admin-form" onSubmit={(event) => { event.preventDefault(); save(false); }}>
@@ -167,10 +167,10 @@ function UpdateEditor({ initial, sessions, onClose, onSave }) {
       <>
         <button type="button" className="btn line" onClick={onClose} disabled={Boolean(busy)}>Cancel</button>
         {initial
-          ? <Button type="button" className="blue" loading={busy === 'save'} disabled={Boolean(busy)} onClick={() => save(false)}>Save changes</Button>
+          ? <Button type="button" className="primary" loading={busy === 'save'} disabled={Boolean(busy)} onClick={() => save(false)}>Save changes</Button>
           : <Button type="button" className="line" loading={busy === 'save'} disabled={Boolean(busy)} onClick={() => save(false)}>Save as draft</Button>}
-        {!initial && <Button type="button" className="blue" loading={busy === 'publish'} disabled={Boolean(busy)} onClick={() => save(true)}>Publish</Button>}
-        {initial?.status === 'draft' && <Button type="button" className="blue" loading={busy === 'publish'} disabled={Boolean(busy)} onClick={() => save(true)}>Save and publish</Button>}
+        {!initial && <Button type="button" className="primary" loading={busy === 'publish'} disabled={Boolean(busy)} onClick={() => save(true)}>Publish</Button>}
+        {initial?.status === 'draft' && <Button type="button" className="primary" loading={busy === 'publish'} disabled={Boolean(busy)} onClick={() => save(true)}>Save and publish</Button>}
       </>
     )}>
       <form className="training-admin-form" onSubmit={(event) => { event.preventDefault(); save(false); }}>
@@ -450,7 +450,7 @@ export default function AdminTraining() {
     <section className="adm-body training-admin-page">
       <header className="adm-head">
         <div><h1>Training</h1><p>Create classes and share updates with verified members.</p></div>
-        <Button className="blue sm" onClick={() => setEditor({ kind: tab === 'classes' ? 'session' : 'update', id: null, initial: null })}>
+        <Button className="primary sm" onClick={() => setEditor({ kind: tab === 'classes' ? 'session' : 'update', id: null, initial: null })}>
           {tab === 'classes' ? 'Create class' : 'Create update'}
         </Button>
       </header>
@@ -481,7 +481,7 @@ export default function AdminTraining() {
                 <Button className="line sm" loading={actionBusy === item.id} onClick={() => editSession(item.id)}>Edit</Button>
                 <Button className="line sm" loading={actionBusy === item.id} onClick={() => action(item.id, 'duplicate', 'Class duplicated')}>Duplicate</Button>
                 {item.status === 'draft'
-                  ? <Button className="blue sm" loading={actionBusy === item.id} onClick={() => action(item.id, 'publish', 'Class published')}>Publish</Button>
+                  ? <Button className="primary sm" loading={actionBusy === item.id} onClick={() => action(item.id, 'publish', 'Class published')}>Publish</Button>
                   : item.cancelled
                     ? <Button className="line sm" loading={actionBusy === item.id} onClick={() => action(item.id, 'uncancel', 'Class restored')}>Restore</Button>
                     : <Button className="line sm" loading={actionBusy === item.id} onClick={() => setCancelTarget(item)}>Cancel class</Button>}
@@ -509,7 +509,7 @@ export default function AdminTraining() {
               <div className="training-admin-actions">
                 <Button className="line sm" loading={actionBusy === item.id} onClick={() => editUpdate(item.id)}>Edit</Button>
                 {item.status === 'draft'
-                  ? <Button className="blue sm" loading={actionBusy === item.id} onClick={() => updateAction(item.id, 'publish', 'Update published')}>Publish</Button>
+                  ? <Button className="primary sm" loading={actionBusy === item.id} onClick={() => updateAction(item.id, 'publish', 'Update published')}>Publish</Button>
                   : <Button className="line sm" loading={actionBusy === item.id} onClick={() => updateAction(item.id, 'unpublish', 'Update unpublished')}>Unpublish</Button>}
                 <button type="button" className="btn danger sm" disabled={Boolean(actionBusy)} onClick={() => removeUpdate(item.id)}>Delete</button>
               </div>

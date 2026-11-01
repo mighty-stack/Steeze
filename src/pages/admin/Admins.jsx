@@ -36,7 +36,7 @@ function NewAdminModal({ onClose, onSave }) {
   };
 
   return (
-    <Modal title="Add an admin" onClose={onClose} footer={<><button className="btn line" onClick={onClose} disabled={busy}>Cancel</button><Button className="blue" loading={busy} type="submit" form="new-admin-form">Create admin</Button></>}>
+    <Modal title="Add an admin" onClose={onClose} footer={<><button className="btn line" onClick={onClose} disabled={busy}>Cancel</button><Button className="primary" loading={busy} type="submit" form="new-admin-form">Create admin</Button></>}>
       <form id="new-admin-form" onSubmit={submit} noValidate className="form-grid">
         {banner && <div className="form-error">{banner}</div>}
         <TextField label="Name" {...form.bind('name')} autoFocus />
@@ -89,7 +89,7 @@ export default function Admins() {
     <section className="adm-body">
       <div className="adm-head">
         <div><h1>Admins</h1><p>People who can access this dashboard.</p></div>
-        <button className="btn blue sm" onClick={() => setShowNew(true)}>Add an admin</button>
+        <button className="btn primary sm" onClick={() => setShowNew(true)}>Add an admin</button>
       </div>
 
       {error && <div className="form-error mt-4">{error}</div>}

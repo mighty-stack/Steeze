@@ -53,7 +53,7 @@ function AccessCodeForm({ accessCode, onClose, onSaved }) {
       footer={(
         <>
           <button className="btn line" type="button" onClick={onClose} disabled={busy}>Cancel</button>
-          <Button className="blue" type="submit" form="access-code-form" loading={busy}>{editing ? 'Save changes' : 'Create code'}</Button>
+          <Button className="primary" type="submit" form="access-code-form" loading={busy}>{editing ? 'Save changes' : 'Create code'}</Button>
         </>
       )}
     >
@@ -136,7 +136,7 @@ export default function AccessCodes() {
       <div className="adm-head">
         <div><h1>Access codes</h1><p>Create referral codes and track the registrations they bring in.</p></div>
         <div className="head-actions">
-          <Button className="blue sm" onClick={() => setEditing(true)}>Create access code</Button>
+          <Button className="primary sm" onClick={() => setEditing(true)}>Create access code</Button>
         </div>
       </div>
 

@@ -59,7 +59,7 @@ export default function Login() {
               {error && <div className="form-error" role="alert">{error}</div>}
               <TextField label="Email" type="email" {...form.bind('email')} autoComplete="email" inputMode="email" autoFocus />
               <PasswordField label="Password" {...form.bind('password')} autoComplete="current-password" />
-              <Button type="submit" className="blue block" loading={busy}>Log in</Button>
+              <Button type="submit" className="primary block" loading={busy}>Log in</Button>
               <div className="link-row"><Link className="link" to="/forgot-password">Forgot your password?</Link></div>
             </form>
           </div>

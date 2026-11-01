@@ -27,7 +27,7 @@ export default function ClassDetail() {
 
   if (error && !item) return (
     <div className="training-error" role="alert">
-      <h2>Class unavailable</h2><p>{error}</p><Button className="blue sm" onClick={load}>Retry</Button>
+      <h2>Class unavailable</h2><p>{error}</p><Button className="primary sm" onClick={load}>Retry</Button>
       <Link to="/app/training/classes" className="link">Back to classes</Link>
     </div>
   );

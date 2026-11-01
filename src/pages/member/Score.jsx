@@ -29,7 +29,7 @@ export default function Score() {
   if (loading && !data) return <section className="score-page"><ScoreSkeleton /></section>;
   if (error && !data) return (
     <section className="score-page">
-      <div className="score-error" role="alert"><p>{error}</p><Button className="blue sm" onClick={load}>Retry</Button></div>
+      <div className="score-error" role="alert"><p>{error}</p><Button className="primary sm" onClick={load}>Retry</Button></div>
     </section>
   );
   if (!data) return null;

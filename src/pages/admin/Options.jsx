@@ -78,7 +78,7 @@ function OptionList({ type, hint, items, onChanged }) {
       {error && <div className="form-error mt-3">{error}</div>}
       <form className="add-row" onSubmit={add}>
         <input className="input" placeholder="Add new&hellip;" value={adding} onChange={(e) => setAdding(e.target.value)} maxLength={80} aria-label={`Add to ${LISTS.find((l) => l.type === type).label}`} />
-        <Button type="submit" className="blue sm" loading={busyId === 'new'}>Add</Button>
+        <Button type="submit" className="primary sm" loading={busyId === 'new'}>Add</Button>
       </form>
       {deleteTarget && (
         <ConfirmDialog

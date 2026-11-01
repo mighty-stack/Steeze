@@ -92,7 +92,7 @@ function EditForm({ user, profile, options, onSaved, onCancel }) {
       <InterestFields form={form} options={options} />
       <div className="actions">
         <button type="button" className="btn line" onClick={onCancel} disabled={busy}>Cancel</button>
-        <Button type="submit" className="blue" loading={busy}>Save changes</Button>
+        <Button type="submit" className="primary" loading={busy}>Save changes</Button>
       </div>
     </form>
   );
@@ -137,7 +137,7 @@ function ChangePassword() {
         <PasswordField label="Current password" {...form.bind('currentPassword')} autoComplete="current-password" />
         <PasswordField label="New password" meter {...form.bind('newPassword')} />
         <PasswordField label="Confirm new password" {...form.bind('confirm')} />
-        <Button type="submit" className="blue justify-self-start">Update password</Button>
+        <Button type="submit" className="primary justify-self-start">Update password</Button>
       </form>
     </div>
   );
@@ -149,7 +149,7 @@ export default function Profile() {
   const [editing, setEditing] = useState(false);
 
   if (profileLoading || (!profile && !profileError)) return <div className="card"><Splash /></div>;
-  if (!profile) return <div className="card profile-load-error"><p className="form-error" role="alert">{profileError || 'Your profile could not be loaded.'}</p><Button className="blue" onClick={refreshProfile}>Try again</Button></div>;
+  if (!profile) return <div className="card profile-load-error"><p className="form-error" role="alert">{profileError || 'Your profile could not be loaded.'}</p><Button className="primary" onClick={refreshProfile}>Try again</Button></div>;
   const status = STATUS[user.verificationStatus];
 
   return (

@@ -49,7 +49,7 @@ export default function EditProfileModal({ user, profile, options, onClose, onSa
       title={`Edit ${isBrand ? 'brand' : 'creator'}: ${user.displayName}`} wide onClose={onClose}
       footer={<>
         <button className="btn line" onClick={onClose} disabled={busy}>Cancel</button>
-        <Button className="blue" loading={busy} form="admin-edit-form" type="submit">Save changes</Button>
+        <Button className="primary" loading={busy} form="admin-edit-form" type="submit">Save changes</Button>
       </>}
     >
       <form id="admin-edit-form" onSubmit={submit} noValidate className="form-grid">

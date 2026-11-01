@@ -90,7 +90,7 @@ function CreatorDashboard({ data, displayName }) {
         <div className="db-header-actions">
           <Pill tone={STATUS.verified?.tone || 'ok'}>{STATUS.verified?.label || 'Verified'}</Pill>
           {data.standing && <Link className="db-standing-summary" to="/app/score"><LevelBadge level={data.standing.level} /><span>{SCORE_NAME}: {data.standing.score}</span></Link>}
-          <Link className="btn blue sm" to="/app/opportunities">Browse opportunities</Link>
+          <Link className="btn primary sm" to="/app/opportunities">Browse opportunities</Link>
         </div>
       </header>
       <NextTrainingClass item={data.nextClass} />
@@ -152,7 +152,7 @@ function CreatorDashboard({ data, displayName }) {
               ))}
             </ul>
           ) : (
-            <div className="db-empty"><p>You haven't applied to anything yet.</p><Link className="btn blue sm" to="/app/opportunities">Browse opportunities</Link></div>
+            <div className="db-empty"><p>You haven't applied to anything yet.</p><Link className="btn primary sm" to="/app/opportunities">Browse opportunities</Link></div>
           )}
         </section>
 
@@ -171,7 +171,7 @@ function CreatorDashboard({ data, displayName }) {
               ))}
             </ul>
           ) : (
-            <div className="db-empty"><p>No recommendations right now.</p><Link className="btn blue sm" to="/app/opportunities">Browse opportunities</Link></div>
+            <div className="db-empty"><p>No recommendations right now.</p><Link className="btn primary sm" to="/app/opportunities">Browse opportunities</Link></div>
           )}
         </section>
       </div>
@@ -190,7 +190,7 @@ function BrandDashboard({ data, displayName }) {
         </div>
         <div className="db-header-actions">
           <Pill tone={STATUS[data.profile?.verificationStatus]?.tone || 'ok'}>{STATUS[data.profile?.verificationStatus]?.label || 'Verified'}</Pill>
-          <Link className="btn blue sm" to="/app/opportunities?view=mine&create=1">Post a gig</Link>
+          <Link className="btn primary sm" to="/app/opportunities?view=mine&create=1">Post a gig</Link>
         </div>
       </header>
 
@@ -297,10 +297,10 @@ export default function Dashboard() {
     <div className="db-error" role="alert">
       <h1>Dashboard unavailable</h1>
       <p>{error}</p>
-      <Button className="blue sm" onClick={load}>Retry</Button>
+      <Button className="primary sm" onClick={load}>Retry</Button>
     </div>
   );
-  if (!data) return <div className="db-error"><p>Dashboard data is unavailable.</p><Button className="blue sm" onClick={load}>Retry</Button></div>;
+  if (!data) return <div className="db-error"><p>Dashboard data is unavailable.</p><Button className="primary sm" onClick={load}>Retry</Button></div>;
 
   return (
     <div className="db-dashboard" aria-busy={loading || undefined}>

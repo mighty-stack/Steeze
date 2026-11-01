@@ -50,7 +50,7 @@ export default function ResendVerification() {
           <>
             <h2>Check your inbox</h2>
             <p className="lede">If an unverified account exists for {form.values.email.trim()}, a new link is on its way.</p>
-            <div className="mt-6"><Link className="btn blue" to="/login">Back to log in</Link></div>
+            <div className="mt-6"><Link className="btn primary" to="/login">Back to log in</Link></div>
           </>
         ) : (
           <>
@@ -58,7 +58,7 @@ export default function ResendVerification() {
             <form onSubmit={submit} noValidate>
               {error && <div className="form-error" role="alert">{error}</div>}
               <TextField label="Email" type="email" {...form.bind('email')} autoComplete="email" inputMode="email" autoFocus />
-              <Button type="submit" className="blue block" loading={busy}>Send a new link</Button>
+              <Button type="submit" className="primary block" loading={busy}>Send a new link</Button>
               <div className="link-row"><Link className="link" to="/login">Back to log in</Link></div>
             </form>
           </>

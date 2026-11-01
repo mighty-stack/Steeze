@@ -227,10 +227,10 @@ export default function OpportunityInterests() {
                       <td>
                         <div className="flex flex-wrap gap-1.5">
                           {item.role === 'creator' && item.status === 'shortlisted' && (
-                            <Button className="blue sm" disabled={Boolean(busyId)} onClick={() => openOutcome(item)}>Record outcome</Button>
+                            <Button className="primary sm" disabled={Boolean(busyId)} onClick={() => openOutcome(item)}>Record outcome</Button>
                           )}
                           {canUpdateStatus && item.status !== 'shortlisted' && (
-                            <Button className="blue sm" loading={busyId === item.id} disabled={Boolean(busyId)} onClick={() => updateStatus(item, 'shortlisted')}>Shortlist</Button>
+                            <Button className="primary sm" loading={busyId === item.id} disabled={Boolean(busyId)} onClick={() => updateStatus(item, 'shortlisted')}>Shortlist</Button>
                           )}
                           {canUpdateStatus && item.status !== 'declined' && (
                             <Button className="line sm" loading={busyId === item.id} disabled={Boolean(busyId)} onClick={() => updateStatus(item, 'declined')}>Decline</Button>
@@ -283,7 +283,7 @@ export default function OpportunityInterests() {
             )}
             <div className="standing-outcome-actions">
               <button className="btn line" type="button" disabled={Boolean(busyId)} onClick={() => setOutcomeItem(null)}>Cancel</button>
-              <Button className="blue" type="submit" loading={busyId === outcomeItem.id}>Save outcome</Button>
+              <Button className="primary" type="submit" loading={busyId === outcomeItem.id}>Save outcome</Button>
             </div>
           </form>
         </Modal>

@@ -69,7 +69,7 @@ export default function BrandGigInterests() {
         <h2 id="gig-interest-heading">{gigTitle ? `Creator interest · ${gigTitle}` : 'Creator interest'}</h2>
         <Link className="link" to="/app/opportunities?view=mine">Back to my gigs</Link>
       </div>
-      {error ? <div className="db-error" role="alert"><p>{error}</p><Button className="blue sm" onClick={load}>Retry</Button></div> : null}
+      {error ? <div className="db-error" role="alert"><p>{error}</p><Button className="primary sm" onClick={load}>Retry</Button></div> : null}
       {!items && !error ? <div className="db-skeleton" aria-busy="true"><div className="db-skeleton-list" /></div> : null}
       {items?.length === 0 && <div className="db-panel"><p>No one has expressed interest in this gig yet.</p></div>}
       {items?.map((item) => (
@@ -131,7 +131,7 @@ export default function BrandGigInterests() {
           )}
           {item.email && <p className="db-contact-detail">Email: <a className="link" href={`mailto:${item.email}`}>{item.email}</a></p>}
           {item.status === 'shortlisted' && !item.completedAt && (
-            <Button className="blue sm" onClick={() => openOutcome(item)}>Record gig outcome</Button>
+            <Button className="primary sm" onClick={() => openOutcome(item)}>Record gig outcome</Button>
           )}
         </article>
       ))}
@@ -170,7 +170,7 @@ export default function BrandGigInterests() {
             )}
             <div className="standing-outcome-actions">
               <button className="btn line" type="button" disabled={savingOutcome} onClick={() => setOutcomeInterest(null)}>Cancel</button>
-              <Button className="blue" type="submit" loading={savingOutcome}>Save outcome</Button>
+              <Button className="primary" type="submit" loading={savingOutcome}>Save outcome</Button>
             </div>
           </form>
         </Modal>

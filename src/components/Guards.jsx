@@ -7,7 +7,7 @@ function AuthCheckError({ error, onRetry }) {
     <main className="db-error" role="alert">
       <h1>Unable to verify your session</h1>
       <p>{error.message || 'Check your connection and try again.'}</p>
-      <Button className="blue sm" onClick={onRetry}>Try again</Button>
+      <Button className="primary sm" onClick={onRetry}>Try again</Button>
     </main>
   );
 }

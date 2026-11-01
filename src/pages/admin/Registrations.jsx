@@ -123,7 +123,7 @@ function CreatorStandingPanel({ userId, onChanged }) {
               <input className="input" maxLength={300} value={reason} onChange={(event) => setReason(event.target.value)} />
             </label>
             <div className="standing-admin-outcome-actions">
-              <Button className="blue sm" type="submit" loading={busy === 'set-level'} disabled={!reason.trim() || Boolean(busy)}>Set and pin level</Button>
+              <Button className="primary sm" type="submit" loading={busy === 'set-level'} disabled={!reason.trim() || Boolean(busy)}>Set and pin level</Button>
               <Button type="button" className="line sm" loading={busy === 'recompute'} disabled={Boolean(busy)} onClick={() => act('recompute')}>Recompute score</Button>
               {data.standing?.levelPinned && <Button type="button" className="line sm" loading={busy === 'clear-pin'} disabled={Boolean(busy)} onClick={() => act('clear-pin')}>Clear pin</Button>}
             </div>
@@ -366,7 +366,7 @@ export default function Registrations() {
         </div>
         <div className="head-actions">
           {tab === 'pending' && (
-            <Button className="blue sm" loading={busyAction === 'verify-pending'} onClick={() => setModal('verify-pending')}>
+            <Button className="primary sm" loading={busyAction === 'verify-pending'} onClick={() => setModal('verify-pending')}>
               Verify all pending
             </Button>
           )}

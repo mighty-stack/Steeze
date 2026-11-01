@@ -182,7 +182,7 @@ export default function Overview() {
                   <div className="adm-overview-empty">
                     <h3>No members yet</h3>
                     <p>Create an access code to start inviting people, or add an opportunity to get started.</p>
-                    <div><Link className="btn blue sm" to="/admin/access-codes">Access Codes</Link><Link className="btn line sm" to="/admin/opportunities">Opportunities</Link></div>
+                    <div><Link className="btn primary sm" to="/admin/access-codes">Access Codes</Link><Link className="btn line sm" to="/admin/opportunities">Opportunities</Link></div>
                   </div>
                 )}
               </>

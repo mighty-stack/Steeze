@@ -10,7 +10,7 @@
 .training-page h3,
 .training-live-banner h2 {
   margin: 0;
-  color: #17213a;
+  color: var(--color-brand-navy);
 }
 
 .training-section,
@@ -48,7 +48,7 @@
   justify-content: space-between;
   gap: 24px;
   border-radius: 16px;
-  background: linear-gradient(120deg, #102d69, #035dfc);
+  background: linear-gradient(120deg, var(--color-brand-purple-dark), var(--color-brand-purple));
   color: white;
 }
 
@@ -60,11 +60,11 @@
 
 .training-live-banner p {
   margin: 8px 0 0;
-  color: #e4ecff;
+  color: var(--color-brand-purple-50);
 }
 
 .training-live-label {
-  color: #c8d9ff;
+  color: var(--color-brand-purple-50);
   font-size: 12px;
   font-weight: 700;
   letter-spacing: .08em;
@@ -101,8 +101,8 @@
   align-items: center;
   justify-content: center;
   border-radius: 12px;
-  background: #eef3ff;
-  color: #035dfc;
+  background: var(--color-brand-purple-50);
+  color: var(--color-brand-purple);
 }
 
 .training-session-date strong {
@@ -130,7 +130,7 @@
 }
 
 .training-session-title {
-  color: #17213a;
+  color: var(--color-brand-navy);
   font-size: 18px;
   font-weight: 700;
   text-decoration: none;
@@ -138,7 +138,7 @@
 
 .training-session-title:hover,
 .training-update-class:hover {
-  color: #035dfc;
+  color: var(--color-brand-purple);
   text-decoration: underline;
 }
 
@@ -147,8 +147,8 @@
   max-width: 100%;
   padding: 4px 9px;
   border-radius: 999px;
-  background: #eef3ff;
-  color: #294d9b;
+  background: var(--color-brand-purple-50);
+  color: var(--color-brand-purple-dark);
   font-size: 12px;
   font-weight: 650;
 }
@@ -208,7 +208,7 @@
 
 .training-resources h4 {
   margin: 0 0 8px;
-  color: #17213a;
+  color: var(--color-brand-navy);
 }
 
 .training-resources ul {
@@ -227,14 +227,14 @@
   align-items: center;
   border: 1px solid #dfe4ef;
   border-radius: 9px;
-  color: #294d9b;
+  color: var(--color-brand-purple-dark);
   font-size: 13px;
   text-decoration: none;
   overflow-wrap: anywhere;
 }
 
 .training-resource-link:hover {
-  border-color: #035dfc;
+  border-color: var(--color-brand-purple);
 }
 
 .training-update-card {
@@ -258,7 +258,7 @@
   width: fit-content;
   max-width: 100%;
   margin-top: 10px;
-  color: #294d9b;
+  color: var(--color-brand-purple-dark);
   font-size: 13px;
   overflow-wrap: anywhere;
 }
@@ -285,7 +285,7 @@
   padding: 4px;
   gap: 4px;
   border-radius: 10px;
-  background: #eef1f7;
+  background: var(--color-brand-purple-50);
 }
 
 .training-tab-list button,
@@ -305,7 +305,7 @@
 .training-tab-list button.on,
 .training-admin-tabs button.on {
   background: white;
-  color: #035dfc;
+  color: var(--color-brand-purple);
   box-shadow: 0 1px 4px rgba(16, 21, 40, .12);
 }
 
@@ -329,7 +329,7 @@
 }
 
 .training-error h2 {
-  color: #17213a;
+  color: var(--color-brand-navy);
 }
 
 .training-inline-error {
@@ -394,7 +394,7 @@
 
 .training-admin-row-main h3 {
   margin: 0;
-  color: #17213a;
+  color: var(--color-brand-navy);
   font-size: 16px;
   overflow-wrap: anywhere;
 }
