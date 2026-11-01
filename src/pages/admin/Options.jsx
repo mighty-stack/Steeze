@@ -10,6 +10,7 @@ const LISTS = [
   { type: 'niche', label: 'Content niches', hint: 'Shown to creators when they register.' },
   { type: 'location', label: 'Locations', hint: 'Shared by both registration forms.' },
   { type: 'collabInterest', label: 'Collaboration interests', hint: 'The kinds of collaboration members can choose from.' },
+  { type: 'trainingTopic', label: 'Training topics', hint: 'Topics admins can assign to training classes.' },
 ];
 
 function OptionList({ type, hint, items, onChanged }) {

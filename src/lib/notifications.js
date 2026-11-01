@@ -6,9 +6,10 @@ export const NOTIFICATION_CATEGORIES = {
   account: 'Account',
   platform: 'Platform updates',
   admin: 'Admin activity',
+  training: 'Training',
 };
 
-export const MUTABLE_NOTIFICATION_CATEGORIES = ['gigs', 'collaboration', 'admin'];
+export const MUTABLE_NOTIFICATION_CATEGORIES = ['gigs', 'collaboration', 'admin', 'training'];
 export const NOTIFICATIONS_CHANGED_EVENT = 'cloutlabs:notifications-changed';
 
 export function notificationCategoryLabel(category) {
@@ -65,6 +66,18 @@ export function notificationDestination(link, role) {
   }
 
   if (url.pathname === '/score' && role === 'creator') return `/app/score${suffix}`;
+  if (role === 'creator' && url.pathname === '/training') return `/app/training${suffix}`;
+  const trainingClass = /^\/training\/classes\/([^/]+)\/?$/.exec(url.pathname);
+  if (role === 'creator' && trainingClass) {
+    let id;
+    try {
+      id = encodeURIComponent(decodeURIComponent(trainingClass[1]));
+    } catch {
+      return fallback;
+    }
+    return `/app/training/classes/${id}${suffix}`;
+  }
+  if (role === 'creator' && url.pathname === '/training/updates') return `/app/training/updates${suffix}`;
   if (role === 'admin' && (url.pathname === '/admin' || url.pathname.startsWith('/admin/'))) {
     return `${url.pathname}${suffix}`;
   }

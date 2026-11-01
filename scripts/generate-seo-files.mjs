@@ -1,8 +1,11 @@
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { loadEnv } from 'vite';
 
-const siteUrl = process.env.VITE_SITE_URL;
+const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const env = loadEnv('production', projectRoot, '');
+const siteUrl = env.VITE_SITE_URL || process.env.VITE_SITE_URL;
 
 if (!siteUrl) {
   throw new Error(
@@ -25,7 +28,7 @@ if (parsedSiteUrl.protocol !== 'https:' || parsedSiteUrl.origin !== siteUrl) {
   );
 }
 
-const publicDir = resolve(dirname(fileURLToPath(import.meta.url)), '../public');
+const publicDir = resolve(projectRoot, 'public');
 const lastmod = new Date().toISOString().slice(0, 10);
 const publicPaths = ['/', '/register/brand', '/register/creator'];
 const sitemapUrls = publicPaths

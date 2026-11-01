@@ -29,8 +29,9 @@ npm run build   # outputs to dist/, deploy to Vercel (vercel.json handles SPA ro
 ```
 
 Set `VITE_SITE_URL` to the production site's full HTTPS origin, without a trailing slash,
-before building. The build generates `robots.txt` and `sitemap.xml` from this value; the
-sitemap contains only the landing page and the two public registration pages.
+in the frontend `.env` before building. The SEO prebuild reads this value and generates
+`robots.txt` and `sitemap.xml`; the sitemap contains only the landing page and the two public
+registration pages.
 
 ```env
 VITE_SITE_URL=https://www.cloutlabs.name.ng

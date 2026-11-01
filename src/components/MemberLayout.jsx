@@ -24,6 +24,8 @@ export default function MemberLayout() {
     ? 'Your profile'
     : location.pathname.startsWith('/app/notifications')
       ? 'Notifications'
+    : location.pathname.startsWith('/app/training')
+      ? 'Training'
     : location.pathname.includes('/interests')
       ? 'Gig interests'
       : location.pathname.startsWith('/app/opportunities')
@@ -33,7 +35,9 @@ export default function MemberLayout() {
         : 'About CloutLabs';
   const pageDescription = location.pathname.startsWith('/app/notifications')
     ? 'Stay up to date with activity and updates from CloutLabs.'
-    : 'Manage your profile and see what is available to verified members.';
+    : location.pathname.startsWith('/app/training')
+      ? 'Classes, resources and updates for the Steeze community.'
+      : 'Manage your profile and see what is available to verified members.';
   return (
     <>
       <DashboardLayout user={user} onLogout={() => setConfirmingLogout(true)}>

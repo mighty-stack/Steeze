@@ -13,8 +13,8 @@ export function useAdminOptions() {
     setError(null);
     try {
       const { items } = await api('/admin/options');
-      const grouped = { category: [], niche: [], location: [], collabInterest: [] };
-      const rawGrouped = { category: [], niche: [], location: [], collabInterest: [] };
+      const grouped = { category: [], niche: [], location: [], collabInterest: [], trainingTopic: [] };
+      const rawGrouped = { category: [], niche: [], location: [], collabInterest: [], trainingTopic: [] };
       for (const o of items) {
         grouped[o.type] ??= [];
         rawGrouped[o.type] ??= [];

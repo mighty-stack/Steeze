@@ -47,6 +47,26 @@ function SectionFallback() {
   return <p className="db-fallback">Couldn't load this.</p>;
 }
 
+function NextTrainingClass({ item }) {
+  if (!item) return null;
+  const startsAt = new Date(item.startsAt);
+  const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const label = new Intl.DateTimeFormat(undefined, {
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  }).format(startsAt);
+  return (
+    <section className="db-training-next" aria-label="Next training class">
+      <div>
+        <strong>{item.phase === 'live' ? 'Happening now' : 'Your next class'}</strong>
+        <p>{item.title}</p>
+        <time dateTime={startsAt.toISOString()} title={`Shown in ${timeZone}`}>{label} · {timeZone}</time>
+      </div>
+      <Link className="btn white sm" to={`/app/training/classes/${item.id}`}>View class</Link>
+    </section>
+  );
+}
+
 function StatTile({ label, value, to, detail }) {
   return (
     <Link className="db-stat" to={to}>
@@ -73,6 +93,7 @@ function CreatorDashboard({ data, displayName }) {
           <Link className="btn blue sm" to="/app/opportunities">Browse opportunities</Link>
         </div>
       </header>
+      <NextTrainingClass item={data.nextClass} />
 
       <section aria-labelledby="creator-next-heading" className="db-section">
         <h2 id="creator-next-heading">Next steps</h2>

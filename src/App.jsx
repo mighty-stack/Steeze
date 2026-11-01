@@ -22,6 +22,10 @@ import BrandGigInterests from './pages/member/BrandGigInterests.jsx';
 import MemberAbout from './pages/member/About.jsx';
 import MemberScore from './pages/member/Score.jsx';
 import MemberNotifications from './pages/member/Notifications.jsx';
+import MemberTraining from './pages/member/training/Training.jsx';
+import TrainingClassList from './pages/member/training/Classes.jsx';
+import TrainingClassDetail from './pages/member/training/ClassDetail.jsx';
+import TrainingUpdates from './pages/member/training/Updates.jsx';
 
 import AdminLayout from './components/AdminLayout.jsx';
 import AdminOverview from './pages/admin/Overview.jsx';
@@ -31,6 +35,7 @@ import AdminOpportunities from './pages/admin/Opportunities.jsx';
 import AdminOpportunityInterests from './pages/admin/OpportunityInterests.jsx';
 import AdminAdmins from './pages/admin/Admins.jsx';
 import AdminAccessCodes from './pages/admin/AccessCodes.jsx';
+import AdminTraining from './pages/admin/Training.jsx';
 
 const Landing = lazy(() => import('./pages/Landing.jsx'));
 
@@ -63,6 +68,12 @@ export default function App() {
                 <Route path="about" element={<MemberAbout />} />
                 <Route path="score" element={<MemberScore />} />
                 <Route path="notifications" element={<MemberNotifications />} />
+                <Route element={<RequireRole roles={['creator']} />}>
+                  <Route path="training" element={<MemberTraining />} />
+                  <Route path="training/classes" element={<TrainingClassList />} />
+                  <Route path="training/classes/:id" element={<TrainingClassDetail />} />
+                  <Route path="training/updates" element={<TrainingUpdates />} />
+                </Route>
               </Route>
             </Route>
 
@@ -75,6 +86,7 @@ export default function App() {
                 <Route path="opportunities" element={<AdminOpportunities />} />
                 <Route path="opportunities/:id/interests" element={<AdminOpportunityInterests />} />
                 <Route path="admins" element={<AdminAdmins />} />
+                <Route path="training" element={<AdminTraining />} />
                 <Route path="notifications" element={<MemberNotifications />} />
               </Route>
             </Route>

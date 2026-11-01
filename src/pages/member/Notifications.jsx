@@ -161,7 +161,7 @@ export default function Notifications() {
   const preferenceCategories = role === 'admin'
     ? MUTABLE_NOTIFICATION_CATEGORIES.filter((category) => category === 'admin')
     : role === 'creator'
-      ? MUTABLE_NOTIFICATION_CATEGORIES.filter((category) => category !== 'admin')
+      ? MUTABLE_NOTIFICATION_CATEGORIES.filter((category) => ['gigs', 'collaboration', 'training'].includes(category))
       : MUTABLE_NOTIFICATION_CATEGORIES.filter((category) => category === 'gigs');
 
   return (
@@ -191,7 +191,9 @@ export default function Notifications() {
           <span className="sr-only">Filter by category</span>
           <select className="select" value={categoryFilter} onChange={(event) => setCategoryFilter(event.target.value)}>
             <option value="all">All categories</option>
-            {Object.entries(NOTIFICATION_CATEGORIES).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+            {Object.entries(NOTIFICATION_CATEGORIES)
+              .filter(([value]) => role !== 'brand' || value !== 'training')
+              .map(([value, label]) => <option key={value} value={value}>{label}</option>)}
           </select>
         </label>
       </div>
