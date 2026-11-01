@@ -340,6 +340,21 @@ export default function Registrations() {
     }
   };
 
+  const verifyPending = async () => {
+    setBusyAction('verify-pending');
+    try {
+      const result = await api('/admin/users/verify-pending', { method: 'POST', body: {} });
+      setModal(null);
+      toast(`${result.verified} pending registration${result.verified === 1 ? '' : 's'} verified.`);
+      refreshStats();
+      await load();
+    } catch (err) {
+      toast(err.message || 'Could not verify pending registrations.', 'error');
+    } finally {
+      setBusyAction('');
+    }
+  };
+
   const selected = list?.items.find((u) => u.id === selectedId);
 
   return (
@@ -350,6 +365,11 @@ export default function Registrations() {
           <p>{list ? `${list.total} account${list.total === 1 ? '' : 's'}${onlyUnseen ? ', showing new ones only' : ''}.` : '\u00A0'}</p>
         </div>
         <div className="head-actions">
+          {tab === 'pending' && (
+            <Button className="blue sm" loading={busyAction === 'verify-pending'} onClick={() => setModal('verify-pending')}>
+              Verify all pending
+            </Button>
+          )}
           <Button className="line sm" loading={busyAction === 'export'} onClick={exportCsv}>Export to CSV</Button>
         </div>
       </div>
@@ -544,6 +564,16 @@ export default function Registrations() {
           title={`Delete ${detail.user.displayName}?`}
           message="This permanently removes the account and profile. This cannot be undone." confirmLabel="Delete permanently"
           requireText={detail.user.displayName} onClose={() => setModal(null)} onConfirm={() => act('delete', detail.user.id)}
+        />
+      )}
+      {modal === 'verify-pending' && (
+        <ConfirmDialog
+          title="Verify all pending registrations?"
+          message="This verifies every currently pending brand and creator account, not just the registrations shown by your current filters. Existing verification links are invalidated, and no emails are sent."
+          confirmLabel="Verify all pending"
+          danger={false}
+          onClose={() => setModal(null)}
+          onConfirm={verifyPending}
         />
       )}
     </section>
