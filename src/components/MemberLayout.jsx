@@ -22,6 +22,8 @@ export default function MemberLayout() {
   const isOverview = location.pathname === '/app';
   const pageTitle = location.pathname.startsWith('/app/profile')
     ? 'Your profile'
+    : location.pathname.startsWith('/app/notifications')
+      ? 'Notifications'
     : location.pathname.includes('/interests')
       ? 'Gig interests'
       : location.pathname.startsWith('/app/opportunities')
@@ -29,12 +31,15 @@ export default function MemberLayout() {
         : location.pathname.startsWith('/app/score')
           ? 'My Score'
         : 'About CloutLabs';
+  const pageDescription = location.pathname.startsWith('/app/notifications')
+    ? 'Stay up to date with activity and updates from CloutLabs.'
+    : 'Manage your profile and see what is available to verified members.';
   return (
     <>
       <DashboardLayout user={user} onLogout={() => setConfirmingLogout(true)}>
         <div className="app-wrap">
           {!isOverview && <h1>{pageTitle}</h1>}
-          {!isOverview && <p className="lede">Manage your profile and see what is available to verified members.</p>}
+          {!isOverview && <p className="lede">{pageDescription}</p>}
           <Outlet />
         </div>
       </DashboardLayout>

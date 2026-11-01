@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { cx } from './ui.jsx';
 import Sidebar from './Sidebar.jsx';
+import NotificationBell from './NotificationBell.jsx';
 
 export default function DashboardLayout({ user, admin = false, stats, onLogout, children }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -26,6 +27,7 @@ export default function DashboardLayout({ user, admin = false, stats, onLogout, 
       },
       { to: '/admin/options', label: 'Categories & locations', icon: 'CL' },
       { to: '/admin/admins', label: 'Admins', icon: 'AD' },
+      { to: '/admin/notifications', label: 'Notifications', icon: 'NT' },
     ]
     : [
       { to: '/app', label: 'Overview', icon: 'OV', end: true },
@@ -36,6 +38,7 @@ export default function DashboardLayout({ user, admin = false, stats, onLogout, 
       },
       { to: '/app/profile', label: 'Profile', icon: 'PR' },
       ...(user?.role === 'creator' ? [{ to: '/app/score', label: 'My Score', icon: 'SC' }] : []),
+      { to: '/app/notifications', label: 'Notifications', icon: 'NT' },
       { to: '/app/about', label: 'About CloutLabs', icon: 'AB' },
     ];
 
@@ -64,7 +67,12 @@ export default function DashboardLayout({ user, admin = false, stats, onLogout, 
         collapsed={collapsed}
         onToggleCollapsed={() => setCollapsed((value) => !value)}
       />
-      <main className="dashboard-main">{children}</main>
+      <main className="dashboard-main">
+        <div className="dashboard-main-toolbar">
+          <NotificationBell role={admin ? 'admin' : user?.role} />
+        </div>
+        {children}
+      </main>
     </div>
   );
 }
