@@ -8,6 +8,7 @@ import { relativeDay, formatDate, initial, compactNumber, platformLabel, STATUS,
 import LevelBadge from '../../components/LevelBadge.jsx';
 import EditProfileModal from './EditProfileModal.jsx';
 import RejectModal from './RejectModal.jsx';
+import AdminEmailModal from './AdminEmailModal.jsx';
 
 const PAGE_SIZE = 20;
 const CREATOR_LEVELS = ['intern', 'emerging', 'rising', 'established', 'professional'];
@@ -521,6 +522,7 @@ export default function Registrations() {
                 )}
 
                 <div className="act">
+                  <button className="btn line sm" onClick={() => setModal('email')}>Send email</button>
                   <div className="row2">
                     <button className="btn line sm" onClick={() => setModal('edit')}>Edit details</button>
                     {detail.user.verificationStatus !== 'rejected' && <button className="btn line sm" onClick={() => setModal('reject')}>Reject</button>}
@@ -551,6 +553,9 @@ export default function Registrations() {
       )}
       {modal === 'reject' && detail && (
         <RejectModal name={detail.user.displayName} onClose={() => setModal(null)} onConfirm={(reason) => act('reject', detail.user.id, reason)} />
+      )}
+      {modal === 'email' && detail && (
+        <AdminEmailModal user={detail.user} onClose={() => setModal(null)} />
       )}
       {modal === 'deactivate' && detail && (
         <ConfirmDialog
