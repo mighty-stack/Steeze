@@ -1,0 +1,28 @@
+{
+  "name": "CloutLabs",
+  "short_name": "CloutLabs",
+  "description": "Where creators get hired and brands find talent.",
+  "icons": [
+    {
+      "src": "/cloutlabs-brand-kit/cloutlabs-brand-kit/app/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/cloutlabs-brand-kit/cloutlabs-brand-kit/app/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/cloutlabs-brand-kit/cloutlabs-brand-kit/app/maskable-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "theme_color": "#3B2A7A",
+  "background_color": "#ffffff",
+  "display": "standalone"
+}

@@ -520,11 +520,11 @@
   .wordmark {
     @apply inline-flex items-center gap-2.5;
   }
-  .wordmark-icon {
-    @apply h-9 w-9 flex-none object-contain;
+  .wordmark-logo {
+    @apply block h-auto w-[136px] flex-none object-contain;
   }
-  .wordmark-label {
-    @apply text-xl font-bold tracking-tight;
+  .wordmark-mark {
+    @apply hidden h-9 w-9 flex-none object-contain;
   }
 
   .link {
@@ -2961,11 +2961,8 @@
       .landing-page .site-nav .wordmark {
         @apply gap-2;
       }
-      .landing-page .site-nav .wordmark-icon {
-        @apply h-8 w-8;
-      }
-      .landing-page .site-nav .wordmark-label {
-        @apply text-lg;
+      .landing-page .site-nav .wordmark-logo {
+        @apply w-[112px];
       }
       .landing-page .site-nav-links {
         @apply gap-1 text-[11px];
@@ -3673,10 +3670,13 @@
         gap: 12px;
       }
 
-      .sidebar-collapsed .dashboard-sidebar-heading .wordmark-label,
       .sidebar-collapsed .dashboard-sidebar-label,
       .sidebar-collapsed .dashboard-sidebar-link .count-badge,
       .sidebar-collapsed .dashboard-sidebar-identity {
+        display: none;
+      }
+
+      .sidebar-collapsed .dashboard-sidebar-heading .wordmark-logo {
         display: none;
       }
 
@@ -3684,7 +3684,10 @@
         justify-content: flex-start;
       }
 
-      .sidebar-collapsed .dashboard-sidebar-heading .wordmark-icon {
+      .sidebar-collapsed .dashboard-sidebar-heading .wordmark-mark {
+        display: block;
+        width: 36px;
+        height: 36px;
         margin: 0;
       }
 
@@ -3836,7 +3839,6 @@
         cursor: pointer;
       }
 
-      .dashboard-sidebar-heading .wordmark-label,
       .dashboard-sidebar-label,
       .dashboard-sidebar-link .count-badge,
       .dashboard-sidebar-identity {

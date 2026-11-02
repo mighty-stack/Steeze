@@ -6,15 +6,19 @@ export const cx = (...c) => c.filter(Boolean).join(' ');
 
 export const Wordmark = ({ to = '/', tone = 'default', brandName = 'CloutLabs' }) => {
   const assets = {
-    default: '/clout-icon.png',
-    reversed: '/clout-icon-reversed.png',
-    mono: '/clout-icon-white.png',
+    default: '/cloutlabs-brand-kit/cloutlabs-brand-kit/logo/cloutlabs-logo-horizontal.png',
+    reversed: '/cloutlabs-brand-kit/cloutlabs-brand-kit/logo/cloutlabs-logo-horizontal-reversed.png',
+    mono: '/cloutlabs-brand-kit/cloutlabs-brand-kit/logo/cloutlabs-logo-horizontal-reversed.png',
   };
-  const icon = assets[tone] || assets.default;
+  const logo = assets[tone] || assets.default;
   return (
     <Link to={to} className="wordmark" aria-label={`${brandName} home`}>
-      <img className="wordmark-icon" src={icon} alt="" />
-      <span className="wordmark-label">{brandName}</span>
+      <img className="wordmark-logo" src={logo} alt="" />
+      <img
+        className="wordmark-mark"
+        src="/cloutlabs-brand-kit/cloutlabs-brand-kit/logo/cloutlabs-mark.png"
+        alt=""
+      />
     </Link>
   );
 };
