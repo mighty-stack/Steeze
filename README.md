@@ -38,6 +38,7 @@ VITE_SITE_URL=https://www.cloutlabs.name.ng
 ```
 
 Configure the same `VITE_SITE_URL` in Vercel's build environment.
+Vercel's SPA fallback excludes `sitemap.xml` and `robots.txt` so these generated files are served directly.
 
 Production API requests use the same-origin `/api` rewrite in `vercel.json`, so session cookies
 remain first-party on `www.cloutlabs.name.ng`. Do not set `VITE_API_URL` in the production
