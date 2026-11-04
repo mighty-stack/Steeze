@@ -3,12 +3,27 @@ import { useLocation } from 'react-router-dom';
 import { cx } from './ui.jsx';
 import Sidebar from './Sidebar.jsx';
 import NotificationBell from './NotificationBell.jsx';
+import { api } from '../api/client.js';
 
 export default function DashboardLayout({ user, admin = false, stats, onLogout, children }) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [collabUnread, setCollabUnread] = useState(0);
   const location = useLocation();
   const home = admin ? '/admin' : '/app';
+  useEffect(() => {
+    if (admin || user?.role !== 'creator') {
+      setCollabUnread(0);
+      return undefined;
+    }
+    let active = true;
+    const refresh = () => api('/collaborations/unread')
+      .then(({ unread }) => { if (active) setCollabUnread(unread || 0); })
+      .catch((error) => console.error('Could not load collaboration request count.', error));
+    refresh();
+    const interval = setInterval(refresh, 60_000);
+    return () => { active = false; clearInterval(interval); };
+  }, [admin, user?.role, location.pathname]);
   const links = admin
     ? [
       { to: '/admin', label: 'Overview', icon: 'OV', end: true },
@@ -27,6 +42,7 @@ export default function DashboardLayout({ user, admin = false, stats, onLogout, 
       },
       { to: '/admin/options', label: 'Categories & locations', icon: 'CL' },
       { to: '/admin/training', label: 'Training', icon: 'TR' },
+      { to: '/admin/collaborations', label: 'Collaborations', icon: 'CO' },
       { to: '/admin/admins', label: 'Admins', icon: 'AD' },
       { to: '/admin/notifications', label: 'Notifications', icon: 'NT' },
     ]
@@ -36,6 +52,12 @@ export default function DashboardLayout({ user, admin = false, stats, onLogout, 
         to: user?.role === 'brand' ? '/app/opportunities?view=mine' : '/app/opportunities',
         label: user?.role === 'brand' ? 'My opportunities' : 'Opportunities',
         icon: 'OP',
+      },
+      {
+        to: '/app/creators',
+        label: user?.role === 'brand' ? 'Find creators' : 'Collaborate',
+        icon: 'CR',
+        badge: user?.role === 'creator' && collabUnread > 0 && <span className="count-badge">{collabUnread}</span>,
       },
       { to: '/app/profile', label: 'Profile', icon: 'PR' },
       ...(user?.role === 'creator' ? [{ to: '/app/training', label: 'Training', icon: 'TR' }] : []),

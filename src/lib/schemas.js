@@ -45,7 +45,7 @@ export const emptyBrand = {
 };
 export const emptyCreator = {
   accessCode: '', fullName: '', creatorName: '', niche: '', location: '', socials: [{ platform: '', handle: '', followers: '' }],
-  audienceNotes: '', contentDescription: '', collaborationInterests: [],
+  audienceNotes: '', contentDescription: '', collaborationInterests: [], discoverable: true,
 };
 
 /* Turn form values into the API payload. */

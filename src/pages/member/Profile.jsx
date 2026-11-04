@@ -9,6 +9,7 @@ import {
 } from '../../components/sections.jsx';
 import { PasswordField, TextField } from '../../components/fields.jsx';
 import { api, ApiError } from '../../api/client.js';
+import { Link } from 'react-router-dom';
 import { platformLabel, compactNumber, fullNumber, STATUS, formatDate } from '../../lib/format.js';
 import {
   brandRules, creatorRules, brandFromProfile, creatorFromProfile, brandPayload, creatorPayload, validateGroups, accountRules,
@@ -143,6 +144,53 @@ function ChangePassword() {
   );
 }
 
+function VisibilitySettings({ user, setUser }) {
+  const [busy, setBusy] = useState('');
+  const [error, setError] = useState('');
+  const toast = useToast();
+
+  const update = async (field, value) => {
+    setBusy(field);
+    setError('');
+    try {
+      const result = await api('/profile/settings', { method: 'PATCH', body: { [field]: value } });
+      setUser(result.user);
+      toast('Visibility settings updated.');
+    } catch (err) {
+      setError(err.message || 'Could not update your visibility settings.');
+    } finally {
+      setBusy('');
+    }
+  };
+
+  return (
+    <section className="card creator-visibility-card">
+      <h2>Visibility</h2>
+      <p className="card-lede">Verified brands and creators can only see the profile details you choose to share. Your email and phone are never listed.</p>
+      {error && <p className="form-error" role="alert">{error}</p>}
+      <label className="creator-visibility-row">
+        <input
+          type="checkbox"
+          checked={user.discoverable !== false}
+          disabled={Boolean(busy)}
+          onChange={(event) => update('discoverable', event.target.checked)}
+        />
+        <span><b>Show my profile in the creator directory</b><small>Turn this off to remove your profile from search.</small></span>
+      </label>
+      <label className="creator-visibility-row">
+        <input
+          type="checkbox"
+          checked={user.acceptsCollabRequests !== false}
+          disabled={Boolean(busy)}
+          onChange={(event) => update('acceptsCollabRequests', event.target.checked)}
+        />
+        <span><b>Accept collaboration requests</b><small>You can still browse creators when this is off.</small></span>
+      </label>
+      <Link className="link" to={`/app/creators/${user.id}`}>Preview my directory profile</Link>
+    </section>
+  );
+}
+
 export default function Profile() {
   const { user, profile, setProfile, setUser, profileLoading, profileError, refreshProfile } = useAuth();
   const { options } = useOptions();
@@ -193,6 +241,7 @@ export default function Profile() {
           <ChangePassword />
         </div>
       </div>
+      {user.role === 'creator' && <VisibilitySettings user={user} setUser={setUser} />}
     </>
   );
 }

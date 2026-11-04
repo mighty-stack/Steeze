@@ -356,6 +356,20 @@ export default function Registrations() {
     }
   };
 
+  const updateDirectoryHidden = async (hidden) => {
+    if (!detail?.user?.id) return;
+    setBusyAction('directory');
+    try {
+      await api(`/admin/users/${detail.user.id}/directory`, { method: 'PATCH', body: { hidden } });
+      setDetail((current) => current && ({ ...current, user: { ...current.user, directoryHidden: hidden } }));
+      toast(hidden ? 'Creator hidden from directory.' : 'Creator visible in directory.');
+    } catch (err) {
+      toast(err.message || 'Could not update directory visibility.', 'error');
+    } finally {
+      setBusyAction('');
+    }
+  };
+
   const selected = list?.items.find((u) => u.id === selectedId);
 
   return (
@@ -508,6 +522,15 @@ export default function Registrations() {
                     <div><dt>Content</dt><dd>{detail.profile.contentDescription}</dd></div>
                     <div><dt>Wants to do</dt><dd><span className="chip-list">{detail.profile.collaborationInterests.map((o) => <span key={o.id} className="chip-static">{o.label}</span>)}</span></dd></div>
                   </dl>
+                )}
+
+                {detail.user.role === 'creator' && (
+                  <section className="card creator-directory-admin-toggle">
+                    <label>
+                      <input type="checkbox" checked={Boolean(detail.user.directoryHidden)} disabled={busyAction === 'directory'} onChange={(event) => updateDirectoryHidden(event.target.checked)} />
+                      <span><b>Hidden from directory</b><small>Keep this creator out of directory search and profiles.</small></span>
+                    </label>
+                  </section>
                 )}
 
                 {detail.user.role === 'creator' && (

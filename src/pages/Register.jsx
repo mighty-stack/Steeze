@@ -45,7 +45,16 @@ const FLOWS = {
         render: (f, o) => (<><TextField
           label="Access code" optional {...f.bind('accessCode')} hint="Enter one if you were given a code."
           autoCapitalize="characters" autoCorrect="off" spellCheck="false" inputClassName="access-code"
-        /><InterestFields form={f} options={o} /><AccountFields form={f} /></>) },
+        /><InterestFields form={f} options={o} />
+          <label className="creator-directory-opt">
+            <input
+              type="checkbox"
+              checked={f.values.discoverable !== false}
+              onChange={(event) => f.set('discoverable', event.target.checked)}
+            />
+            <span>List me in the creator directory so verified brands and creators can find my profile. You can change this anytime.</span>
+          </label>
+          <AccountFields form={f} /></>) },
     ],
   },
 };
@@ -196,6 +205,7 @@ export default function Register({ kind }) {
     setBusy(true);
     try {
       const body = { ...flow.payload(form.values), email: form.values.email.trim(), password: form.values.password };
+      if (kind === 'creator') body.discoverable = form.values.discoverable !== false;
       const result = await api(flow.endpoint, { method: 'POST', body });
       sessionStorage.removeItem(draftKey(kind));
       navigate('/registered', {
@@ -239,7 +249,9 @@ export default function Register({ kind }) {
       {pageHead}
       <AuthLayout
         theme={flow.theme} heading={flow.heading} sub={flow.sub} aside={stepper}
-        footnote="Your details are only visible to you and the CloutLabs team."
+        footnote={kind === 'creator'
+          ? 'Your profile is seen by the Steeze team and by verified brands and creators if you keep the directory option on. Your contact details are never shown unless you choose to share them.'
+          : 'Your details are only visible to you and the CloutLabs team.'}
         top={<span>Already registered? <Link to="/login">Log in</Link></span>}
       >
         <div className="formwrap">
