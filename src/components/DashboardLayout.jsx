@@ -45,6 +45,7 @@ export default function DashboardLayout({ user, admin = false, stats, onLogout, 
       { to: '/admin/collaborations', label: 'Collaborations', icon: 'CO' },
       { to: '/admin/admins', label: 'Admins', icon: 'AD' },
       { to: '/admin/notifications', label: 'Notifications', icon: 'NT' },
+      { to: '/admin/creator-email', label: 'Email creators', icon: 'EM' },
     ]
     : [
       { to: '/app', label: 'Overview', icon: 'OV', end: true },

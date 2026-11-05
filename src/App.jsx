@@ -40,6 +40,7 @@ import AdminAdmins from './pages/admin/Admins.jsx';
 import AdminAccessCodes from './pages/admin/AccessCodes.jsx';
 import AdminTraining from './pages/admin/Training.jsx';
 import AdminCollaborations from './pages/admin/Collaborations.jsx';
+import AdminCreatorEmail from './pages/admin/CreatorEmail.jsx';
 
 const Landing = lazy(() => import('./pages/Landing.jsx'));
 
@@ -97,6 +98,7 @@ export default function App() {
                 <Route path="admins" element={<AdminAdmins />} />
                 <Route path="training" element={<AdminTraining />} />
                 <Route path="collaborations" element={<AdminCollaborations />} />
+                <Route path="creator-email" element={<AdminCreatorEmail />} />
                 <Route path="notifications" element={<MemberNotifications />} />
               </Route>
             </Route>
