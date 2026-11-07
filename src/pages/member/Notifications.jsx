@@ -31,6 +31,8 @@ export default function Notifications() {
   const [preferencesError, setPreferencesError] = useState('');
   const [preferenceBusy, setPreferenceBusy] = useState('');
   const [loadingMore, setLoadingMore] = useState(false);
+  const [adminForm, setAdminForm] = useState({ target: 'creator', title: '', body: '', link: '/app' });
+  const [adminSending, setAdminSending] = useState(false);
 
   const loadPage = useCallback(async (page = 1, append = false) => {
     if (append) setLoadingMore(true);
@@ -157,6 +159,30 @@ export default function Notifications() {
     navigate(notificationDestination(item.link, role));
   };
 
+  const sendAdminBroadcast = async (event) => {
+    event.preventDefault();
+    if (adminSending || !adminForm.title.trim() || !adminForm.body.trim()) return;
+    setAdminSending(true);
+    try {
+      const payload = {
+        target: adminForm.target,
+        title: adminForm.title.trim(),
+        body: adminForm.body.trim(),
+        link: adminForm.link?.trim() || '/app',
+      };
+      const data = await api('/admin/notifications', { method: 'POST', body: payload });
+      toast(`${data.sent || 0} ${payload.target === 'creator' ? 'creator' : 'brand'} notifications sent.`, 'ok');
+      setAdminForm({ target: payload.target, title: '', body: '', link: '/app' });
+      if (data.sent > 0) {
+        loadPage();
+      }
+    } catch (err) {
+      toast(err.message || 'Could not create this notification.', 'error');
+    } finally {
+      setAdminSending(false);
+    }
+  };
+
   const hasMore = Boolean(result && result.page < result.pages);
   const preferenceCategories = role === 'admin'
     ? MUTABLE_NOTIFICATION_CATEGORIES.filter((category) => category === 'admin')
@@ -197,6 +223,43 @@ export default function Notifications() {
           </select>
         </label>
       </div>
+
+      {role === 'admin' && (
+        <section className="notification-admin-composer" aria-labelledby="admin-notification-composer-heading">
+          <div>
+            <h3 id="admin-notification-composer-heading">Send a broadcast</h3>
+            <p>Push an in-app update to creators or brands.</p>
+          </div>
+          <form onSubmit={sendAdminBroadcast} className="notification-admin-form">
+            <div className="notification-admin-grid">
+              <label>
+                <span>Audience</span>
+                <select value={adminForm.target} onChange={(event) => setAdminForm((current) => ({ ...current, target: event.target.value }))}>
+                  <option value="creator">Creators</option>
+                  <option value="brand">Brands</option>
+                </select>
+              </label>
+              <label>
+                <span>Link</span>
+                <input value={adminForm.link} onChange={(event) => setAdminForm((current) => ({ ...current, link: event.target.value }))} placeholder="/app" />
+              </label>
+            </div>
+            <label>
+              <span>Title</span>
+              <input value={adminForm.title} onChange={(event) => setAdminForm((current) => ({ ...current, title: event.target.value }))} placeholder="Platform update" maxLength={120} />
+            </label>
+            <label>
+              <span>Message</span>
+              <textarea value={adminForm.body} onChange={(event) => setAdminForm((current) => ({ ...current, body: event.target.value }))} placeholder="Share a platform update, reminder, or important notice." maxLength={500} rows={5} />
+            </label>
+            <div className="notification-admin-actions">
+              <Button type="submit" className="primary sm" loading={adminSending} disabled={!adminForm.title.trim() || !adminForm.body.trim()}>
+                Send notification
+              </Button>
+            </div>
+          </form>
+        </section>
+      )}
 
       {loadError ? (
         <div className="form-error mt-5" role="alert">

@@ -22,6 +22,7 @@ import BrandGigInterests from './pages/member/BrandGigInterests.jsx';
 import MemberAbout from './pages/member/About.jsx';
 import MemberScore from './pages/member/Score.jsx';
 import MemberNotifications from './pages/member/Notifications.jsx';
+import MemberResources from './pages/member/Resources.jsx';
 import MemberTraining from './pages/member/training/Training.jsx';
 import TrainingClassList from './pages/member/training/Classes.jsx';
 import TrainingClassDetail from './pages/member/training/ClassDetail.jsx';
@@ -33,6 +34,7 @@ import Collaborations from './pages/member/Collaborations.jsx';
 import AdminLayout from './components/AdminLayout.jsx';
 import AdminOverview from './pages/admin/Overview.jsx';
 import AdminRegistrations from './pages/admin/Registrations.jsx';
+import AdminResources from './pages/admin/Resources.jsx';
 import AdminOptions from './pages/admin/Options.jsx';
 import AdminOpportunities from './pages/admin/Opportunities.jsx';
 import AdminOpportunityInterests from './pages/admin/OpportunityInterests.jsx';
@@ -68,6 +70,8 @@ export default function App() {
               <Route path="/app" element={<MemberLayout />}>
                 <Route index element={<MemberDashboard />} />
                 <Route path="profile" element={<MemberProfile />} />
+                <Route path="resources" element={<MemberResources />} />
+                <Route path="resources/orders/:orderNumber" element={<MemberResources />} />
                 <Route path="creators" element={<CreatorDirectory />} />
                 <Route path="creators/:id" element={<CreatorDirectoryProfile />} />
                 <Route element={<RequireRole roles={['creator']} />}>
@@ -92,6 +96,7 @@ export default function App() {
                 <Route index element={<AdminOverview />} />
                 <Route path="registrations" element={<AdminRegistrations />} />
                 <Route path="access-codes" element={<AdminAccessCodes />} />
+                <Route path="resources" element={<AdminResources />} />
                 <Route path="options" element={<AdminOptions />} />
                 <Route path="opportunities" element={<AdminOpportunities />} />
                 <Route path="opportunities/:id/interests" element={<AdminOpportunityInterests />} />

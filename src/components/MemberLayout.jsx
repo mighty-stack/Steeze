@@ -22,30 +22,34 @@ export default function MemberLayout() {
   const isOverview = location.pathname === '/app';
   const pageTitle = location.pathname.startsWith('/app/profile')
     ? 'Your profile'
-    : location.pathname.startsWith('/app/creators')
-      ? user?.role === 'brand' ? 'Find creators' : 'Collaborate'
-    : location.pathname.startsWith('/app/collaborations')
-      ? 'Collaboration requests'
+    : location.pathname.startsWith('/app/resources')
+      ? 'Creator resources'
+      : location.pathname.startsWith('/app/creators')
+        ? user?.role === 'brand' ? 'Find creators' : 'Collaborate'
+        : location.pathname.startsWith('/app/collaborations')
+        ? 'Collaboration requests'
+        : location.pathname.startsWith('/app/notifications')
+          ? 'Notifications'
+          : location.pathname.startsWith('/app/training')
+            ? 'Training'
+            : location.pathname.includes('/interests')
+              ? 'Gig interests'
+              : location.pathname.startsWith('/app/opportunities')
+                ? user?.role === 'brand' ? 'My opportunities' : 'Opportunities'
+                : location.pathname.startsWith('/app/score')
+                  ? 'My Score'
+                  : 'About CloutLabs';
+  const pageDescription = location.pathname.startsWith('/app/resources')
+    ? 'Browse creator-made digital resources and keep track of your purchases.'
     : location.pathname.startsWith('/app/notifications')
-      ? 'Notifications'
-    : location.pathname.startsWith('/app/training')
-      ? 'Training'
-    : location.pathname.includes('/interests')
-      ? 'Gig interests'
-      : location.pathname.startsWith('/app/opportunities')
-        ? user?.role === 'brand' ? 'My opportunities' : 'Opportunities'
-        : location.pathname.startsWith('/app/score')
-          ? 'My Score'
-        : 'About CloutLabs';
-  const pageDescription = location.pathname.startsWith('/app/notifications')
-    ? 'Stay up to date with activity and updates from CloutLabs.'
-    : location.pathname.startsWith('/app/creators')
-      ? 'Discover verified creators and explore collaboration opportunities.'
-    : location.pathname.startsWith('/app/collaborations')
-      ? 'Review and manage your creator collaboration requests.'
-    : location.pathname.startsWith('/app/training')
-      ? 'Classes, resources and updates for the Steeze community.'
-      : 'Manage your profile and see what is available to verified members.';
+      ? 'Stay up to date with activity and updates from CloutLabs.'
+      : location.pathname.startsWith('/app/creators')
+        ? 'Discover verified creators and explore collaboration opportunities.'
+        : location.pathname.startsWith('/app/collaborations')
+        ? 'Review and manage your creator collaboration requests.'
+        : location.pathname.startsWith('/app/training')
+          ? 'Classes, resources and updates for the Steeze community.'
+          : 'Manage your profile and see what is available to verified members.';
   return (
     <>
       <DashboardLayout user={user} onLogout={() => setConfirmingLogout(true)}>
