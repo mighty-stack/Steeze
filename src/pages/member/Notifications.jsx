@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { api } from '../../api/client.js';
 import { useAuth } from '../../context/Auth.jsx';
 import { useToast } from '../../context/Toast.jsx';
-import { Button, Splash } from '../../components/ui.jsx';
+import { Button, Modal, Splash } from '../../components/ui.jsx';
 import {
   emitNotificationsChanged,
   MUTABLE_NOTIFICATION_CATEGORIES,
@@ -33,6 +33,7 @@ export default function Notifications() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [adminForm, setAdminForm] = useState({ target: 'creator', title: '', body: '', link: '/app' });
   const [adminSending, setAdminSending] = useState(false);
+  const [adminComposerOpen, setAdminComposerOpen] = useState(false);
 
   const loadPage = useCallback(async (page = 1, append = false) => {
     if (append) setLoadingMore(true);
@@ -173,6 +174,7 @@ export default function Notifications() {
       const data = await api('/admin/notifications', { method: 'POST', body: payload });
       toast(`${data.sent || 0} ${payload.target === 'creator' ? 'creator' : 'brand'} notifications sent.`, 'ok');
       setAdminForm({ target: payload.target, title: '', body: '', link: '/app' });
+      setAdminComposerOpen(false);
       if (data.sent > 0) {
         loadPage();
       }
@@ -225,40 +227,84 @@ export default function Notifications() {
       </div>
 
       {role === 'admin' && (
-        <section className="notification-admin-composer" aria-labelledby="admin-notification-composer-heading">
-          <div>
-            <h3 id="admin-notification-composer-heading">Send a broadcast</h3>
-            <p>Push an in-app update to creators or brands.</p>
-          </div>
-          <form onSubmit={sendAdminBroadcast} className="notification-admin-form">
-            <div className="notification-admin-grid">
-              <label>
-                <span>Audience</span>
-                <select value={adminForm.target} onChange={(event) => setAdminForm((current) => ({ ...current, target: event.target.value }))}>
-                  <option value="creator">Creators</option>
-                  <option value="brand">Brands</option>
-                </select>
-              </label>
-              <label>
-                <span>Link</span>
-                <input value={adminForm.link} onChange={(event) => setAdminForm((current) => ({ ...current, link: event.target.value }))} placeholder="/app" />
-              </label>
-            </div>
-            <label>
-              <span>Title</span>
-              <input value={adminForm.title} onChange={(event) => setAdminForm((current) => ({ ...current, title: event.target.value }))} placeholder="Platform update" maxLength={120} />
-            </label>
-            <label>
-              <span>Message</span>
-              <textarea value={adminForm.body} onChange={(event) => setAdminForm((current) => ({ ...current, body: event.target.value }))} placeholder="Share a platform update, reminder, or important notice." maxLength={500} rows={5} />
-            </label>
-            <div className="notification-admin-actions">
-              <Button type="submit" className="primary sm" loading={adminSending} disabled={!adminForm.title.trim() || !adminForm.body.trim()}>
+        <div className="notification-admin-actions">
+          <Button className="primary sm" onClick={() => setAdminComposerOpen(true)}>
+            Add notification
+          </Button>
+        </div>
+      )}
+
+      {role === 'admin' && adminComposerOpen && (
+        <Modal
+          title="Add notification"
+          labelledBy="admin-notification-composer-heading"
+          onClose={() => { if (!adminSending) setAdminComposerOpen(false); }}
+          footer={(
+            <>
+              <button type="button" className="btn line" onClick={() => setAdminComposerOpen(false)} disabled={adminSending}>Cancel</button>
+              <Button
+                type="submit"
+                form="admin-notification-form"
+                className="primary"
+                loading={adminSending}
+                disabled={!adminForm.title.trim() || !adminForm.body.trim()}
+              >
                 Send notification
               </Button>
+            </>
+          )}
+        >
+          <p className="muted">Send an in-app notification to creators or brands.</p>
+          <form id="admin-notification-form" onSubmit={sendAdminBroadcast} className="notification-admin-form">
+            <div className="field">
+              <label htmlFor="admin-notification-audience">Audience</label>
+              <select
+                id="admin-notification-audience"
+                className="select"
+                value={adminForm.target}
+                onChange={(event) => setAdminForm((current) => ({ ...current, target: event.target.value }))}
+              >
+                <option value="creator">Creators</option>
+                <option value="brand">Brands</option>
+              </select>
+            </div>
+            <div className="field">
+              <label htmlFor="admin-notification-subject">Subject</label>
+              <input
+                id="admin-notification-subject"
+                className="input"
+                value={adminForm.title}
+                onChange={(event) => setAdminForm((current) => ({ ...current, title: event.target.value }))}
+                placeholder="Notification subject"
+                maxLength={120}
+                required
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="admin-notification-content">Content</label>
+              <textarea
+                id="admin-notification-content"
+                className="input"
+                value={adminForm.body}
+                onChange={(event) => setAdminForm((current) => ({ ...current, body: event.target.value }))}
+                placeholder="Write the notification content."
+                maxLength={500}
+                rows={5}
+                required
+              />
+            </div>
+            <div className="field">
+              <label htmlFor="admin-notification-link">In-app link</label>
+              <input
+                id="admin-notification-link"
+                className="input"
+                value={adminForm.link}
+                onChange={(event) => setAdminForm((current) => ({ ...current, link: event.target.value }))}
+                placeholder="/app"
+              />
             </div>
           </form>
-        </section>
+        </Modal>
       )}
 
       {loadError ? (
