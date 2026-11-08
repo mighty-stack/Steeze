@@ -1,14 +1,70 @@
+import { useEffect, useMemo, useState } from 'react';
 import { TextField, TextAreaField, SelectField, ChipGroup, PasswordField, SocialsEditor } from './fields.jsx';
 
 /* Reusable groups of fields. The registration wizard shows them one step at a time; the member
    and admin edit screens stack them on a single page. `form` comes from useForm. */
+
+function locationCountry(label) {
+  const separator = label.lastIndexOf(',');
+  return separator < 0 ? 'Other' : label.slice(separator + 1).trim();
+}
+
+function locationName(label) {
+  const separator = label.lastIndexOf(',');
+  return separator < 0 ? label : label.slice(0, separator).trim();
+}
+
+function LocationFields({ form, options, hint }) {
+  const locations = options.location || [];
+  const countries = useMemo(
+    () => [...new Set(locations.map((location) => locationCountry(location.label)))].sort((a, b) => a.localeCompare(b))
+      .map((country) => ({ id: country, label: country })),
+    [locations],
+  );
+  const [country, setCountry] = useState(() => {
+    const selected = locations.find((location) => location.id === form.values.location);
+    return selected ? locationCountry(selected.label) : '';
+  });
+
+  useEffect(() => {
+    const selected = locations.find((location) => location.id === form.values.location);
+    if (selected) setCountry(locationCountry(selected.label));
+  }, [form.values.location, locations]);
+
+  const stateOptions = locations
+    .filter((location) => country && locationCountry(location.label) === country)
+    .map((location) => ({ ...location, label: locationName(location.label) }));
+
+  return (
+    <>
+      <SelectField
+        label="Country"
+        name="country"
+        value={country}
+        onChange={(value) => {
+          setCountry(value);
+          if (form.values.location) form.set('location', '');
+        }}
+        options={countries}
+        placeholder="Choose a country"
+      />
+      <SelectField
+        label="State / location"
+        {...form.bind('location')}
+        options={stateOptions}
+        placeholder={country ? 'Choose a state or location' : 'Choose a country first'}
+        hint={hint}
+      />
+    </>
+  );
+}
 
 export function BrandBusinessFields({ form, options }) {
   return (
     <>
       <TextField label="Brand or business name" {...form.bind('brandName')} autoComplete="organization" maxLength={80} />
       <SelectField label="Business category" {...form.bind('category')} options={options.category} />
-      <SelectField label="Location" {...form.bind('location')} options={options.location} hint="Where the business is based. Not listed? Choose Other." />
+      <LocationFields form={form} options={options} hint="Where the business is based." />
     </>
   );
 }
@@ -33,7 +89,7 @@ export function CreatorAboutFields({ form, options }) {
       <TextField label="Full name" {...form.bind('fullName')} autoComplete="name" maxLength={80} />
       <TextField label="Creator or content name" {...form.bind('creatorName')} maxLength={80} hint="The name your audience knows you by." />
       <SelectField label="Content niche" {...form.bind('niche')} options={options.niche} />
-      <SelectField label="Location" {...form.bind('location')} options={options.location} hint="Where you are based. Not listed? Choose Other." />
+      <LocationFields form={form} options={options} hint="Where you are based." />
     </>
   );
 }
