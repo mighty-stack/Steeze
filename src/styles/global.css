@@ -1402,6 +1402,60 @@
   .db-dashboard {
     @apply mt-7 grid gap-6 min-w-0;
   }
+  .db-countdown-card {
+    @apply grid gap-4 rounded-2xl p-5 text-white;
+    min-width: 0;
+    overflow: hidden;
+    background: linear-gradient(120deg, var(--color-brand-purple-dark), var(--color-brand-purple));
+  }
+  .db-countdown-heading {
+    @apply flex flex-wrap items-start justify-between gap-3;
+    min-width: 0;
+  }
+  .db-countdown-heading h2 {
+    @apply text-2xl font-bold tracking-tight;
+    overflow-wrap: anywhere;
+  }
+  .db-countdown-heading time {
+    @apply text-sm;
+    color: rgb(255 255 255 / 82%);
+  }
+  .db-countdown-eyebrow {
+    @apply text-xs font-bold uppercase tracking-wider;
+    color: rgb(255 255 255 / 78%);
+  }
+  .db-countdown-clock {
+    @apply grid grid-cols-4 gap-3;
+    min-width: 0;
+  }
+  .db-countdown-unit {
+    @apply grid justify-items-center gap-1 rounded-xl p-3;
+    min-width: 0;
+    background: rgb(255 255 255 / 12%);
+  }
+  .db-countdown-unit strong {
+    @apply text-3xl font-bold tabular-nums;
+  }
+  .db-countdown-unit span {
+    @apply text-xs;
+    color: rgb(255 255 255 / 78%);
+  }
+  .db-countdown-message {
+    @apply grid gap-1;
+    min-width: 0;
+  }
+  .db-countdown-message p {
+    overflow-wrap: anywhere;
+    color: rgb(255 255 255 / 86%);
+  }
+  .db-countdown-settings {
+    @apply justify-self-start text-sm font-semibold underline underline-offset-4;
+  }
+  .db-countdown-loading {
+    min-height: 170px;
+    background: linear-gradient(90deg, var(--color-mist), #fff, var(--color-mist));
+    background-size: 200% 100%;
+  }
   .db-header {
     @apply flex flex-wrap items-start justify-between gap-4;
   }

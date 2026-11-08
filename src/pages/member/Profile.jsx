@@ -150,13 +150,16 @@ function VisibilitySettings({ user, setUser }) {
   const toast = useToast();
 
   const update = async (field, value) => {
+    const previousValue = user[field];
+    setUser((current) => ({ ...current, [field]: value }));
     setBusy(field);
     setError('');
     try {
       const result = await api('/profile/settings', { method: 'PATCH', body: { [field]: value } });
       setUser(result.user);
-      toast('Visibility settings updated.');
+      toast('Profile settings updated.');
     } catch (err) {
+      setUser((current) => ({ ...current, [field]: previousValue }));
       setError(err.message || 'Could not update your visibility settings.');
     } finally {
       setBusy('');

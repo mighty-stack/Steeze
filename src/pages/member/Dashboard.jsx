@@ -67,26 +67,144 @@ function NextTrainingClass({ item }) {
   );
 }
 
-function CountdownCard({ item }) {
-  if (!item) return null;
-  const targetAt = new Date(item.targetAt);
-  const milestone = item.milestone || {};
-  const now = new Date();
-  const millisecondsLeft = targetAt.getTime() - now.getTime();
-  const daysLeft = Math.max(0, Math.ceil(millisecondsLeft / (1000 * 60 * 60 * 24)));
-  const title = milestone.title || item.title || 'Resumption';
-  const body = milestone.body || 'We are getting ready for resumption.';
-  const badge = daysLeft === 0 ? 'Today' : `${daysLeft} day${daysLeft === 1 ? '' : 's'} to go`;
+function localDateKey(time, timeZone) {
+  const parts = Object.fromEntries(
+    new Intl.DateTimeFormat('en-CA', {
+      timeZone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+    })
+      .formatToParts(new Date(time))
+      .filter((part) => part.type !== 'literal')
+      .map((part) => [part.type, part.value]),
+  );
+  return `${parts.year}-${parts.month}-${parts.day}`;
+}
+
+function countdownSentence(milliseconds) {
+  const totalMinutes = Math.floor(milliseconds / 60_000);
+  const days = Math.floor(totalMinutes / (24 * 60));
+  const hours = Math.floor((totalMinutes % (24 * 60)) / 60);
+  const minutes = totalMinutes % 60;
+  const parts = [];
+  if (days) parts.push(`${days} day${days === 1 ? '' : 's'}`);
+  if (hours) parts.push(`${hours} hour${hours === 1 ? '' : 's'}`);
+  if (minutes || !parts.length) parts.push(`${minutes} minute${minutes === 1 ? '' : 's'}`);
+  return parts.length > 1 ? `${parts.slice(0, -1).join(', ')} and ${parts.at(-1)}` : parts[0];
+}
+
+function CountdownCard({ payload, clockOffset, loading }) {
+  const campaigns = payload?.campaigns || [];
+  const campaign = campaigns[0];
+  const [now, setNow] = useState(() => Date.now() + clockOffset);
+  const [announcementTime, setAnnouncementTime] = useState(() => Date.now() + clockOffset);
+  const [dismissedDate, setDismissedDate] = useState('');
+  const [storageReady, setStorageReady] = useState(false);
+
+  useEffect(() => {
+    setNow(Date.now() + clockOffset);
+    setAnnouncementTime(Date.now() + clockOffset);
+    let timer;
+    const tick = () => {
+      const current = Date.now() + clockOffset;
+      setNow(current);
+      if (new Date(current).getSeconds() === 0) setAnnouncementTime(current);
+    };
+    const stop = () => {
+      if (timer) window.clearInterval(timer);
+      timer = undefined;
+    };
+    const start = () => {
+      tick();
+      if (!timer) timer = window.setInterval(tick, 1000);
+    };
+    const onVisibilityChange = () => (document.hidden ? stop() : start());
+    window.addEventListener('focus', start);
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    if (!document.hidden) start();
+    return () => {
+      stop();
+      window.removeEventListener('focus', start);
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+    };
+  }, [clockOffset]);
+
+  useEffect(() => {
+    setStorageReady(false);
+    try {
+      setDismissedDate(window.localStorage.getItem(`countdown-dismissed:${campaign?.id || ''}`) || '');
+    } catch {
+      setDismissedDate('');
+    } finally {
+      setStorageReady(true);
+    }
+  }, [campaign?.id]);
+
+  if (loading) {
+    return <div className="db-countdown-card db-countdown-loading" aria-label="Loading resumption countdown" aria-busy="true" />;
+  }
+  if (!campaign || !storageReady || dismissedDate === localDateKey(now, campaign.timezone)) return null;
+
+  const targetAt = new Date(campaign.targetAt);
+  const remaining = Math.max(0, targetAt.getTime() - now);
+  const resumed = remaining === 0;
+  const totalSeconds = Math.floor(remaining / 1000);
+  const values = {
+    days: Math.floor(totalSeconds / 86_400),
+    hours: Math.floor((totalSeconds % 86_400) / 3_600),
+    minutes: Math.floor((totalSeconds % 3_600) / 60),
+    seconds: totalSeconds % 60,
+  };
+  const units = remaining >= 86_400_000
+    ? [['Days', values.days], ['Hours', values.hours], ['Minutes', values.minutes], ['Seconds', values.seconds]]
+    : [['Hours', values.hours], ['Minutes', values.minutes], ['Seconds', values.seconds]];
+  const message = campaign.message || {};
+  const dateLabel = new Intl.DateTimeFormat(undefined, { dateStyle: 'full' }).format(targetAt);
+  const announcement = resumed
+    ? "We're back today."
+    : `${countdownSentence(Math.max(0, targetAt.getTime() - announcementTime))} until resumption.`;
+
+  const dismiss = () => {
+    const date = localDateKey(now, campaign.timezone);
+    setDismissedDate(date);
+    try {
+      window.localStorage.setItem(`countdown-dismissed:${campaign.id}`, date);
+    } catch {
+      // Dismissing remains available when browser storage is blocked.
+    }
+  };
 
   return (
-    <section className="db-training-next" aria-label="Resumption countdown">
-      <div>
-        <strong>{title}</strong>
-        <p>{body}</p>
-        <time dateTime={targetAt.toISOString()}>{badge}</time>
-        <small>{new Intl.DateTimeFormat(undefined, { dateStyle: 'full' }).format(targetAt)}</small>
+    <section className="db-countdown-card" aria-label={`${campaign.title} countdown`}>
+      <div className="db-countdown-heading">
+        <div>
+          <p className="db-countdown-eyebrow">{resumed ? 'Resumption day' : 'Coming up'}</p>
+          <h2>{campaign.title}</h2>
+          <time dateTime={targetAt.toISOString()} title={`Campaign timezone: ${campaign.timezone}`}>
+            {dateLabel}
+          </time>
+        </div>
+        <button type="button" className="btn line sm" onClick={dismiss} aria-label="Dismiss countdown until tomorrow">Dismiss</button>
       </div>
-      <Link className="btn white sm" to="/app/profile">Email settings</Link>
+      {!resumed && (
+        <div className="db-countdown-clock" aria-hidden="true">
+          {units.map(([label, value]) => (
+            <div className="db-countdown-unit" key={label}>
+              <strong>{String(value).padStart(2, '0')}</strong>
+              <span>{label}</span>
+            </div>
+          ))}
+        </div>
+      )}
+      <p className="sr-only">{announcement}</p>
+      <div className="db-countdown-message">
+        <strong>{resumed ? "We're back today" : message.title || 'Get ready for resumption'}</strong>
+        <p>{message.body || 'Resumption starts today. Log in to see what’s new and get started.'}</p>
+      </div>
+      {resumed
+        ? <Link className="btn primary sm" to="/app/opportunities">Browse opportunities</Link>
+        : <Link className="db-countdown-settings" to="/app/profile">Reminder email settings</Link>}
     </section>
   );
 }
@@ -106,6 +224,11 @@ function CreatorDashboard({ data, displayName }) {
   const nextSteps = completeness?.missing || [];
   return (
     <>
+      <CountdownCard
+        payload={data.countdownPayload}
+        clockOffset={data.countdownClockOffset}
+        loading={data.countdownLoading}
+      />
       <header className="db-header">
         <div>
           <h1>Welcome back, {data.profile?.displayName || displayName}</h1>
@@ -117,7 +240,6 @@ function CreatorDashboard({ data, displayName }) {
           <Link className="btn primary sm" to="/app/opportunities">Browse opportunities</Link>
         </div>
       </header>
-      <CountdownCard item={data.countdown} />
       <NextTrainingClass item={data.nextClass} />
 
       <section aria-labelledby="creator-next-heading" className="db-section">
@@ -295,11 +417,35 @@ export default function Dashboard() {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+  const [countdownPayload, setCountdownPayload] = useState(null);
+  const [countdownClockOffset, setCountdownClockOffset] = useState(0);
+  const [countdownLoading, setCountdownLoading] = useState(true);
   const load = useCallback(async () => {
     setError('');
     setLoading(true);
     try {
-      setData(await api('/dashboard'));
+      const dashboard = await api('/dashboard');
+      setData({
+        ...dashboard,
+        countdownPayload: null,
+        countdownClockOffset: 0,
+        countdownLoading: dashboard.role === 'creator',
+      });
+      if (dashboard.role === 'creator') {
+        setCountdownLoading(true);
+        try {
+          const response = await api('/countdowns/active');
+          setCountdownPayload(response);
+          setCountdownClockOffset(new Date(response.serverNow).getTime() - Date.now());
+        } catch {
+          setCountdownPayload(null);
+        } finally {
+          setCountdownLoading(false);
+        }
+      } else {
+        setCountdownPayload(null);
+        setCountdownLoading(false);
+      }
     } catch (err) {
       setError(err.message || 'Could not load your dashboard.');
     } finally {
@@ -331,7 +477,10 @@ export default function Dashboard() {
     <div className="db-dashboard" aria-busy={loading || undefined}>
       {error && <div className="db-inline-error" role="alert">{error}<button className="link" onClick={load}>Retry</button></div>}
       {data.role === 'creator'
-        ? <CreatorDashboard data={data} displayName={user?.displayName || 'there'} />
+        ? <CreatorDashboard
+          data={{ ...data, countdownPayload, countdownClockOffset, countdownLoading }}
+          displayName={user?.displayName || 'there'}
+        />
         : <BrandDashboard data={data} displayName={user?.displayName || 'there'} />}
     </div>
   );
