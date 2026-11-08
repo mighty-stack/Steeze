@@ -67,6 +67,30 @@ function NextTrainingClass({ item }) {
   );
 }
 
+function CountdownCard({ item }) {
+  if (!item) return null;
+  const targetAt = new Date(item.targetAt);
+  const milestone = item.milestone || {};
+  const now = new Date();
+  const millisecondsLeft = targetAt.getTime() - now.getTime();
+  const daysLeft = Math.max(0, Math.ceil(millisecondsLeft / (1000 * 60 * 60 * 24)));
+  const title = milestone.title || item.title || 'Resumption';
+  const body = milestone.body || 'We are getting ready for resumption.';
+  const badge = daysLeft === 0 ? 'Today' : `${daysLeft} day${daysLeft === 1 ? '' : 's'} to go`;
+
+  return (
+    <section className="db-training-next" aria-label="Resumption countdown">
+      <div>
+        <strong>{title}</strong>
+        <p>{body}</p>
+        <time dateTime={targetAt.toISOString()}>{badge}</time>
+        <small>{new Intl.DateTimeFormat(undefined, { dateStyle: 'full' }).format(targetAt)}</small>
+      </div>
+      <Link className="btn white sm" to="/app/profile">Email settings</Link>
+    </section>
+  );
+}
+
 function StatTile({ label, value, to, detail }) {
   return (
     <Link className="db-stat" to={to}>
@@ -93,6 +117,7 @@ function CreatorDashboard({ data, displayName }) {
           <Link className="btn primary sm" to="/app/opportunities">Browse opportunities</Link>
         </div>
       </header>
+      <CountdownCard item={data.countdown} />
       <NextTrainingClass item={data.nextClass} />
 
       <section aria-labelledby="creator-next-heading" className="db-section">

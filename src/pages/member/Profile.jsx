@@ -186,6 +186,15 @@ function VisibilitySettings({ user, setUser }) {
         />
         <span><b>Accept collaboration requests</b><small>You can still browse creators when this is off.</small></span>
       </label>
+      <label className="creator-visibility-row">
+        <input
+          type="checkbox"
+          checked={user.emailReminders !== false}
+          disabled={Boolean(busy)}
+          onChange={(event) => update('emailReminders', event.target.checked)}
+        />
+        <span><b>Send me reminder emails</b><small>Get resumption and campaign updates directly in your inbox.</small></span>
+      </label>
       <Link className="link" to={`/app/creators/${user.id}`}>Preview my directory profile</Link>
     </section>
   );
