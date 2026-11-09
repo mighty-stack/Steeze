@@ -13,7 +13,7 @@ import {
 } from '../../lib/notifications.js';
 import { formatDate } from '../../lib/format.js';
 import { track } from '../../lib/analytics/track.js';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 const PAGE_SIZE = 20;
 
@@ -22,6 +22,7 @@ export default function Notifications() {
   const role = user?.role || 'creator';
   const toast = useToast();
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [result, setResult] = useState(null);
   const [loadError, setLoadError] = useState('');
   const [filter, setFilter] = useState('all');
@@ -35,6 +36,12 @@ export default function Notifications() {
   const [adminForm, setAdminForm] = useState({ target: 'creator', title: '', body: '', link: '/app' });
   const [adminSending, setAdminSending] = useState(false);
   const [adminComposerOpen, setAdminComposerOpen] = useState(false);
+  const [selectedNotification, setSelectedNotification] = useState(null);
+
+  const closeAdminComposer = useCallback(() => {
+    if (!adminSending) setAdminComposerOpen(false);
+  }, [adminSending]);
+  const closeSelectedNotification = useCallback(() => setSelectedNotification(null), []);
 
   const loadPage = useCallback(async (page = 1, append = false) => {
     if (append) setLoadingMore(true);
@@ -101,6 +108,18 @@ export default function Notifications() {
     }
   };
 
+  useEffect(() => {
+    const notificationId = searchParams.get('notification');
+    if (!notificationId || !result) return;
+    const item = result.items.find((entry) => entry.id === notificationId);
+    if (!item) return;
+    setSelectedNotification(item);
+    if (!item.isRead) void markRead(item);
+    const next = new URLSearchParams(searchParams);
+    next.delete('notification');
+    setSearchParams(next, { replace: true });
+  }, [result, searchParams, setSearchParams]);
+
   const markAllRead = async () => {
     setBulkBusy(true);
     try {
@@ -158,8 +177,8 @@ export default function Notifications() {
   const openNotification = async (item) => {
     if (busyId) return;
     track('notification_open', { type: item.category || 'other' });
+    setSelectedNotification(item);
     if (!item.isRead) await markRead(item);
-    navigate(notificationDestination(item.link, role));
   };
 
   const sendAdminBroadcast = async (event) => {
@@ -240,7 +259,7 @@ export default function Notifications() {
         <Modal
           title="Add notification"
           labelledBy="admin-notification-composer-heading"
-          onClose={() => { if (!adminSending) setAdminComposerOpen(false); }}
+          onClose={closeAdminComposer}
           footer={(
             <>
               <button type="button" className="btn line" onClick={() => setAdminComposerOpen(false)} disabled={adminSending}>Cancel</button>
@@ -290,10 +309,11 @@ export default function Notifications() {
                 value={adminForm.body}
                 onChange={(event) => setAdminForm((current) => ({ ...current, body: event.target.value }))}
                 placeholder="Write the notification content."
-                maxLength={500}
+                maxLength={10000}
                 rows={5}
                 required
               />
+              <small className="notification-character-count">{adminForm.body.length.toLocaleString()} / 10,000 characters</small>
             </div>
             <div className="field">
               <label htmlFor="admin-notification-link">In-app link</label>
@@ -321,19 +341,19 @@ export default function Notifications() {
             <li className={`notification-row${item.isRead ? ' read' : ' unread'}`} key={item.id}>
               <span className="notification-unread-dot" aria-hidden="true" />
               <div className="notification-row-content">
-                <div className="notification-row-heading">
-                  <button type="button" className="notification-open" onClick={() => openNotification(item)}>
+                <button type="button" className="notification-open" onClick={() => openNotification(item)}>
+                  <div className="notification-row-heading">
                     {item.title}
-                  </button>
-                  <span className="notification-category">{notificationCategoryLabel(item.category)}</span>
-                </div>
-                <p>{item.body}</p>
-                <div className="notification-row-meta">
-                  {item.actorName && <span>{item.actorName}</span>}
-                  <time dateTime={item.createdAt} title={formatDate(item.createdAt, { day: 'numeric', month: 'long', year: 'numeric' })}>
-                    {notificationTime(item.createdAt)}
-                  </time>
-                </div>
+                    <span className="notification-category">{notificationCategoryLabel(item.category)}</span>
+                  </div>
+                  <p>{item.body}</p>
+                  <div className="notification-row-meta">
+                    {item.actorName && <span>{item.actorName}</span>}
+                    <time dateTime={item.createdAt} title={formatDate(item.createdAt, { day: 'numeric', month: 'long', year: 'numeric' })}>
+                      {notificationTime(item.createdAt)}
+                    </time>
+                  </div>
+                </button>
               </div>
               <div className="notification-row-actions">
                 {!item.isRead && (
@@ -365,6 +385,40 @@ export default function Notifications() {
             Load more
           </Button>
         </div>
+      )}
+
+      {selectedNotification && (
+        <Modal
+          title={selectedNotification.title}
+          labelledBy="notification-detail-heading"
+          onClose={closeSelectedNotification}
+          footer={(
+            <>
+              {selectedNotification.link && (
+                <Button
+                  className="primary"
+                  onClick={() => {
+                    const destination = notificationDestination(selectedNotification.link, role);
+                    setSelectedNotification(null);
+                    navigate(destination);
+                  }}
+                >
+                  Open related page
+                </Button>
+              )}
+              <button type="button" className="btn line" onClick={() => setSelectedNotification(null)}>Close</button>
+            </>
+          )}
+        >
+          <div className="notification-detail">
+            <div className="notification-detail-meta">
+              <span className="notification-category">{notificationCategoryLabel(selectedNotification.category)}</span>
+              {selectedNotification.actorName && <span>{selectedNotification.actorName}</span>}
+              <time dateTime={selectedNotification.createdAt}>{formatDate(selectedNotification.createdAt, { day: 'numeric', month: 'long', year: 'numeric', hour: 'numeric', minute: '2-digit' })}</time>
+            </div>
+            <p>{selectedNotification.body}</p>
+          </div>
+        </Modal>
       )}
 
       <section className="notification-preferences" aria-labelledby="notification-preferences-heading">

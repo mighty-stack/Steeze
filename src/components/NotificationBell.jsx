@@ -1,11 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../api/client.js';
-import { useToast } from '../context/Toast.jsx';
 import {
-  emitNotificationsChanged,
   NOTIFICATIONS_CHANGED_EVENT,
-  notificationDestination,
   notificationTime,
 } from '../lib/notifications.js';
 import { track } from '../lib/analytics/track.js';
@@ -14,10 +11,8 @@ export default function NotificationBell({ role }) {
   const [open, setOpen] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
-  const [busyId, setBusyId] = useState('');
   const menuRef = useRef(null);
   const navigate = useNavigate();
-  const toast = useToast();
 
   const load = useCallback(async () => {
     try {
@@ -58,22 +53,10 @@ export default function NotificationBell({ role }) {
     };
   }, [open]);
 
-  const openNotification = async (item) => {
-    if (busyId) return;
+  const openNotification = (item) => {
     track('notification_open', { type: item.category || 'other' });
     setOpen(false);
-    if (!item.isRead) {
-      setBusyId(item.id);
-      try {
-        await api(`/notifications/${encodeURIComponent(item.id)}/read`, { method: 'POST' });
-        emitNotificationsChanged();
-      } catch (err) {
-        toast(err.message || 'Could not mark this notification as read.', 'error');
-      } finally {
-        setBusyId('');
-      }
-    }
-    navigate(notificationDestination(item.link, role));
+    navigate(`${role === 'admin' ? '/admin/notifications' : '/app/notifications'}?notification=${encodeURIComponent(item.id)}`);
   };
 
   const unreadTotal = result?.unreadTotal || 0;
@@ -118,7 +101,6 @@ export default function NotificationBell({ role }) {
                     type="button"
                     className={`notification-popover-item${item.isRead ? '' : ' unread'}`}
                     onClick={() => openNotification(item)}
-                    disabled={Boolean(busyId)}
                   >
                     <span className="notification-unread-dot" aria-hidden="true" />
                     <span className="notification-popover-copy">
