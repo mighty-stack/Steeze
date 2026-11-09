@@ -156,6 +156,7 @@ export const FOOTER_LINKS = {
     { label: 'Help center', to: '#help-center' },
     { label: 'Contact', to: '#contact' },
     { label: 'FAQ', to: '#faq' },
+    { label: 'Privacy Policy', to: '/privacy-policy' },
   ],
 };
 

@@ -461,6 +461,109 @@
     text-align: right;
   }
 
+  .privacy-policy-page {
+    min-height: 100vh;
+    background: #f8f8fc;
+    color: #303752;
+  }
+
+  .privacy-policy-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px max(24px, calc((100vw - 900px) / 2));
+    background: var(--color-brand-navy);
+    color: #fff;
+  }
+
+  .privacy-policy-header a {
+    text-decoration: none;
+  }
+
+  .privacy-policy-home {
+    font-size: 20px;
+    font-weight: 800;
+  }
+
+  .privacy-policy {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 48px 24px 72px;
+  }
+
+  .privacy-policy article {
+    padding: clamp(24px, 5vw, 56px);
+    border: 1px solid #e5e6ef;
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 16px 48px rgb(34 39 71 / 7%);
+  }
+
+  .privacy-policy h1 {
+    margin-bottom: 12px;
+    color: var(--color-brand-navy);
+    font-size: clamp(30px, 5vw, 42px);
+    line-height: 1.15;
+  }
+
+  .privacy-policy h2 {
+    margin-top: 32px;
+    margin-bottom: 12px;
+    color: var(--color-brand-navy);
+    font-size: 22px;
+  }
+
+  .privacy-policy h3 {
+    margin-top: 20px;
+    margin-bottom: 8px;
+    color: var(--color-brand-navy);
+    font-size: 17px;
+  }
+
+  .privacy-policy p,
+  .privacy-policy li {
+    line-height: 1.7;
+  }
+
+  .privacy-policy p + p {
+    margin-top: 10px;
+  }
+
+  .privacy-policy ul {
+    display: grid;
+    gap: 6px;
+    margin: 10px 0 16px;
+    padding-left: 24px;
+    list-style: disc;
+  }
+
+  .privacy-policy section section {
+    margin-top: 12px;
+  }
+
+  .privacy-policy a {
+    color: var(--color-brand-purple-dark);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .privacy-policy-dates {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+    color: #747b98;
+    font-size: 14px;
+  }
+
+  .privacy-policy-copyright {
+    margin-top: 36px !important;
+    border-top: 1px solid #e5e6ef;
+    padding-top: 18px;
+    color: #747b98;
+    font-size: 13px;
+  }
+
   .notification-row-meta {
     justify-content: flex-start;
     flex-wrap: wrap;

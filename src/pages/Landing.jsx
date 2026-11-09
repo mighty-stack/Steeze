@@ -306,9 +306,9 @@ export default function Landing() {
             <h2 id="landing-contact-title">{LANDING_COPY.contactHeading}</h2>
             <p>{LANDING_COPY.contactDescription}</p>
           </div>
-          <MotionLink className="btn white" to="/register/brand" onClick={() => track('cta_click', { id: 'brand_register' })} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+          <motion.a className="btn white" href="mailto:info@cloutlabs.name.ng" onClick={() => track('cta_click', { id: 'contact_email' })} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
             {LANDING_COPY.contactCta}
-          </MotionLink>
+          </motion.a>
         </section>
       </main>
 

@@ -48,6 +48,7 @@ import AdminCreatorEmail from './pages/admin/CreatorEmail.jsx';
 import AdminAnalytics from './pages/admin/Analytics.jsx';
 
 const Landing = lazy(() => import('./pages/Landing.jsx'));
+const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy.jsx'));
 
 export default function App() {
   return (
@@ -59,6 +60,7 @@ export default function App() {
           <AnalyticsErrorBoundary>
           <Routes>
             <Route path="/" element={<Suspense fallback={<Splash />}><Landing /></Suspense>} />
+            <Route path="/privacy-policy" element={<Suspense fallback={<Splash />}><PrivacyPolicy /></Suspense>} />
             <Route path="/verify-email" element={<VerifyEmail />} />
 
             <Route element={<RedirectIfLoggedIn />}>
