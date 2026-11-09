@@ -10,6 +10,7 @@ import { api, ApiError } from '../api/client.js';
 import { useOptions } from '../lib/useOptions.js';
 import { TextField } from '../components/fields.jsx';
 import { validateGroups, brandRules, creatorRules, accountRules, emptyBrand, emptyCreator, brandPayload, creatorPayload } from '../lib/schemas.js';
+import { track } from '../lib/analytics/track.js';
 
 const ACCOUNT_INIT = { email: '', password: '', confirm: '' };
 
@@ -110,8 +111,16 @@ export default function Register({ kind }) {
   const [banner, setBanner] = useState('');
   const headingRef = useRef(null);
   const first = useRef(true);
+  const viewedSteps = useRef(new Set());
   const last = flow.steps.length - 1;
   const current = flow.steps[step];
+
+  useEffect(() => {
+    const key = `${kind}:${step}`;
+    if (viewedSteps.current.has(key)) return;
+    viewedSteps.current.add(key);
+    track('reg_step_view', { flow: kind, step: String(step + 1) });
+  }, [kind, step]);
 
   useEffect(() => {
     document.querySelector('meta[name="description"][data-default-seo]')?.remove();
@@ -154,15 +163,30 @@ export default function Register({ kind }) {
     return i === -1 ? last : i;
   };
 
+  const recordFieldErrors = (errors, currentStep, fromServer = false) => {
+    for (const [fieldPath, message] of Object.entries(errors)) {
+      const field = fieldPath.split('.')[0];
+      const text = String(message).toLowerCase();
+      const code = /already|duplicate|registered/.test(text) ? 'duplicate'
+        : /required|enter|choose|select/.test(text) ? 'required'
+          : /too short|at least|minimum/.test(text) ? 'too_short'
+            : /too long|maximum|limit/.test(text) ? 'too_long'
+              : fromServer ? 'server' : 'invalid';
+      track('reg_field_error', { flow: kind, step: String(currentStep + 1), field, code });
+    }
+  };
+
   const goNext = async (e) => {
     e.preventDefault();
     setBanner('');
     const errors = validateGroups([current.rules], form.values);
     if (Object.keys(errors).length) {
       form.setErrors(errors);
+      recordFieldErrors(errors, step);
       focusFirstError();
       return;
     }
+    track('reg_step_complete', { flow: kind, step: String(step + 1) });
     if (step === last && form.values.accessCode.trim()) {
       setBusy(true);
       try {
@@ -170,7 +194,9 @@ export default function Register({ kind }) {
           method: 'POST',
           body: { code: form.values.accessCode.trim() },
         });
+        track('access_code_check', { ok: true });
       } catch (err) {
+        track('access_code_check', { ok: false });
         setBusy(false);
         if (!(err instanceof ApiError)) throw err;
         const message = err.fields?.accessCode || err.fields?.code;
@@ -198,7 +224,10 @@ export default function Register({ kind }) {
     const errors = validateGroups(flow.steps.map((s) => s.rules), form.values);
     if (Object.keys(errors).length) {
       form.setErrors(errors);
-      setStep(Math.min(...Object.keys(errors).map(stepOfField)));
+      const firstInvalidStep = Math.min(...Object.keys(errors).map(stepOfField));
+      recordFieldErrors(errors, firstInvalidStep);
+      track('reg_submit', { flow: kind, ok: false });
+      setStep(firstInvalidStep);
       focusFirstError();
       return;
     }
@@ -207,6 +236,7 @@ export default function Register({ kind }) {
       const body = { ...flow.payload(form.values), email: form.values.email.trim(), password: form.values.password };
       if (kind === 'creator') body.discoverable = form.values.discoverable !== false;
       const result = await api(flow.endpoint, { method: 'POST', body });
+      track('reg_submit', { flow: kind, ok: true });
       sessionStorage.removeItem(draftKey(kind));
       navigate('/registered', {
         replace: true,
@@ -218,9 +248,11 @@ export default function Register({ kind }) {
         },
       });
     } catch (err) {
+      track('reg_submit', { flow: kind, ok: false });
       if (!(err instanceof ApiError)) throw err;
       const fields = err.fields || {};
       if (Object.keys(fields).length) {
+        recordFieldErrors(fields, Math.min(...Object.keys(fields).map(stepOfField)), true);
         form.setErrors(fields);
         setStep(Math.min(...Object.keys(fields).map(stepOfField)));
         setBanner(err.status === 409 ? 'Some details are already registered. Check the highlighted fields.' : 'Check the highlighted fields.');

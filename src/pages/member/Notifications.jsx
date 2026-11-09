@@ -12,6 +12,7 @@ import {
   notificationTime,
 } from '../../lib/notifications.js';
 import { formatDate } from '../../lib/format.js';
+import { track } from '../../lib/analytics/track.js';
 import { useNavigate } from 'react-router-dom';
 
 const PAGE_SIZE = 20;
@@ -156,6 +157,7 @@ export default function Notifications() {
 
   const openNotification = async (item) => {
     if (busyId) return;
+    track('notification_open', { type: item.category || 'other' });
     if (!item.isRead) await markRead(item);
     navigate(notificationDestination(item.link, role));
   };

@@ -430,11 +430,11 @@ export default function Registrations() {
           <div className="scroll">
             <table>
               <thead>
-                <tr><th>Name</th><th>Type</th><th>Category</th><th>Location</th><th>Registered</th><th>Status</th></tr>
+                <tr><th>Name</th><th>Type</th><th>Category</th><th>Location</th><th>Registered</th><th>Last active</th><th>Status</th></tr>
               </thead>
               <tbody>
                 {!list && !listError && Array.from({ length: 6 }).map((_, i) => (
-                  <tr key={i} className="skeleton"><td colSpan={6}><div style={{ width: `${60 + (i % 3) * 10}%` }} /></td></tr>
+                  <tr key={i} className="skeleton"><td colSpan={7}><div style={{ width: `${60 + (i % 3) * 10}%` }} /></td></tr>
                 ))}
                 {list?.items.map((u) => {
                   const status = statusOf(u);
@@ -453,6 +453,7 @@ export default function Registrations() {
                       <td>{u.categoryOrNiche?.label || '\u2013'}</td>
                       <td>{u.location?.label || '\u2013'}</td>
                       <td>{relativeDay(u.createdAt)}</td>
+                      <td>{u.lastActiveAt ? relativeDay(u.lastActiveAt) : 'Not recorded'}</td>
                       <td><Pill tone={status.tone}>{status.label}</Pill></td>
                     </tr>
                   );

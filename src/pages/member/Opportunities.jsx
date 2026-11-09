@@ -1,10 +1,11 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '../../context/Auth.jsx';
 import { api, ApiError } from '../../api/client.js';
 import { useToast } from '../../context/Toast.jsx';
 import { Button, ConfirmDialog, Modal, Pill, Splash, cx } from '../../components/ui.jsx';
 import { formatDate } from '../../lib/format.js';
+import { track } from '../../lib/analytics/track.js';
 
 const STATUS = {
   pending: { label: 'Interest sent', tone: 'wait' },
@@ -37,6 +38,7 @@ function CreatorOpportunities() {
   const [withdrawTarget, setWithdrawTarget] = useState(null);
   const [message, setMessage] = useState('');
   const [busyId, setBusyId] = useState('');
+  const viewedIds = useRef(new Set());
 
   const load = async () => {
     setError('');
@@ -57,12 +59,21 @@ function CreatorOpportunities() {
     )),
     [items, tab, statusFilter, opportunityFilter],
   );
+  useEffect(() => {
+    for (const item of visibleItems) {
+      if (viewedIds.current.has(item.id)) continue;
+      viewedIds.current.add(item.id);
+      track('opportunity_view', { id: item.id });
+    }
+  }, [visibleItems]);
+
   const updateView = (view) => {
     const next = new URLSearchParams(searchParams);
     if (view === 'all') next.delete('view');
     else next.set('view', view);
     next.delete('status');
     next.delete('opportunity');
+    track('filter_applied', { surface: 'opportunities', filter: 'view' });
     setSearchParams(next);
   };
 
@@ -136,6 +147,7 @@ function CreatorOpportunities() {
         const next = new URLSearchParams(searchParams);
         next.delete('status');
         next.delete('opportunity');
+        track('filter_applied', { surface: 'opportunities', filter: 'status' });
         setSearchParams(next);
       }}>Showing {statusFilter === 'shortlisted' ? 'shortlisted' : statusFilter} · Clear filter</button>}
 

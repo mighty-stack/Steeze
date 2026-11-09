@@ -1,16 +1,24 @@
 import { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { initial } from '../lib/format.js';
+import { track } from '../lib/analytics/track.js';
 import { cx, Wordmark } from './ui.jsx';
 
 function NavigationLink({ to, label, icon, end, badge, onNavigate }) {
+  const ctaId = to.startsWith('/app/opportunities') ? 'opportunities'
+    : to.startsWith('/app/resources') ? 'resources'
+      : to.startsWith('/app/creators') ? 'creators'
+        : null;
   return (
     <NavLink
       to={to}
       end={end}
       title={label}
       aria-label={label}
-      onClick={onNavigate}
+      onClick={() => {
+        if (ctaId) track('cta_click', { id: ctaId });
+        onNavigate();
+      }}
       className={({ isActive }) => cx('dashboard-sidebar-link', isActive && 'on')}
     >
       <span className="dashboard-sidebar-icon" aria-hidden="true">{icon}</span>

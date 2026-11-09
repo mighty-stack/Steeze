@@ -4,6 +4,8 @@ import { AuthProvider } from './context/Auth.jsx';
 import { ToastProvider } from './context/Toast.jsx';
 import { SlowBanner, Splash } from './components/ui.jsx';
 import { RequireRole, RedirectIfLoggedIn } from './components/Guards.jsx';
+import RouteAnalytics from './components/RouteAnalytics.jsx';
+import AnalyticsErrorBoundary from './components/AnalyticsErrorBoundary.jsx';
 
 import Register from './pages/Register.jsx';
 import Registered from './pages/Registered.jsx';
@@ -43,15 +45,18 @@ import AdminAccessCodes from './pages/admin/AccessCodes.jsx';
 import AdminTraining from './pages/admin/Training.jsx';
 import AdminCollaborations from './pages/admin/Collaborations.jsx';
 import AdminCreatorEmail from './pages/admin/CreatorEmail.jsx';
+import AdminAnalytics from './pages/admin/Analytics.jsx';
 
 const Landing = lazy(() => import('./pages/Landing.jsx'));
 
 export default function App() {
   return (
     <BrowserRouter>
+      <RouteAnalytics />
       <ToastProvider>
         <AuthProvider>
           <SlowBanner />
+          <AnalyticsErrorBoundary>
           <Routes>
             <Route path="/" element={<Suspense fallback={<Splash />}><Landing /></Suspense>} />
             <Route path="/verify-email" element={<VerifyEmail />} />
@@ -94,6 +99,7 @@ export default function App() {
             <Route element={<RequireRole roles={['admin']} />}>
               <Route path="/admin" element={<AdminLayout />}>
                 <Route index element={<AdminOverview />} />
+                <Route path="analytics" element={<AdminAnalytics />} />
                 <Route path="registrations" element={<AdminRegistrations />} />
                 <Route path="access-codes" element={<AdminAccessCodes />} />
                 <Route path="resources" element={<AdminResources />} />
@@ -110,6 +116,7 @@ export default function App() {
 
             <Route path="*" element={<NotFound />} />
           </Routes>
+          </AnalyticsErrorBoundary>
         </AuthProvider>
       </ToastProvider>
     </BrowserRouter>

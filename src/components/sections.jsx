@@ -4,14 +4,25 @@ import { TextField, TextAreaField, SelectField, ChipGroup, PasswordField, Social
 /* Reusable groups of fields. The registration wizard shows them one step at a time; the member
    and admin edit screens stack them on a single page. `form` comes from useForm. */
 
+const LEGACY_COUNTRY_ALIASES = new Map([
+  ['Cote d\'Ivoire', 'Côte d\'Ivoire'],
+]);
+
 function locationCountry(label) {
-  const separator = label.lastIndexOf(',');
-  return separator < 0 ? 'Other' : label.slice(separator + 1).trim();
+  const separator = label.lastIndexOf(' — ');
+  if (separator >= 0) return label.slice(separator + 3).trim();
+
+  const legacySeparator = label.lastIndexOf(',');
+  const country = legacySeparator < 0 ? 'Other' : label.slice(legacySeparator + 1).trim();
+  return LEGACY_COUNTRY_ALIASES.get(country) || country;
 }
 
 function locationName(label) {
-  const separator = label.lastIndexOf(',');
-  return separator < 0 ? label : label.slice(0, separator).trim();
+  const separator = label.lastIndexOf(' — ');
+  if (separator >= 0) return label.slice(0, separator).trim();
+
+  const legacySeparator = label.lastIndexOf(',');
+  return legacySeparator < 0 ? label : label.slice(0, legacySeparator).trim();
 }
 
 function LocationFields({ form, options, hint }) {
@@ -31,9 +42,17 @@ function LocationFields({ form, options, hint }) {
     if (selected) setCountry(locationCountry(selected.label));
   }, [form.values.location, locations]);
 
-  const stateOptions = locations
-    .filter((location) => country && locationCountry(location.label) === country)
-    .map((location) => ({ ...location, label: locationName(location.label) }));
+  const countryLocations = locations.filter((location) => country && locationCountry(location.label) === country);
+  const regionNames = new Set(
+    countryLocations
+      .filter((location) => location.label.includes(' — '))
+      .map((location) => locationName(location.label).toLowerCase()),
+  );
+  const stateOptions = countryLocations.map((location) => {
+    const name = locationName(location.label);
+    const isLegacyCity = !location.label.includes(' — ') && regionNames.has(name.toLowerCase());
+    return { ...location, label: isLegacyCity ? `${name} (city)` : name };
+  });
 
   return (
     <>

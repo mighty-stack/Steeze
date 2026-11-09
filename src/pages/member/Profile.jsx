@@ -10,6 +10,7 @@ import {
 import { PasswordField, TextField } from '../../components/fields.jsx';
 import { api, ApiError } from '../../api/client.js';
 import { Link } from 'react-router-dom';
+import { setMemberAnalyticsOptOut } from '../../lib/analytics/consent.js';
 import { platformLabel, compactNumber, fullNumber, STATUS, formatDate } from '../../lib/format.js';
 import {
   brandRules, creatorRules, brandFromProfile, creatorFromProfile, brandPayload, creatorPayload, validateGroups, accountRules,
@@ -203,6 +204,47 @@ function VisibilitySettings({ user, setUser }) {
   );
 }
 
+function AnalyticsPrivacySettings({ user, setUser }) {
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const toast = useToast();
+
+  const update = async (optOut) => {
+    const previous = Boolean(user.analyticsOptOut);
+    setBusy(true);
+    setError('');
+    if (optOut) setMemberAnalyticsOptOut(true);
+    try {
+      const result = await api('/profile/settings', { method: 'PATCH', body: { analyticsOptOut: optOut } });
+      setUser(result.user);
+      setMemberAnalyticsOptOut(result.user.analyticsOptOut);
+      toast('Privacy setting updated.');
+    } catch (err) {
+      setMemberAnalyticsOptOut(previous);
+      setError(err.message || 'Could not update your analytics preference.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <section className="card creator-visibility-card">
+      <h2>Privacy</h2>
+      <p className="card-lede">Choose whether your account activity is included in CloutLabs’ aggregate analytics. Essential account activity is unaffected.</p>
+      {error && <p className="form-error" role="alert">{error}</p>}
+      <label className="creator-visibility-row">
+        <input
+          type="checkbox"
+          checked={user.analyticsOptOut !== true}
+          disabled={busy}
+          onChange={(event) => update(!event.target.checked)}
+        />
+        <span><b>Include my activity in anonymous analytics</b><small>When unchecked, future activity is excluded from product analytics.</small></span>
+      </label>
+    </section>
+  );
+}
+
 export default function Profile() {
   const { user, profile, setProfile, setUser, profileLoading, profileError, refreshProfile } = useAuth();
   const { options } = useOptions();
@@ -254,6 +296,7 @@ export default function Profile() {
         </div>
       </div>
       {user.role === 'creator' && <VisibilitySettings user={user} setUser={setUser} />}
+      <AnalyticsPrivacySettings user={user} setUser={setUser} />
     </>
   );
 }

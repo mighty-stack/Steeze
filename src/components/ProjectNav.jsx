@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { Wordmark, cx } from './ui.jsx';
 import { initial } from '../lib/format.js';
+import { track } from '../lib/analytics/track.js';
 
 export default function ProjectNav({ user, unseen = 0, onLogout, landing = false }) {
   const admin = user?.role === 'admin';
@@ -45,17 +46,18 @@ export default function ProjectNav({ user, unseen = 0, onLogout, landing = false
         {!user ? landing ? (
           <>
             <a href="#about">About</a>
-            <Link to="/login">Log in</Link>
+            <Link to="/login" onClick={() => track('cta_click', { id: 'login' })}>Log in</Link>
             <a className="nav-register" href="#register">Register</a>
           </>
         ) : (
           <>
             <a href="#about">About</a>
-            <Link to="/login">Log in</Link>
+            <Link to="/login" onClick={() => track('cta_click', { id: 'login' })}>Log in</Link>
           </>
         ) : admin ? (
           <>
             <NavLink to="/admin" end onClick={() => setNavOpen(false)} className={({ isActive }) => cx(isActive && 'active')}>Overview</NavLink>
+            <NavLink to="/admin/analytics" onClick={() => setNavOpen(false)} className={({ isActive }) => cx(isActive && 'active')}>Analytics</NavLink>
             <NavLink to="/admin/registrations" onClick={() => setNavOpen(false)} className={({ isActive }) => cx(isActive && 'active')}>
               Registrations {unseen > 0 && <span className="count-badge">{unseen} new</span>}
             </NavLink>

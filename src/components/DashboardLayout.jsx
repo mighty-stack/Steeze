@@ -27,6 +27,7 @@ export default function DashboardLayout({ user, admin = false, stats, onLogout, 
   const links = admin
     ? [
       { to: '/admin', label: 'Overview', icon: 'OV', end: true },
+      { to: '/admin/analytics', label: 'Analytics', icon: 'AN' },
       {
         to: '/admin/registrations',
         label: 'Registrations',

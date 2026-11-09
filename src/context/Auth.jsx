@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { api, ApiError } from '../api/client.js';
+import { setMemberAnalyticsOptOut } from '../lib/analytics/consent.js';
 
 const AuthContext = createContext(null);
 
@@ -34,6 +35,7 @@ export function AuthProvider({ children }) {
     try {
       const { user: u } = await api('/auth/me');
       setUser(u);
+      setMemberAnalyticsOptOut(u.analyticsOptOut || u.role === 'admin');
       setAuthError(null);
       if (u.role === 'brand' || u.role === 'creator') await refreshProfile();
       else setProfile(null);
@@ -41,6 +43,7 @@ export function AuthProvider({ children }) {
     } catch (err) {
       if (err instanceof ApiError && err.status === 401) {
         setUser(null);
+        setMemberAnalyticsOptOut(false);
         setProfile(null);
         return null;
       }
@@ -59,6 +62,7 @@ export function AuthProvider({ children }) {
   const login = useCallback(async (email, password) => {
     const { user: u } = await api('/auth/login', { method: 'POST', body: { email, password } });
     setUser(u);
+    setMemberAnalyticsOptOut(u.analyticsOptOut || u.role === 'admin');
     setAuthError(null);
     if (u.role === 'brand' || u.role === 'creator') await refreshProfile();
     else setProfile(null);
@@ -70,6 +74,7 @@ export function AuthProvider({ children }) {
       await api('/auth/logout', { method: 'POST' });
     } finally {
       setUser(null);
+      setMemberAnalyticsOptOut(false);
       setProfile(null);
       setProfileError('');
       setAuthError(null);

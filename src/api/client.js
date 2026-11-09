@@ -1,3 +1,6 @@
+import { getAnalyticsSessionId } from '../lib/analytics/track.js';
+import { isAnalyticsAllowed } from '../lib/analytics/consent.js';
+
 const BASE = import.meta.env.DEV ? (import.meta.env.VITE_API_URL || '').replace(/\/$/, '') : '';
 const TIMEOUT_MS = 90_000; // a sleeping Render free-tier server can take up to ~60s to wake
 const SLOW_AFTER_MS = 4_000;
@@ -50,7 +53,20 @@ async function send(url, options) {
   const controller = new AbortController();
   const abort = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
-    return await fetch(url, { credentials: 'include', signal: controller.signal, ...options });
+    let analyticsHeaders = {};
+    try {
+      analyticsHeaders = isAnalyticsAllowed()
+        ? { 'x-analytics-session': getAnalyticsSessionId() }
+        : { 'x-analytics-opt-out': '1' };
+    } catch {
+      // Analytics session setup must not block a regular API call.
+    }
+    return await fetch(url, {
+      credentials: 'include',
+      signal: controller.signal,
+      ...options,
+      headers: { ...analyticsHeaders, ...options.headers },
+    });
   } catch (err) {
     const timedOut = err?.name === 'AbortError';
     throw new ApiError(

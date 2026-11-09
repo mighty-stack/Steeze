@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { api } from '../../api/client.js';
 import { useToast } from '../../context/Toast.jsx';
 import { Button, Splash } from '../../components/ui.jsx';
+import { track } from '../../lib/analytics/track.js';
 
 const formatMoney = (minor, currency = 'NGN') => {
   const amount = Number(minor || 0) / 100;
@@ -18,6 +19,17 @@ function ResourceCard({ item, selected, onToggle, onOpenLibrary }) {
   const owned = Boolean(item.owned);
   const price = formatMoney(item.priceMinor, item.currency);
   const compareAt = item.compareAtMinor ? formatMoney(item.compareAtMinor, item.currency) : null;
+  const viewed = useRef(false);
+  const toggleSelection = () => {
+    if (!selected) track('cart_add', { id: item.id });
+    onToggle(item.id);
+  };
+
+  useEffect(() => {
+    if (viewed.current) return;
+    viewed.current = true;
+    track('resource_view', { id: item.id });
+  }, [item.id]);
 
   return (
     <article className="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm shadow-slate-200/60">
@@ -33,7 +45,7 @@ function ResourceCard({ item, selected, onToggle, onOpenLibrary }) {
           <button
             type="button"
             className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold ${selected ? 'border-violet-600 bg-violet-600 text-white' : 'border-slate-300 text-slate-700'}`}
-            onClick={() => onToggle(item.id)}
+            onClick={toggleSelection}
             disabled={owned}
           >
             {selected ? 'Selected' : 'Add to cart'}
@@ -73,7 +85,7 @@ function ResourceCard({ item, selected, onToggle, onOpenLibrary }) {
         {owned ? (
           <Button className="primary sm" onClick={onOpenLibrary}>Open in library</Button>
         ) : (
-          <Button className="primary sm" onClick={() => onToggle(item.id)}>{selected ? 'Remove' : 'Select'}</Button>
+          <Button className="primary sm" onClick={toggleSelection}>{selected ? 'Remove' : 'Select'}</Button>
         )}
       </div>
     </article>
@@ -157,6 +169,7 @@ export default function MemberResources() {
 
   const checkout = async () => {
     if (!cartItems.length) return;
+    track('checkout_start', {});
     try {
       const result = await api('/resources/checkout', {
         method: 'POST',

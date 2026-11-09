@@ -13,6 +13,8 @@ import {
   FOOTER_DESCRIPTION, FOOTER_LINKS, FOOTER_SOCIALS,
 } from '../lib/content.js';
 import OfferDeck from '../components/OfferDeck.jsx';
+import { track } from '../lib/analytics/track.js';
+import { isAnalyticsOptedOut, setAnalyticsOptOut } from '../lib/analytics/consent.js';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -32,6 +34,7 @@ function SocialIcon({ name }) {
 
 export default function Landing() {
   const [openFaq, setOpenFaq] = useState(null);
+  const [analyticsOptOut, setAnalyticsOptOutState] = useState(() => isAnalyticsOptedOut());
   const landingRef = useRef(null);
   const siteUrl = import.meta.env.VITE_SITE_URL || window.location.origin;
   const [useStaticHero, setUseStaticHero] = useState(() => (
@@ -203,7 +206,7 @@ export default function Landing() {
                 <h2>{panel.title}</h2>
                 <p>{panel.text}</p>
                 <p className="panel-offers">{panel.offers}</p>
-                <MotionLink className="btn white" to={panel.to} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+                <MotionLink className="btn white" to={panel.to} onClick={() => track('cta_click', { id: panel.kind === 'brand' ? 'brand_register' : 'creator_register' })} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
                   {panel.cta}
                 </MotionLink>
               </motion.div>
@@ -303,7 +306,7 @@ export default function Landing() {
             <h2 id="landing-contact-title">{LANDING_COPY.contactHeading}</h2>
             <p>{LANDING_COPY.contactDescription}</p>
           </div>
-          <MotionLink className="btn white" to="/register/brand" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+          <MotionLink className="btn white" to="/register/brand" onClick={() => track('cta_click', { id: 'brand_register' })} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
             {LANDING_COPY.contactCta}
           </MotionLink>
         </section>
@@ -362,6 +365,18 @@ export default function Landing() {
         </div>
         <div className="footer-bottom">
           <span>&copy; {new Date().getFullYear()} {LANDING_COPY.footerName}</span>
+          <label className="analytics-visitor-toggle">
+            <input
+              type="checkbox"
+              checked={!analyticsOptOut}
+              onChange={(event) => {
+                const optedOut = !event.target.checked;
+                setAnalyticsOptOutState(optedOut);
+                setAnalyticsOptOut(optedOut);
+              }}
+            />
+            <span>Share anonymous usage analytics<small>DNT and GPC are always respected.</small></span>
+          </label>
           <span>{LANDING_COPY.footerBottom}</span>
         </div>
       </footer>

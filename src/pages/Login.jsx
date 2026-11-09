@@ -8,6 +8,7 @@ import { useForm, focusFirstError } from '../components/useForm.js';
 import { useAuth } from '../context/Auth.jsx';
 import { ApiError } from '../api/client.js';
 import { rules } from '../lib/validation.js';
+import { track } from '../lib/analytics/track.js';
 
 const HOME = { admin: '/admin', brand: '/app', creator: '/app' };
 const BLOCKED = ['ACCOUNT_PENDING', 'ACCOUNT_REJECTED', 'ACCOUNT_DEACTIVATED'];
@@ -32,8 +33,10 @@ export default function Login() {
     setBusy(true);
     try {
       const user = await login(form.values.email.trim(), form.values.password);
+      track('login_attempt', { ok: true });
       navigate(HOME[user.role], { replace: true });
     } catch (err) {
+      track('login_attempt', { ok: false });
       if (!(err instanceof ApiError)) throw err;
       if (BLOCKED.includes(err.code)) setBlocked(err);
       else if (err.fields && Object.keys(err.fields).length) { form.setErrors(err.fields); focusFirstError(); }

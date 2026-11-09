@@ -8,6 +8,7 @@ import {
   notificationDestination,
   notificationTime,
 } from '../lib/notifications.js';
+import { track } from '../lib/analytics/track.js';
 
 export default function NotificationBell({ role }) {
   const [open, setOpen] = useState(false);
@@ -59,6 +60,7 @@ export default function NotificationBell({ role }) {
 
   const openNotification = async (item) => {
     if (busyId) return;
+    track('notification_open', { type: item.category || 'other' });
     setOpen(false);
     if (!item.isRead) {
       setBusyId(item.id);

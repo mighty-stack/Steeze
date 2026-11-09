@@ -1,10 +1,11 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { api } from '../../api/client.js';
 import { Button, Pill } from '../../components/ui.jsx';
 import LevelBadge from '../../components/LevelBadge.jsx';
 import { useAuth } from '../../context/Auth.jsx';
 import { useOptions } from '../../lib/useOptions.js';
+import { track } from '../../lib/analytics/track.js';
 import '../../styles/directory.css';
 
 const EMPTY_RESULT = { items: [], total: 0, page: 1, pages: 1, limit: 24 };
@@ -108,6 +109,7 @@ export default function CreatorDirectory() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
   const [retry, setRetry] = useState(0);
+  const previousSearchState = useRef(null);
   const debouncedSearch = useDebounced(search, 300);
   const values = Object.fromEntries(searchParams.entries());
 
@@ -124,6 +126,17 @@ export default function CreatorDirectory() {
     if (value !== previous) next.delete('page');
     if (next.toString() !== searchParams.toString()) setSearchParams(next, { replace: true });
   }, [debouncedSearch]);
+
+  useEffect(() => {
+    const query = (searchParams.get('q') || '').trim();
+    const hasQuery = Boolean(query);
+    const filters = [...searchParams.keys()].filter((key) => !['q', 'page'].includes(key)).length;
+    const previous = previousSearchState.current;
+    if (previous && (previous.query !== query || previous.filters !== filters) && (hasQuery || filters)) {
+      track('search_used', { surface: 'directory', hasQuery, filters });
+    }
+    previousSearchState.current = { query, filters };
+  }, [searchParams]);
 
   useEffect(() => {
     let active = true;
@@ -150,9 +163,11 @@ export default function CreatorDirectory() {
     if (value) next.set(field, value);
     else next.delete(field);
     next.delete('page');
+    if (value) track('filter_applied', { surface: 'directory', filter: field });
     setSearchParams(next);
   };
   const clearFilters = () => {
+    if (searchParams.toString()) track('filter_applied', { surface: 'directory', filter: 'clear' });
     setSearch('');
     setSearchParams({});
   };
