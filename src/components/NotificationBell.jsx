@@ -6,6 +6,7 @@ import {
   notificationTime,
 } from '../lib/notifications.js';
 import { track } from '../lib/analytics/track.js';
+import CommunityLinks from './CommunityLinks.jsx';
 
 export default function NotificationBell({ role }) {
   const [open, setOpen] = useState(false);
@@ -115,6 +116,7 @@ export default function NotificationBell({ role }) {
           ) : (
             <p className="notification-popover-empty">New updates will appear here.</p>
           )}
+          <CommunityLinks title="Community links" className="notification-community-links" />
           <button
             type="button"
             className="notification-popover-all"

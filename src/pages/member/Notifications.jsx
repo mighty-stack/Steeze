@@ -14,6 +14,7 @@ import {
 import { formatDate } from '../../lib/format.js';
 import { track } from '../../lib/analytics/track.js';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import CommunityLinks from '../../components/CommunityLinks.jsx';
 
 const PAGE_SIZE = 20;
 
@@ -420,6 +421,8 @@ export default function Notifications() {
           </div>
         </Modal>
       )}
+
+      <CommunityLinks title="Community links" className="notifications-community-links" />
 
       <section className="notification-preferences" aria-labelledby="notification-preferences-heading">
         <div>
