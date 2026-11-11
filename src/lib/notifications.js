@@ -67,15 +67,17 @@ export function notificationDestination(link, role) {
 
   if (url.pathname === '/score' && role === 'creator') return `/app/score${suffix}`;
   if (role === 'creator' && url.pathname === '/training') return `/app/training${suffix}`;
-  const trainingClass = /^\/training\/classes\/([^/]+)\/?$/.exec(url.pathname);
-  if (role === 'creator' && trainingClass) {
+  if (role === 'creator' && (url.pathname === '/training/webinars' || url.pathname === '/webinars')) return `/app${url.pathname === '/training/webinars' ? '/training/webinars' : '/webinars'}${suffix}`;
+  const trainingSession = /^\/(?:training\/)?(classes|webinars)\/([^/]+)\/?$/.exec(url.pathname);
+  if (role === 'creator' && trainingSession) {
+    const kind = trainingSession[1] === 'webinars' ? 'webinar' : 'class';
     let id;
     try {
-      id = encodeURIComponent(decodeURIComponent(trainingClass[1]));
+      id = encodeURIComponent(decodeURIComponent(trainingSession[2]));
     } catch {
       return fallback;
     }
-    return `/app/training/classes/${id}${suffix}`;
+    return kind === 'webinar' ? `/app/webinars/${id}${suffix}` : `/app/training/classes/${id}${suffix}`;
   }
   if (role === 'creator' && url.pathname === '/training/updates') return `/app/training/updates${suffix}`;
   if (role === 'admin' && (url.pathname === '/admin' || url.pathname.startsWith('/admin/'))) {

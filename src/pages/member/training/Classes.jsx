@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
 import { api, qs } from '../../../api/client.js';
 import { Button } from '../../../components/ui.jsx';
 import { TrainingSessionCard, TrainingSessionSkeleton } from './TrainingSessionCard.jsx';
@@ -7,7 +7,9 @@ import { TrainingSessionCard, TrainingSessionSkeleton } from './TrainingSessionC
 const LIMIT = 12;
 
 export default function Classes() {
+  const location = useLocation();
   const [params, setParams] = useSearchParams();
+  const kind = params.get('kind') === 'webinar' || (params.get('kind') !== 'class' && location.pathname.includes('/webinars')) ? 'webinar' : 'class';
   const when = params.get('when') === 'past' ? 'past' : 'upcoming';
   const topic = params.get('topic') || '';
   const page = Number(params.get('page')) || 1;
@@ -21,14 +23,14 @@ export default function Classes() {
     setError('');
     setLoading(true);
     try {
-      const data = await api(`/training/sessions${qs({ when, topic, q: params.get('q'), page, limit: LIMIT })}`);
+      const data = await api(`/training/sessions${qs({ when, kind, topic, q: params.get('q'), page, limit: LIMIT })}`);
       setResult(data);
     } catch (err) {
       setError(err.message || 'Could not load training classes.');
     } finally {
       setLoading(false);
     }
-  }, [when, topic, page, params]);
+  }, [when, topic, page, params, kind]);
 
   useEffect(() => { load(); }, [load]);
   useEffect(() => {
@@ -58,13 +60,25 @@ export default function Classes() {
   return (
     <section className="training-page" aria-labelledby="training-classes-heading">
       <header className="training-section-heading">
-        <div><h2 id="training-classes-heading">Classes</h2><p>Browse live, upcoming and past training classes.</p></div>
+        <div><h2 id="training-classes-heading">{kind === 'webinar' ? 'Webinars' : 'Classes'}</h2><p>{kind === 'webinar' ? 'Browse upcoming and past webinars for the Steeze community.' : 'Browse live, upcoming and past training classes.'}</p></div>
       </header>
       <div className="training-class-filters">
         <div className="training-tab-list" role="tablist" aria-label="Class time">
           {['upcoming', 'past'].map((value) => (
             <button type="button" role="tab" aria-selected={when === value} className={when === value ? 'on' : ''} key={value} onClick={() => updateParam('when', value)}>
               {value === 'upcoming' ? 'Upcoming' : 'Past'}
+            </button>
+          ))}
+        </div>
+        <div className="training-tab-list" role="tablist" aria-label="Session type">
+          {['class', 'webinar'].map((value) => (
+            <button type="button" role="tab" aria-selected={kind === value} className={kind === value ? 'on' : ''} key={value} onClick={() => {
+              const next = new URLSearchParams(params);
+              next.set('kind', value);
+              next.delete('page');
+              setParams(next);
+            }}>
+              {value === 'class' ? 'Classes' : 'Webinars'}
             </button>
           ))}
         </div>
@@ -75,12 +89,12 @@ export default function Classes() {
           </select>
         </label>
         <label><span className="sr-only">Search classes</span>
-          <input className="input" type="search" value={search} maxLength={100} placeholder="Search classes" onChange={(event) => setSearch(event.target.value)} />
+          <input className="input" type="search" value={search} maxLength={100} placeholder={kind === 'webinar' ? 'Search webinars' : 'Search classes'} onChange={(event) => setSearch(event.target.value)} />
         </label>
       </div>
       {error && <div className="training-inline-error" role="alert">{error}<button className="link" onClick={load}>Retry</button></div>}
       {loading && !result ? <TrainingSessionSkeleton /> : result?.items.length ? result.items.map((item) => <TrainingSessionCard item={item} key={item.id} />) : !loading && (
-        <div className="training-empty">{when === 'upcoming' ? 'No upcoming classes yet. Check back soon.' : 'No past classes yet.'}</div>
+        <div className="training-empty">{kind === 'webinar' ? (when === 'upcoming' ? 'No upcoming webinars yet. Check back soon.' : 'No past webinars yet.') : (when === 'upcoming' ? 'No upcoming classes yet. Check back soon.' : 'No past classes yet.')}</div>
       )}
       {result?.pages > 1 && (
         <nav className="training-pagination" aria-label="Class pages">

@@ -12,6 +12,12 @@ import AdminEmailModal from './AdminEmailModal.jsx';
 
 const PAGE_SIZE = 20;
 const CREATOR_LEVELS = ['intern', 'emerging', 'rising', 'established', 'professional'];
+const COHORT_OPTIONS = [
+  { value: '', label: 'All cohorts' },
+  { value: 'launch', label: 'Launch cohort' },
+  { value: 'v1', label: 'V1 cohort' },
+  { value: 'general', label: 'General' },
+];
 const TABS = [
   { key: 'all', label: 'All', query: {} },
   { key: 'brand', label: 'Brands', query: { role: 'brand' } },
@@ -195,6 +201,7 @@ export default function Registrations() {
   const debouncedQ = useDebounced(q, 350);
   const [category, setCategory] = useState('');
   const [location, setLocation] = useState('');
+  const [cohort, setCohort] = useState(() => params.get('cohort') || '');
   const [level, setLevel] = useState(() => params.get('level') || '');
   const [minScore, setMinScore] = useState(() => params.get('minScore') || '');
   const [sort, setSort] = useState(() => params.get('sort') || '');
@@ -232,6 +239,7 @@ export default function Registrations() {
     q: debouncedQ,
     category,
     location,
+    ...(cohort ? { cohort } : {}),
     ...(onlyUnseen ? { unseen: 'true' } : {}),
     ...(accessCodeId ? { accessCode: accessCodeId } : {}),
     ...(level ? { level } : {}),
@@ -251,7 +259,7 @@ export default function Registrations() {
       if (id === requestId.current) setListError(err.message);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tab, debouncedQ, category, location, page, onlyUnseen, accessCodeId, level, minScore, sort]);
+  }, [tab, debouncedQ, category, location, cohort, page, onlyUnseen, accessCodeId, level, minScore, sort]);
 
   useEffect(() => { setList(null); load(); }, [load]);
   useEffect(() => {
@@ -265,7 +273,7 @@ export default function Registrations() {
       window.removeEventListener('focus', refreshWhenVisible);
     };
   }, [load]);
-  useEffect(() => { setPage(1); }, [tab, debouncedQ, category, location, onlyUnseen, accessCodeId, level, minScore, sort]);
+  useEffect(() => { setPage(1); }, [tab, debouncedQ, category, location, cohort, onlyUnseen, accessCodeId, level, minScore, sort]);
 
   const openDetail = async (id) => {
     setSelectedId(id);
@@ -403,6 +411,9 @@ export default function Registrations() {
           <option value="">Location</option>
           {options?.location.map((o) => <option key={o.id} value={o.id}>{o.label}</option>)}
         </select>
+        <select className="select input" value={cohort} onChange={(e) => setCohort(e.target.value)} aria-label="Filter by cohort">
+          {COHORT_OPTIONS.map((o) => <option key={o.value || 'all'} value={o.value}>{o.label}</option>)}
+        </select>
         <select className="select input" value={level} onChange={(e) => { setLevel(e.target.value); if (e.target.value) setTab('creator'); }} aria-label="Filter by creator level">
           <option value="">All creator levels</option>
           {CREATOR_LEVELS.map((item) => <option key={item} value={item}>{item}</option>)}
@@ -430,11 +441,11 @@ export default function Registrations() {
           <div className="scroll">
             <table>
               <thead>
-                <tr><th>Name</th><th>Type</th><th>Category</th><th>Location</th><th>Registered</th><th>Last active</th><th>Status</th></tr>
+                <tr><th>Name</th><th>Type</th><th>Category</th><th>Location</th><th>Cohort</th><th>Registered</th><th>Last active</th><th>Status</th></tr>
               </thead>
               <tbody>
                 {!list && !listError && Array.from({ length: 6 }).map((_, i) => (
-                  <tr key={i} className="skeleton"><td colSpan={7}><div style={{ width: `${60 + (i % 3) * 10}%` }} /></td></tr>
+                  <tr key={i} className="skeleton"><td colSpan={8}><div style={{ width: `${60 + (i % 3) * 10}%` }} /></td></tr>
                 ))}
                 {list?.items.map((u) => {
                   const status = statusOf(u);
@@ -452,6 +463,7 @@ export default function Registrations() {
                       <td className="ty"><span className={cx('dot', u.role === 'brand' ? 'b' : 'c')} />{u.role === 'brand' ? 'Brand' : 'Creator'}</td>
                       <td>{u.categoryOrNiche?.label || '\u2013'}</td>
                       <td>{u.location?.label || '\u2013'}</td>
+                      <td>{u.cohort || '\u2013'}</td>
                       <td>{relativeDay(u.createdAt)}</td>
                       <td>{u.lastActiveAt ? relativeDay(u.lastActiveAt) : 'Not recorded'}</td>
                       <td><Pill tone={status.tone}>{status.label}</Pill></td>

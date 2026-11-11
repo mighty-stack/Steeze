@@ -161,7 +161,7 @@ export const FOOTER_LINKS = {
 };
 
 export const FOOTER_SOCIALS = [
-  { label: 'TikTok', icon: 'tiktok', href: 'https://tiktok.com/@clout.labs' },
+  { label: 'TikTok', icon: 'tiktok', href: 'https://www.tiktok.com/@clout.labs' },
   { label: 'Facebook', icon: 'facebook', href: 'https://www.facebook.com/share/1Edt8Lzng9/' },
   { label: 'Instagram', icon: 'instagram', href: 'https://www.instagram.com/clout_labs1999' },
 ];

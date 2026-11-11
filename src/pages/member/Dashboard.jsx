@@ -55,14 +55,16 @@ function NextTrainingClass({ item }) {
     dateStyle: 'medium',
     timeStyle: 'short',
   }).format(startsAt);
+  const kindLabel = item.kind === 'webinar' ? 'webinar' : 'class';
+  const destination = item.kind === 'webinar' ? `/app/webinars/${encodeURIComponent(item.id)}` : `/app/training/classes/${encodeURIComponent(item.id)}`;
   return (
-    <section className="db-training-next" aria-label="Next training class">
+    <section className="db-training-next" aria-label={`Next training ${kindLabel}`}>
       <div>
-        <strong>{item.phase === 'live' ? 'Happening now' : 'Your next class'}</strong>
+        <strong>{item.phase === 'live' ? 'Happening now' : `Your next ${kindLabel}`}</strong>
         <p>{item.title}</p>
         <time dateTime={startsAt.toISOString()} title={`Shown in ${timeZone}`}>{label} · {timeZone}</time>
       </div>
-      <Link className="btn white sm" to={`/app/training/classes/${item.id}`}>View class</Link>
+      <Link className="btn white sm" to={destination}>View {kindLabel}</Link>
     </section>
   );
 }
@@ -160,7 +162,10 @@ function CountdownCard({ payload, clockOffset, loading }) {
     ? [['Days', values.days], ['Hours', values.hours], ['Minutes', values.minutes], ['Seconds', values.seconds]]
     : [['Hours', values.hours], ['Minutes', values.minutes], ['Seconds', values.seconds]];
   const message = campaign.message || {};
-  const dateLabel = new Intl.DateTimeFormat(undefined, { dateStyle: 'full' }).format(targetAt);
+  const dateLabel = new Intl.DateTimeFormat(undefined, {
+    dateStyle: 'full',
+    timeZone: campaign.timezone || undefined,
+  }).format(targetAt);
   const announcement = resumed
     ? "We're back today."
     : `${countdownSentence(Math.max(0, targetAt.getTime() - announcementTime))} until resumption.`;

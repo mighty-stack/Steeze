@@ -4,6 +4,11 @@ import { api } from '../../../api/client.js';
 import { Button } from '../../../components/ui.jsx';
 import { TrainingSessionCard, TrainingSessionSkeleton, TrainingUpdateCard } from './TrainingSessionCard.jsx';
 
+function sessionDetailRoute(item) {
+  if (!item) return '/app/training/classes';
+  return item.kind === 'webinar' ? `/app/webinars/${encodeURIComponent(item.id)}` : `/app/training/classes/${encodeURIComponent(item.id)}`;
+}
+
 export default function Training() {
   const [data, setData] = useState(null);
   const [error, setError] = useState('');
@@ -42,6 +47,9 @@ export default function Training() {
   );
   if (!data) return <TrainingSessionSkeleton />;
 
+  const firstLiveKind = data.live[0]?.kind === 'webinar' ? 'webinar' : 'class';
+  const upcomingKind = data.upcoming.some((item) => item.kind === 'webinar') ? 'webinar' : 'class';
+
   return (
     <div className="training-page" aria-busy={loading || undefined}>
       {error && <div className="training-inline-error" role="alert">{error}<button className="link" onClick={load}>Retry</button></div>}
@@ -51,9 +59,9 @@ export default function Training() {
             <div>
               <span className="training-live-label">Happening now</span>
               <h2 id="training-live-heading">{data.live[0].title}</h2>
-              <p>{data.live[0].hostName ? `Hosted by ${data.live[0].hostName}` : 'Join the live class with the Steeze team.'}</p>
+              <p>{data.live[0].hostName ? `Hosted by ${data.live[0].hostName}` : `Join the live ${firstLiveKind === 'webinar' ? 'webinar' : 'class'} with the Steeze team.`}</p>
             </div>
-            <Link className="btn white" to={`/app/training/classes/${encodeURIComponent(data.live[0].id)}`}>View and join</Link>
+            <Link className="btn white" to={sessionDetailRoute(data.live[0])}>View and join</Link>
           </div>
           {data.live.length > 1 && data.live.slice(1).map((item) => <TrainingSessionCard item={item} key={item.id} />)}
         </section>
@@ -61,11 +69,11 @@ export default function Training() {
 
       <section className="training-section" aria-labelledby="training-upcoming-heading">
         <header className="training-section-heading">
-          <div><h2 id="training-upcoming-heading">Upcoming classes</h2><p>Learn, connect, and grow with the Steeze community.</p></div>
-          <Link className="btn line sm" to="/app/training/classes?when=upcoming">Browse classes</Link>
+          <div><h2 id="training-upcoming-heading">{upcomingKind === 'webinar' ? 'Upcoming webinars' : 'Upcoming classes'}</h2><p>Learn, connect, and grow with the Steeze community.</p></div>
+          <Link className="btn line sm" to={upcomingKind === 'webinar' ? '/app/training/webinars?when=upcoming' : '/app/training/classes?when=upcoming'}>{upcomingKind === 'webinar' ? 'Browse webinars' : 'Browse classes'}</Link>
         </header>
         {data.upcoming.length ? data.upcoming.map((item) => <TrainingSessionCard item={item} key={item.id} />) : (
-          <div className="training-empty">No upcoming classes yet. Check back soon.</div>
+          <div className="training-empty">{upcomingKind === 'webinar' ? 'No upcoming webinars yet. Check back soon.' : 'No upcoming classes yet. Check back soon.'}</div>
         )}
       </section>
 
@@ -81,11 +89,11 @@ export default function Training() {
 
       <section className="training-section" aria-labelledby="training-recent-heading">
         <header className="training-section-heading">
-          <div><h2 id="training-recent-heading">Recent classes</h2><p>Revisit a class and find its recording and resources.</p></div>
-          <Link className="btn line sm" to="/app/training/classes?when=past">Past classes</Link>
+          <div><h2 id="training-recent-heading">{data.recent.some((item) => item.kind === 'webinar') ? 'Recent webinars' : 'Recent classes'}</h2><p>Revisit a session and find its recording and resources.</p></div>
+          <Link className="btn line sm" to={data.recent.some((item) => item.kind === 'webinar') ? '/app/training/webinars?when=past' : '/app/training/classes?when=past'}>{data.recent.some((item) => item.kind === 'webinar') ? 'Past webinars' : 'Past classes'}</Link>
         </header>
         {data.recent.length ? data.recent.map((item) => <TrainingSessionCard item={item} key={item.id} />) : (
-          <div className="training-empty">Past classes and recordings will appear here.</div>
+          <div className="training-empty">{data.recent.some((item) => item.kind === 'webinar') ? 'Past webinars and recordings will appear here.' : 'Past classes and recordings will appear here.'}</div>
         )}
       </section>
     </div>

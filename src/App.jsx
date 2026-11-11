@@ -93,6 +93,10 @@ export default function App() {
                   <Route path="training" element={<MemberTraining />} />
                   <Route path="training/classes" element={<TrainingClassList />} />
                   <Route path="training/classes/:id" element={<TrainingClassDetail />} />
+                  <Route path="training/webinars" element={<TrainingClassList />} />
+                  <Route path="training/webinars/:id" element={<TrainingClassDetail />} />
+                  <Route path="webinars" element={<TrainingClassList />} />
+                  <Route path="webinars/:id" element={<TrainingClassDetail />} />
                   <Route path="training/updates" element={<TrainingUpdates />} />
                 </Route>
               </Route>

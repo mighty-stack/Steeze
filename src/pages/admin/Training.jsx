@@ -12,6 +12,8 @@ const EMPTY_SESSION = {
   description: '',
   hostName: '',
   topic: '',
+  kind: 'class',
+  cohorts: [],
   date: '',
   time: '',
   timeZone: 'Africa/Lagos',
@@ -29,6 +31,8 @@ function sessionForm(item) {
     description: item.description || '',
     hostName: item.hostName || '',
     topic: item.topic || '',
+    kind: item.kind || 'class',
+    cohorts: Array.isArray(item.cohorts) ? [...item.cohorts] : [],
     date: local.date,
     time: local.time,
     timeZone: 'Africa/Lagos',
@@ -84,6 +88,8 @@ function SessionEditor({ initial, topics, onClose, onSave }) {
         description: form.description,
         hostName: form.hostName,
         topic: form.topic || '',
+        kind: form.kind || 'class',
+        cohorts: Array.isArray(form.cohorts) ? form.cohorts.filter(Boolean) : [],
         ...(startsAt ? { startsAt } : {}),
         durationMinutes: Number(form.durationMinutes),
         joinUrl: form.joinUrl,
@@ -114,11 +120,15 @@ function SessionEditor({ initial, topics, onClose, onSave }) {
         <label className="field"><span>Description</span><textarea className="textarea" maxLength={2000} rows={5} value={form.description} onChange={(event) => set('description', event.target.value)} /></label>
         <div className="training-form-grid">
           <label className="field"><span>Host (optional)</span><input className="input" maxLength={80} value={form.hostName} onChange={(event) => set('hostName', event.target.value)} /></label>
+          <label className="field"><span>Type</span><select className="select" value={form.kind || 'class'} onChange={(event) => set('kind', event.target.value)}><option value="class">Class</option><option value="webinar">Webinar</option></select></label>
           <label className="field"><span>Topic</span><select className="select" value={form.topic} onChange={(event) => set('topic', event.target.value)}><option value="">No topic</option>{topics.filter((item) => item.active).map((item) => <option value={item.id} key={item.id}>{item.label}</option>)}</select></label>
           <label className="field"><span>Duration (minutes)</span><input className="input" type="number" min={15} max={480} step={15} required value={form.durationMinutes} onChange={(event) => set('durationMinutes', event.target.value)} /></label>
           <label className="field"><span>Date</span><input className="input" type="date" value={form.date} onChange={(event) => set('date', event.target.value)} /></label>
           <label className="field"><span>Time</span><input className="input" type="time" value={form.time} onChange={(event) => set('time', event.target.value)} /></label>
           <label className="field"><span>Timezone</span><select className="select" value={form.timeZone} onChange={(event) => set('timeZone', event.target.value)}>{TRAINING_TIMEZONES.map((zone) => <option value={zone.value} key={zone.value}>{zone.label}</option>)}</select></label>
+        </div>
+        <div className="training-form-grid">
+          <label className="field"><span>Cohort access</span><input className="input" value={(form.cohorts || []).join(', ')} onChange={(event) => set('cohorts', event.target.value.split(',').map((value) => value.trim()).filter(Boolean))} placeholder="launch, v1 or all" /></label>
         </div>
         <p className="training-admin-time-preview" aria-live="polite">{preview}</p>
         <label className="field"><span>Join link (HTTPS)</span><input className="input" type="url" maxLength={300} value={form.joinUrl} onChange={(event) => set('joinUrl', event.target.value)} placeholder="https://meet.example.com/..." /></label>
@@ -235,6 +245,7 @@ export default function AdminTraining() {
   const attendanceId = searchParams.get('attendance');
   const tab = searchParams.get('tab') === 'updates' ? 'updates' : 'classes';
   const statusFilter = searchParams.get('status') || '';
+  const kindFilter = searchParams.get('kind') === 'webinar' ? 'webinar' : 'class';
   const page = Number(searchParams.get('page')) || 1;
   const [sessions, setSessions] = useState(null);
   const [sessionPages, setSessionPages] = useState(1);
@@ -259,13 +270,13 @@ export default function AdminTraining() {
   const loadSessions = useCallback(async () => {
     setLoadError('');
     try {
-      const result = await api(`/admin/training/sessions${qs({ status: statusFilter, page, limit: 20 })}`);
+      const result = await api(`/admin/training/sessions${qs({ status: statusFilter, kind: kindFilter, page, limit: 20 })}`);
       setSessions(result.items);
       setSessionPages(result.pages);
     } catch (err) {
       setLoadError(err.message || 'Could not load training classes.');
     }
-  }, [statusFilter, page]);
+  }, [statusFilter, kindFilter, page]);
 
   const loadUpdates = useCallback(async () => {
     setLoadError('');
@@ -464,6 +475,7 @@ export default function AdminTraining() {
         <>
           <div className="training-admin-filters">
             <label><span className="sr-only">Filter classes by status</span><select className="select" value={statusFilter} onChange={(event) => setQuery('status', event.target.value)}><option value="">All statuses</option><option value="draft">Draft</option><option value="published">Published</option></select></label>
+            <label><span className="sr-only">Filter classes by type</span><select className="select" value={kindFilter} onChange={(event) => setQuery('kind', event.target.value)}><option value="class">Classes</option><option value="webinar">Webinars</option></select></label>
             <Link className="link" to="/admin/options">Manage training topics</Link>
           </div>
           {!sessions && !loadError && <Splash />}
@@ -472,7 +484,7 @@ export default function AdminTraining() {
             <article className="training-admin-row" key={item.id}>
               <div className="training-admin-row-main">
                 <h2>{item.title}</h2>
-                <p>{item.hostName || 'Steeze training'} · {item.topicLabel || 'No topic'} · Creator class</p>
+                <p>{item.hostName || 'Steeze training'} · {item.topicLabel || 'No topic'} · {item.kind === 'webinar' ? 'Webinar' : 'Class'}</p>
                 <p>{item.startsAt ? new Date(item.startsAt).toLocaleString() : 'No date set'} · {item.durationMinutes} min</p>
                 <div className="training-admin-row-badges"><Pill tone={item.status === 'published' ? 'ok' : 'off'}>{item.status}</Pill><Pill tone={item.cancelled ? 'bad' : 'wait'}>{item.cancelled ? 'Cancelled' : item.phase}</Pill></div>
               </div>

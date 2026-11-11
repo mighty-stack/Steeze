@@ -22,6 +22,12 @@ function ExternalLink({ href, children, className = 'btn line sm' }) {
   );
 }
 
+function sessionDetailRoute(item) {
+  const id = encodeURIComponent(item?.id || '');
+  if (item?.kind === 'webinar') return `/app/webinars/${id}`;
+  return `/app/training/classes/${id}`;
+}
+
 export function TrainingSessionCard({ item, detailed = false }) {
   const [going, setGoing] = useState(Boolean(item.going));
   const [busy, setBusy] = useState(false);
@@ -38,7 +44,8 @@ export function TrainingSessionCard({ item, detailed = false }) {
         method: previous ? 'DELETE' : 'POST',
       });
       setGoing(Boolean(result.going));
-      toast(result.going ? "You're going to this class." : 'Your RSVP was removed.');
+      const kindLabel = item.kind === 'webinar' ? 'webinar' : 'class';
+      toast(result.going ? `You're going to this ${kindLabel}.` : 'Your RSVP was removed.');
     } catch (error) {
       setGoing(previous);
       toast(error.message || 'Could not update your RSVP.', 'error');
@@ -65,12 +72,13 @@ export function TrainingSessionCard({ item, detailed = false }) {
       )}
       <div className="training-session-copy">
         <div className="training-session-heading">
-          <Link to={`/app/training/classes/${encodeURIComponent(item.id)}`} className="training-session-title">{item.title}</Link>
+          <Link to={sessionDetailRoute(item)} className="training-session-title">{item.title}</Link>
           <Pill tone={item.cancelled ? 'bad' : phase.tone}>{item.cancelled ? 'Cancelled' : phase.label}</Pill>
+          {item.kind === 'webinar' && <span className="training-topic-pill">Webinar</span>}
           {item.topicLabel && <span className="training-topic-pill">{item.topicLabel}</span>}
         </div>
         <p className="training-session-byline">
-          {item.hostName ? `Hosted by ${item.hostName}` : 'Steeze training'}
+          {item.hostName ? `Hosted by ${item.hostName}` : (item.kind === 'webinar' ? 'Steeze webinar' : 'Steeze training')}
           {time && <> · <time dateTime={new Date(item.startsAt).toISOString()} title={time.title}>{time.date}, {time.range} ({time.timeZone})</time></>}
           {item.phase === 'upcoming' && <> · {relativeClassTime(item.startsAt)}</>}
         </p>
@@ -82,7 +90,7 @@ export function TrainingSessionCard({ item, detailed = false }) {
         <div className="training-session-actions">
           {!item.cancelled && ['upcoming', 'live'].includes(item.phase) && item.joinUrl && (
             <ExternalLink href={item.joinUrl} className="btn primary sm">
-              {item.phase === 'live' ? 'Join live class' : 'Join class'}
+              {item.phase === 'live' ? (item.kind === 'webinar' ? 'Join live webinar' : 'Join live class') : (item.kind === 'webinar' ? 'Join webinar' : 'Join class')}
             </ExternalLink>
           )}
           {item.phase === 'past' && item.recordingUrl
@@ -135,8 +143,8 @@ export function TrainingUpdateCard({ item }) {
         {new Intl.DateTimeFormat(undefined, { dateStyle: 'medium' }).format(new Date(item.publishedAt))}
       </time>
       {item.session && (
-        <Link className="training-update-class" to={`/app/training/classes/${encodeURIComponent(item.session.id)}`}>
-          Related class: {item.session.title}
+        <Link className="training-update-class" to={item.session.kind === 'webinar' ? `/app/webinars/${encodeURIComponent(item.session.id)}` : `/app/training/classes/${encodeURIComponent(item.session.id)}`}>
+          Related {item.session.kind === 'webinar' ? 'webinar' : 'class'}: {item.session.title}
         </Link>
       )}
     </article>
