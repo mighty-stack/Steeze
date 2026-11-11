@@ -60,7 +60,6 @@ export const emptyCreator = {
 /* Turn form values into the API payload. */
 export function brandPayload(v) {
   return {
-    ...(v.accessCode.trim() ? { accessCode: v.accessCode.trim() } : {}),
     brandName: clean(v.brandName), category: v.category, location: v.location,
     contactPerson: clean(v.contactPerson), contactEmail: v.contactEmail.trim(), phone: v.phone,
     website: v.website.trim(), productsServices: v.productsServices.trim(),
@@ -69,7 +68,6 @@ export function brandPayload(v) {
 }
 export function creatorPayload(v) {
   return {
-    ...(v.accessCode.trim() ? { accessCode: v.accessCode.trim() } : {}),
     fullName: clean(v.fullName), creatorName: clean(v.creatorName), niche: v.niche, location: v.location,
     socials: v.socials.map((s) => ({ platform: s.platform, handle: cleanHandle(s.handle), followers: Number(s.followers) })),
     audienceNotes: v.audienceNotes.trim(), contentDescription: v.contentDescription.trim(),
