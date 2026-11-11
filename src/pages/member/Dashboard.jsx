@@ -101,8 +101,7 @@ function CountdownCard({ payload, clockOffset, loading }) {
   const campaign = campaigns[0];
   const [now, setNow] = useState(() => Date.now() + clockOffset);
   const [announcementTime, setAnnouncementTime] = useState(() => Date.now() + clockOffset);
-  const [dismissedDate, setDismissedDate] = useState('');
-  const [storageReady, setStorageReady] = useState(false);
+  const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
     setNow(Date.now() + clockOffset);
@@ -133,20 +132,13 @@ function CountdownCard({ payload, clockOffset, loading }) {
   }, [clockOffset]);
 
   useEffect(() => {
-    setStorageReady(false);
-    try {
-      setDismissedDate(window.localStorage.getItem(`countdown-dismissed:${campaign?.id || ''}`) || '');
-    } catch {
-      setDismissedDate('');
-    } finally {
-      setStorageReady(true);
-    }
+    setDismissed(false);
   }, [campaign?.id]);
 
   if (loading) {
     return <div className="db-countdown-card db-countdown-loading" aria-label="Loading resumption countdown" aria-busy="true" />;
   }
-  if (!campaign || !storageReady || dismissedDate === localDateKey(now, campaign.timezone)) return null;
+  if (!campaign || dismissed) return null;
 
   const targetAt = new Date(campaign.targetAt);
   const remaining = Math.max(0, targetAt.getTime() - now);
@@ -171,13 +163,7 @@ function CountdownCard({ payload, clockOffset, loading }) {
     : `${countdownSentence(Math.max(0, targetAt.getTime() - announcementTime))} until resumption.`;
 
   const dismiss = () => {
-    const date = localDateKey(now, campaign.timezone);
-    setDismissedDate(date);
-    try {
-      window.localStorage.setItem(`countdown-dismissed:${campaign.id}`, date);
-    } catch {
-      // Dismissing remains available when browser storage is blocked.
-    }
+    setDismissed(true);
   };
 
   return (
@@ -238,9 +224,11 @@ function CreatorDashboard({ data, displayName }) {
         <div>
           <h1>Welcome back, {data.profile?.displayName || displayName}</h1>
           <p className="lede">Your creator snapshot and the next steps to keep moving.</p>
+          {data.profile?.cohort && <p className="db-cohort-label">Cohort: {data.profile.cohort}</p>}
         </div>
         <div className="db-header-actions">
           <Pill tone={STATUS.verified?.tone || 'ok'}>{STATUS.verified?.label || 'Verified'}</Pill>
+          {data.profile?.cohort && <Pill tone="off">{data.profile.cohort}</Pill>}
           {data.standing && <Link className="db-standing-summary" to="/app/score"><LevelBadge level={data.standing.level} /><span>{SCORE_NAME}: {data.standing.score}</span></Link>}
           <Link className="btn primary sm" to="/app/opportunities">Browse opportunities</Link>
         </div>
