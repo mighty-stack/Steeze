@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Modal, Button } from '../../components/ui.jsx';
 import { TextField } from '../../components/fields.jsx';
 import { useForm, focusFirstError } from '../../components/useForm.js';
@@ -7,17 +7,22 @@ import {
 } from '../../components/sections.jsx';
 import { api, ApiError } from '../../api/client.js';
 import {
-  brandRules, creatorRules, brandFromProfile, creatorFromProfile, brandPayload, creatorPayload, validateGroups, accountRules,
+  brandEditRules, creatorEditRules, brandFromProfile, creatorFromProfile, brandPayload, creatorPayload, validateGroups, accountRules,
 } from '../../lib/schemas.js';
 
 export default function EditProfileModal({ user, profile, options, onClose, onSaved }) {
   const isBrand = user.role === 'brand';
   const form = useForm(isBrand ? brandFromProfile(profile) : creatorFromProfile(profile));
+  useEffect(() => {
+    form.setValues(isBrand ? brandFromProfile(profile) : creatorFromProfile(profile));
+    form.setErrors({});
+  }, [isBrand, profile, user.id]);
   const [email, setEmail] = useState(user.email);
+  useEffect(() => setEmail(user.email), [user.email]);
   const [emailErr, setEmailErr] = useState('');
   const [busy, setBusy] = useState(false);
   const [banner, setBanner] = useState('');
-  const rules = isBrand ? brandRules : creatorRules;
+  const rules = isBrand ? brandEditRules : creatorEditRules;
 
   const submit = async (e) => {
     e.preventDefault();
@@ -34,10 +39,18 @@ export default function EditProfileModal({ user, profile, options, onClose, onSa
       const { user: u, profile: p } = await api(`/admin/users/${user.id}`, { method: 'PATCH', body: payload });
       onSaved(u, p);
     } catch (err) {
-      if (!(err instanceof ApiError)) throw err;
+      if (!(err instanceof ApiError)) {
+        console.error('Admin profile update failed:', err);
+        setBanner('Could not save this profile. Please try again.');
+        return;
+      }
       const fields = err.fields || {};
       if (fields.email) setEmailErr(fields.email);
-      if (Object.keys(fields).length) { form.setErrors(fields); focusFirstError(document.querySelector('.modal')); }
+      if (Object.keys(fields).length) {
+        form.setErrors(fields);
+        if (fields._form) setBanner(fields._form);
+        focusFirstError(document.querySelector('.modal'));
+      }
       else setBanner(err.message);
     } finally {
       setBusy(false);
@@ -47,10 +60,9 @@ export default function EditProfileModal({ user, profile, options, onClose, onSa
   return (
     <Modal
       title={`Edit ${isBrand ? 'brand' : 'creator'}: ${user.displayName}`} wide onClose={onClose}
-      footer={<>
+      footer={
         <button className="btn line" onClick={onClose} disabled={busy}>Cancel</button>
-        <Button className="primary" loading={busy} form="admin-edit-form" type="submit">Save changes</Button>
-      </>}
+      }
     >
       <form id="admin-edit-form" onSubmit={submit} noValidate className="form-grid">
         {banner && <div className="form-error" role="alert">{banner}</div>}
@@ -58,6 +70,9 @@ export default function EditProfileModal({ user, profile, options, onClose, onSa
         {isBrand ? <BrandBusinessFields form={form} options={options} /> : <CreatorAboutFields form={form} options={options} />}
         {isBrand ? <BrandContactFields form={form} /> : <CreatorAudienceFields form={form} />}
         <InterestFields form={form} options={options} label="Collaboration interests" />
+        <div className="actions">
+          <Button className="primary" loading={busy} type="button" onClick={submit}>Save changes</Button>
+        </div>
       </form>
     </Modal>
   );

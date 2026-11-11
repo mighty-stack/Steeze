@@ -32,6 +32,15 @@ export const creatorRules = {
   interests: { accessCode: () => undefined, collaborationInterests: rules.interests },
 };
 
+export const brandEditRules = {
+  ...brandRules,
+  interests: { ...brandRules.interests, collaborationInterests: () => undefined },
+};
+export const creatorEditRules = {
+  ...creatorRules,
+  interests: { ...creatorRules.interests, collaborationInterests: () => undefined },
+};
+
 export const accountRules = {
   email: rules.email,
   password: rules.password,

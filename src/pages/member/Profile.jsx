@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
 import { setMemberAnalyticsOptOut } from '../../lib/analytics/consent.js';
 import { platformLabel, compactNumber, fullNumber, STATUS, formatDate } from '../../lib/format.js';
 import {
-  brandRules, creatorRules, brandFromProfile, creatorFromProfile, brandPayload, creatorPayload, validateGroups, accountRules,
+  brandEditRules, creatorEditRules, brandFromProfile, creatorFromProfile, brandPayload, creatorPayload, validateGroups, accountRules,
 } from '../../lib/schemas.js';
 
 function BrandView({ profile }) {
@@ -55,7 +55,7 @@ function EditForm({ user, profile, options, onSaved, onCancel }) {
   const [busy, setBusy] = useState(false);
   const [banner, setBanner] = useState('');
   const toast = useToast();
-  const rules = isBrand ? brandRules : creatorRules;
+  const rules = isBrand ? brandEditRules : creatorEditRules;
 
   const submit = async (e) => {
     e.preventDefault();
