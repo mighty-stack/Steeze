@@ -107,6 +107,10 @@ export function CreatorAboutFields({ form, options }) {
     <>
       <TextField label="Full name" {...form.bind('fullName')} autoComplete="name" maxLength={80} />
       <TextField label="Creator or content name" {...form.bind('creatorName')} maxLength={80} hint="The name your audience knows you by." />
+      <TextField
+        label="Phone number" type="tel" {...form.bind('phone')} autoComplete="tel"
+        placeholder="+234 801 234 5678" hint="Include your country code. Only you and the team can see this."
+      />
       <SelectField label="Content niche" {...form.bind('niche')} options={options.niche} />
       <LocationFields form={form} options={options} hint="Where you are based." />
     </>

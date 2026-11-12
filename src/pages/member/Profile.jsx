@@ -35,6 +35,7 @@ function CreatorView({ profile }) {
     <dl className="kv">
       <div><dt>Full name</dt><dd>{profile.fullName}</dd></div>
       <div><dt>Creator name</dt><dd>{profile.creatorName}</dd></div>
+      {profile.phone && <div><dt>Phone number</dt><dd>{profile.phone}</dd></div>}
       <div><dt>Niche</dt><dd>{profile.niche.label}</dd></div>
       <div><dt>Location</dt><dd>{profile.location.label}</dd></div>
       <div><dt>Social accounts</dt><dd>{profile.socials.map((s) => (

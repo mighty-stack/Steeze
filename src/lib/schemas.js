@@ -21,6 +21,7 @@ export const creatorRules = {
   about: {
     fullName: rules.text('Full name', 2, 80),
     creatorName: rules.text('Creator name', 2, 80),
+    phone: rules.phone,
     niche: rules.choice,
     location: rules.choice,
   },
@@ -53,7 +54,7 @@ export const emptyBrand = {
   productsServices: '', collaborationInterests: [],
 };
 export const emptyCreator = {
-  accessCode: '', fullName: '', creatorName: '', niche: '', location: '', socials: [{ platform: '', handle: '', followers: '' }],
+  accessCode: '', fullName: '', creatorName: '', phone: '', niche: '', location: '', socials: [{ platform: '', handle: '', followers: '' }],
   audienceNotes: '', contentDescription: '', collaborationInterests: [], discoverable: true,
 };
 
@@ -68,7 +69,7 @@ export function brandPayload(v) {
 }
 export function creatorPayload(v) {
   return {
-    fullName: clean(v.fullName), creatorName: clean(v.creatorName), niche: v.niche, location: v.location,
+    fullName: clean(v.fullName), creatorName: clean(v.creatorName), phone: v.phone, niche: v.niche, location: v.location,
     socials: v.socials.map((s) => ({ platform: s.platform, handle: cleanHandle(s.handle), followers: Number(s.followers) })),
     audienceNotes: v.audienceNotes.trim(), contentDescription: v.contentDescription.trim(),
     collaborationInterests: v.collaborationInterests,
@@ -85,7 +86,7 @@ export function brandFromProfile(p) {
 }
 export function creatorFromProfile(p) {
   return {
-    fullName: p.fullName, creatorName: p.creatorName, niche: p.niche?.id || '', location: p.location?.id || '',
+    fullName: p.fullName, creatorName: p.creatorName, phone: p.phone || '', niche: p.niche?.id || '', location: p.location?.id || '',
     socials: p.socials.map((s) => ({ platform: s.platform, handle: s.handle, followers: String(s.followers) })),
     audienceNotes: p.audienceNotes || '', contentDescription: p.contentDescription,
     collaborationInterests: (p.collaborationInterests || []).map((o) => o.id),
