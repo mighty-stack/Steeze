@@ -43,6 +43,7 @@ import AdminOptions from './pages/admin/Options.jsx';
 import AdminOpportunities from './pages/admin/Opportunities.jsx';
 import AdminOpportunityInterests from './pages/admin/OpportunityInterests.jsx';
 import AdminAdmins from './pages/admin/Admins.jsx';
+import AdminStaff from './pages/admin/Staff.jsx';
 import AdminAccessCodes from './pages/admin/AccessCodes.jsx';
 import AdminTraining from './pages/admin/Training.jsx';
 import AdminCollaborations from './pages/admin/Collaborations.jsx';
@@ -121,6 +122,7 @@ export default function App() {
                 <Route path="admins" element={<AdminAdmins />} />
                 <Route path="training" element={<AdminTraining />} />
                 <Route path="collaborations" element={<AdminCollaborations />} />
+                <Route path="staff" element={<AdminStaff />} />
                 <Route path="creator-email" element={<AdminCreatorEmail />} />
                 <Route path="notifications" element={<MemberNotifications />} />
               </Route>
