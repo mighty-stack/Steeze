@@ -58,10 +58,12 @@ export default function Sidebar({
   collapsed,
   onToggleCollapsed,
 }) {
-  const displayName = user?.displayName || (admin ? 'Admin' : 'Member');
+  const displayName = user?.displayName || (admin ? 'Admin' : user?.role === 'staff' ? 'Staff member' : 'Member');
   const accountRole = admin
     ? 'Administrator'
-    : `${user?.role === 'brand' ? 'Brand' : 'Creator'} · ${user?.verificationStatus}`;
+    : user?.role === 'staff'
+      ? 'Staff member'
+      : `${user?.role === 'brand' ? 'Brand' : 'Creator'} · ${user?.verificationStatus}`;
   const handleLogout = () => {
     onClose();
     if (typeof onLogout !== 'function') {
@@ -119,7 +121,7 @@ export default function Sidebar({
       <aside
         id="dashboard-sidebar"
         className={cx('dashboard-sidebar', open && 'open')}
-        aria-label={`${admin ? 'Admin' : user?.role === 'brand' ? 'Brand' : 'Creator'} navigation`}
+        aria-label={`${admin ? 'Admin' : user?.role === 'staff' ? 'Staff' : user?.role === 'brand' ? 'Brand' : 'Creator'} navigation`}
       >
         <div className="dashboard-sidebar-heading">
           <Wordmark to={home} tone="reversed" />

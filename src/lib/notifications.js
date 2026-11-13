@@ -35,7 +35,7 @@ export function notificationTime(value) {
 }
 
 export function notificationDestination(link, role) {
-  const fallback = role === 'admin' ? '/admin' : '/app';
+  const fallback = role === 'admin' ? '/admin' : role === 'staff' ? '/staff' : '/app';
   if (typeof link !== 'string' || !link.startsWith('/') || link.startsWith('//')) return fallback;
 
   let url;

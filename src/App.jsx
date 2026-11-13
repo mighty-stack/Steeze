@@ -34,6 +34,7 @@ import CreatorDirectoryProfile from './pages/member/CreatorDirectoryProfile.jsx'
 import Collaborations from './pages/member/Collaborations.jsx';
 
 import AdminLayout from './components/AdminLayout.jsx';
+import StaffLayout from './components/StaffLayout.jsx';
 import AdminOverview from './pages/admin/Overview.jsx';
 import AdminRegistrations from './pages/admin/Registrations.jsx';
 import AdminInterviews from './pages/admin/Interviews.jsx';
@@ -47,6 +48,9 @@ import AdminTraining from './pages/admin/Training.jsx';
 import AdminCollaborations from './pages/admin/Collaborations.jsx';
 import AdminCreatorEmail from './pages/admin/CreatorEmail.jsx';
 import AdminAnalytics from './pages/admin/Analytics.jsx';
+import StaffDashboard from './pages/staff/Dashboard.jsx';
+import StaffInterviews from './pages/staff/Interviews.jsx';
+import StaffSettings from './pages/staff/Settings.jsx';
 
 const Landing = lazy(() => import('./pages/Landing.jsx'));
 const PrivacyPolicy = lazy(() => import('./pages/PrivacyPolicy.jsx'));
@@ -118,6 +122,15 @@ export default function App() {
                 <Route path="training" element={<AdminTraining />} />
                 <Route path="collaborations" element={<AdminCollaborations />} />
                 <Route path="creator-email" element={<AdminCreatorEmail />} />
+                <Route path="notifications" element={<MemberNotifications />} />
+              </Route>
+            </Route>
+
+            <Route element={<RequireRole roles={['staff']} />}>
+              <Route path="/staff" element={<StaffLayout />}>
+                <Route index element={<StaffDashboard />} />
+                <Route path="interviews" element={<StaffInterviews />} />
+                <Route path="settings" element={<StaffSettings />} />
                 <Route path="notifications" element={<MemberNotifications />} />
               </Route>
             </Route>

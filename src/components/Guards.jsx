@@ -19,7 +19,10 @@ export function RequireRole({ roles }) {
   if (loading) return <Splash />;
   if (authError) return <AuthCheckError error={authError} onRetry={refresh} />;
   if (!user) return <Navigate to="/login" replace state={{ from: location.pathname }} />;
-  if (!roles.includes(user.role)) return <Navigate to={user.role === 'admin' ? '/admin' : '/app'} replace />;
+  if (!roles.includes(user.role)) {
+    const destination = user.role === 'admin' ? '/admin' : user.role === 'staff' ? '/staff' : '/app';
+    return <Navigate to={destination} replace />;
+  }
   return <Outlet />;
 }
 
@@ -28,6 +31,9 @@ export function RedirectIfLoggedIn() {
   const { user, loading, authError, refresh } = useAuth();
   if (loading) return <Splash />;
   if (authError) return <AuthCheckError error={authError} onRetry={refresh} />;
-  if (user) return <Navigate to={user.role === 'admin' ? '/admin' : '/app'} replace />;
+  if (user) {
+    const destination = user.role === 'admin' ? '/admin' : user.role === 'staff' ? '/staff' : '/app';
+    return <Navigate to={destination} replace />;
+  }
   return <Outlet />;
 }

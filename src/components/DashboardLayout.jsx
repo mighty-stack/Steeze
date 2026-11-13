@@ -5,12 +5,12 @@ import Sidebar from './Sidebar.jsx';
 import NotificationBell from './NotificationBell.jsx';
 import { api } from '../api/client.js';
 
-export default function DashboardLayout({ user, admin = false, stats, onLogout, children }) {
+export default function DashboardLayout({ user, admin = false, stats, onLogout, children, home: homeOverride, links: overrideLinks }) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collabUnread, setCollabUnread] = useState(0);
   const location = useLocation();
-  const home = admin ? '/admin' : '/app';
+  const home = homeOverride || (admin ? '/admin' : user?.role === 'staff' ? '/staff' : '/app');
   useEffect(() => {
     if (admin || user?.role !== 'creator') {
       setCollabUnread(0);
@@ -24,7 +24,7 @@ export default function DashboardLayout({ user, admin = false, stats, onLogout, 
     const interval = setInterval(refresh, 60_000);
     return () => { active = false; clearInterval(interval); };
   }, [admin, user?.role, location.pathname]);
-  const links = admin
+  const links = overrideLinks || (admin
     ? [
       { to: '/admin', label: 'Overview', icon: 'OV', end: true },
       { to: '/admin/analytics', label: 'Analytics', icon: 'AN' },
@@ -50,27 +50,34 @@ export default function DashboardLayout({ user, admin = false, stats, onLogout, 
       { to: '/admin/notifications', label: 'Notifications', icon: 'NT' },
       { to: '/admin/creator-email', label: 'Email creators', icon: 'EM' },
     ]
-    : [
-      { to: '/app', label: 'Overview', icon: 'OV', end: true },
-      {
-        to: user?.role === 'brand' ? '/app/opportunities?view=mine' : '/app/opportunities',
-        label: user?.role === 'brand' ? 'My opportunities' : 'Opportunities',
-        icon: 'OP',
-      },
-      {
-        to: '/app/creators',
-        label: user?.role === 'brand' ? 'Find creators' : 'Collaborate',
-        icon: 'CR',
-        badge: user?.role === 'creator' && collabUnread > 0 && <span className="count-badge">{collabUnread}</span>,
-      },
-      ...(user?.role === 'creator' ? [{ to: '/app/resources', label: 'Resources', icon: 'RS' }] : []),
-      { to: '/app/profile', label: 'Profile', icon: 'PR' },
-      ...(user?.role === 'creator' ? [{ to: '/app/training', label: 'Training', icon: 'TR' }] : []),
-      ...(user?.role === 'creator' ? [{ to: '/app/webinars', label: 'Webinars', icon: 'WB' }] : []),
-      ...(user?.role === 'creator' ? [{ to: '/app/score', label: 'My Score', icon: 'SC' }] : []),
-      { to: '/app/notifications', label: 'Notifications', icon: 'NT' },
-      { to: '/app/about', label: 'About CloutLabs', icon: 'AB' },
-    ];
+    : user?.role === 'staff'
+      ? [
+        { to: '/staff', label: 'Overview', icon: 'OV', end: true },
+        { to: '/staff/interviews', label: 'My interviews', icon: 'IV' },
+        { to: '/staff/settings', label: 'Settings', icon: 'ST' },
+        { to: '/staff/notifications', label: 'Notifications', icon: 'NT' },
+      ]
+      : [
+        { to: '/app', label: 'Overview', icon: 'OV', end: true },
+        {
+          to: user?.role === 'brand' ? '/app/opportunities?view=mine' : '/app/opportunities',
+          label: user?.role === 'brand' ? 'My opportunities' : 'Opportunities',
+          icon: 'OP',
+        },
+        {
+          to: '/app/creators',
+          label: user?.role === 'brand' ? 'Find creators' : 'Collaborate',
+          icon: 'CR',
+          badge: user?.role === 'creator' && collabUnread > 0 && <span className="count-badge">{collabUnread}</span>,
+        },
+        ...(user?.role === 'creator' ? [{ to: '/app/resources', label: 'Resources', icon: 'RS' }] : []),
+        { to: '/app/profile', label: 'Profile', icon: 'PR' },
+        ...(user?.role === 'creator' ? [{ to: '/app/training', label: 'Training', icon: 'TR' }] : []),
+        ...(user?.role === 'creator' ? [{ to: '/app/webinars', label: 'Webinars', icon: 'WB' }] : []),
+        ...(user?.role === 'creator' ? [{ to: '/app/score', label: 'My Score', icon: 'SC' }] : []),
+        { to: '/app/notifications', label: 'Notifications', icon: 'NT' },
+        { to: '/app/about', label: 'About CloutLabs', icon: 'AB' },
+      ]);
 
   const closeMobileSidebar = useCallback(() => setMobileOpen(false), []);
   const toggleMobileSidebar = useCallback(() => setMobileOpen((open) => !open), []);

@@ -57,7 +57,8 @@ export default function NotificationBell({ role }) {
   const openNotification = (item) => {
     track('notification_open', { type: item.category || 'other' });
     setOpen(false);
-    navigate(`${role === 'admin' ? '/admin/notifications' : '/app/notifications'}?notification=${encodeURIComponent(item.id)}`);
+    const destination = role === 'admin' ? '/admin/notifications' : role === 'staff' ? '/staff/notifications' : '/app/notifications';
+    navigate(`${destination}?notification=${encodeURIComponent(item.id)}`);
   };
 
   const unreadTotal = result?.unreadTotal || 0;
@@ -122,7 +123,8 @@ export default function NotificationBell({ role }) {
             className="notification-popover-all"
             onClick={() => {
               setOpen(false);
-              navigate(role === 'admin' ? '/admin/notifications' : '/app/notifications');
+              const destination = role === 'admin' ? '/admin/notifications' : role === 'staff' ? '/staff/notifications' : '/app/notifications';
+              navigate(destination);
             }}
           >
             View all notifications
