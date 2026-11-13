@@ -210,6 +210,46 @@ function StatTile({ label, value, to, detail }) {
   );
 }
 
+function InterviewStatusCard({ interview }) {
+  if (!interview) return null;
+  const meta = {
+    awaiting: { label: 'Awaiting review', tone: 'wait' },
+    contacted: { label: 'Contacted', tone: 'wait' },
+    scheduled: { label: 'Scheduled', tone: 'ok' },
+    completed: { label: 'Completed', tone: 'ok' },
+    no_show: { label: 'No-show', tone: 'bad' },
+    unreachable: { label: 'Unreachable', tone: 'off' },
+    withdrawn: { label: 'Withdrawn', tone: 'off' },
+    waived: { label: 'Waived', tone: 'off' },
+  }[interview.status] || { label: 'Interview', tone: 'off' };
+
+  return (
+    <section className="db-panel" aria-labelledby="creator-interview-heading">
+      <div className="db-panel-heading">
+        <h2 id="creator-interview-heading">Interview status</h2>
+      </div>
+      <div className="db-empty" style={{ padding: '1rem 0 0' }}>
+        <Pill tone={meta.tone}>{meta.label}</Pill>
+        {interview.status === 'scheduled' && interview.scheduledAt ? (
+          <p style={{ marginTop: '0.75rem' }}>
+            Your interview is scheduled for <strong>{formatDate(interview.scheduledAt, { day: 'numeric', month: 'short', year: 'numeric' })}</strong>
+            {' '}at <strong>{new Date(interview.scheduledAt).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}</strong>.
+          </p>
+        ) : interview.status === 'awaiting' ? (
+          <p style={{ marginTop: '0.75rem' }}>We are reviewing your application and will contact you if you move to the next stage.</p>
+        ) : interview.status === 'waived' ? (
+          <p style={{ marginTop: '0.75rem' }}>This interview step has been waived for your application.</p>
+        ) : interview.messageToCreator ? (
+          <p style={{ marginTop: '0.75rem' }}>{interview.messageToCreator}</p>
+        ) : null}
+        {interview.status === 'scheduled' && interview.meetingUrl && (
+          <a className="btn primary sm" href={interview.meetingUrl} target="_blank" rel="noreferrer" style={{ marginTop: '0.75rem' }}>Join meeting</a>
+        )}
+      </div>
+    </section>
+  );
+}
+
 function CreatorDashboard({ data, displayName }) {
   const completeness = data.profile?.completeness;
   const nextSteps = completeness?.missing || [];
@@ -234,6 +274,7 @@ function CreatorDashboard({ data, displayName }) {
         </div>
       </header>
       <NextTrainingClass item={data.nextClass} />
+      <InterviewStatusCard interview={data.interview} />
 
       <section aria-labelledby="creator-next-heading" className="db-section">
         <h2 id="creator-next-heading">Next steps</h2>

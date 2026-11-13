@@ -36,6 +36,7 @@ import Collaborations from './pages/member/Collaborations.jsx';
 import AdminLayout from './components/AdminLayout.jsx';
 import AdminOverview from './pages/admin/Overview.jsx';
 import AdminRegistrations from './pages/admin/Registrations.jsx';
+import AdminInterviews from './pages/admin/Interviews.jsx';
 import AdminResources from './pages/admin/Resources.jsx';
 import AdminOptions from './pages/admin/Options.jsx';
 import AdminOpportunities from './pages/admin/Opportunities.jsx';
@@ -107,6 +108,7 @@ export default function App() {
                 <Route index element={<AdminOverview />} />
                 <Route path="analytics" element={<AdminAnalytics />} />
                 <Route path="registrations" element={<AdminRegistrations />} />
+                <Route path="interviews" element={<AdminInterviews />} />
                 <Route path="access-codes" element={<AdminAccessCodes />} />
                 <Route path="resources" element={<AdminResources />} />
                 <Route path="options" element={<AdminOptions />} />

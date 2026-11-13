@@ -34,6 +34,7 @@ export default function DashboardLayout({ user, admin = false, stats, onLogout, 
         icon: 'RG',
         badge: stats?.unseen > 0 && <span className="count-badge">{stats.unseen} new</span>,
       },
+      { to: '/admin/interviews', label: 'Interviews', icon: 'IV' },
       { to: '/admin/access-codes', label: 'Access codes', icon: 'AC' },
       { to: '/admin/resources', label: 'Resources', icon: 'RS' },
       {
