@@ -9,6 +9,7 @@ import LevelBadge from '../../components/LevelBadge.jsx';
 import EditProfileModal from './EditProfileModal.jsx';
 import RejectModal from './RejectModal.jsx';
 import AdminEmailModal from './AdminEmailModal.jsx';
+import InterviewAssignmentModal from './InterviewAssignmentModal.jsx';
 
 const PAGE_SIZE = 20;
 const CREATOR_LEVELS = ['intern', 'emerging', 'rising', 'established', 'professional'];
@@ -232,6 +233,7 @@ export default function Registrations() {
   const [detailError, setDetailError] = useState('');
   const [busyAction, setBusyAction] = useState('');
   const [modal, setModal] = useState(null); // 'edit' | 'reject' | 'delete' | 'deactivate' | null
+  const [assignmentTarget, setAssignmentTarget] = useState(null);
   const requestId = useRef(0);
 
   const query = {
@@ -510,6 +512,13 @@ export default function Registrations() {
                     ? `Referred by ${detail.user.referral.ownerName} (${detail.user.referral.code})`
                     : 'No access code'}
                 </div>
+                {detail.user.role === 'creator' && (
+                  <div className="meta mt-2">
+                    Interview: {detail.user.interviewStatus || 'none'}
+                    {detail.user.interviewer?.name ? ` · ${detail.user.interviewer.name}` : ''}
+                    {detail.user.interviewLegacy ? ' · Legacy record' : ''}
+                  </div>
+                )}
                 {detail.user.verificationStatus === 'rejected' && detail.user.rejectionReason && (
                   <div className="drawer note">Reason: {detail.user.rejectionReason}</div>
                 )}
@@ -558,6 +567,20 @@ export default function Registrations() {
                 )}
 
                 <div className="act">
+                  {detail.user.role === 'creator'
+                    && ['none', 'waived', 'awaiting', 'contacted', 'scheduled', 'no_show', 'unreachable'].includes(detail.user.interviewStatus || 'none')
+                    && (
+                      <Button
+                        className="primary sm"
+                        onClick={() => setAssignmentTarget({
+                          creatorIds: [detail.user.id],
+                          creatorName: detail.user.displayName,
+                          includeWaived: detail.user.interviewStatus === 'waived',
+                        })}
+                      >
+                        Assign interviewer
+                      </Button>
+                    )}
                   <button className="btn line sm" onClick={() => setModal('email')}>Send email</button>
                   <div className="row2">
                     <button className="btn line sm" onClick={() => setModal('edit')}>Edit details</button>
@@ -615,6 +638,17 @@ export default function Registrations() {
           danger={false}
           onClose={() => setModal(null)}
           onConfirm={verifyPending}
+        />
+      )}
+      {assignmentTarget && (
+        <InterviewAssignmentModal
+          {...assignmentTarget}
+          onClose={() => setAssignmentTarget(null)}
+          onComplete={async (result) => {
+            const assigned = (result.assigned || 0) + (result.reassigned || 0);
+            toast(`${assigned} interview${assigned === 1 ? '' : 's'} assigned${result.skipped?.length ? ` · ${result.skipped.length} skipped` : ''}.`);
+            await openDetail(assignmentTarget.creatorIds[0]);
+          }}
         />
       )}
     </section>

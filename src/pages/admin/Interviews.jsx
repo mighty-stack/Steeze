@@ -4,6 +4,7 @@ import { api, qs } from '../../api/client.js';
 import { useToast } from '../../context/Toast.jsx';
 import { Button, Modal, Pill, Splash } from '../../components/ui.jsx';
 import { formatDate } from '../../lib/format.js';
+import InterviewAssignmentModal from './InterviewAssignmentModal.jsx';
 
 const STATUS_META = {
   awaiting: { label: 'Awaiting', tone: 'wait' },
@@ -165,6 +166,7 @@ export default function AdminInterviews() {
   const [q, setQ] = useState('');
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState(null);
+  const [assignmentOpen, setAssignmentOpen] = useState(false);
   const [busyAction, setBusyAction] = useState('');
 
   const query = useMemo(() => ({
@@ -247,6 +249,7 @@ export default function AdminInterviews() {
           <p>Track creator interviews from waiting list to completion.</p>
         </div>
         <div className="head-actions">
+          <Button className="primary sm" onClick={() => setAssignmentOpen(true)}>Assign creators</Button>
           <Link className="btn line sm" to="/admin/registrations">Back to registrations</Link>
         </div>
       </div>
@@ -259,6 +262,9 @@ export default function AdminInterviews() {
           <div className="db-stat"><span>Completed</span><strong>{summary.counts?.completed ?? 0}</strong></div>
           <div className="db-stat"><span>Overdue</span><strong>{summary.overdue ?? 0}</strong></div>
           <div className="db-stat"><span>No-shows</span><strong>{summary.counts?.no_show ?? 0}</strong></div>
+          <div className="db-stat"><span>Not queued</span><strong>{summary.counts?.notInQueue ?? 0}</strong></div>
+          <div className="db-stat"><span>Waived</span><strong>{summary.counts?.waived ?? 0}</strong></div>
+          <div className="db-stat"><span>Unassigned</span><strong>{summary.counts?.unassigned ?? 0}</strong></div>
         </div>
       )}
 
@@ -349,6 +355,16 @@ export default function AdminInterviews() {
           onSubmit={async (id, action, payload) => {
             await runAction(id, action, payload);
             setModal(null);
+          }}
+        />
+      )}
+      {assignmentOpen && (
+        <InterviewAssignmentModal
+          onClose={() => setAssignmentOpen(false)}
+          onComplete={async (result) => {
+            const assigned = (result.assigned || 0) + (result.reassigned || 0);
+            toast(`${assigned} interview${assigned === 1 ? '' : 's'} assigned${result.skipped?.length ? ` · ${result.skipped.length} skipped` : ''}.`);
+            await load();
           }}
         />
       )}

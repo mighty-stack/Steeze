@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { api, download, qs } from '../../api/client.js';
 import { Button, Pill } from '../../components/ui.jsx';
 import { fullNumber } from '../../lib/format.js';
+import CreatorInsightsPanel from './CreatorInsightsPanel.jsx';
 
 const RANGES = [7, 30, 90];
 
@@ -27,6 +28,7 @@ function Stat({ label, value }) {
 }
 
 export default function Analytics() {
+  const [section, setSection] = useState('activity');
   const [days, setDays] = useState(30);
   const [report, setReport] = useState(null);
   const [debug, setDebug] = useState(null);
@@ -69,19 +71,28 @@ export default function Analytics() {
     <main className="adm-body adm-overview admin-analytics">
       <header className="adm-head adm-overview-head">
         <div><h1>Analytics</h1><p>Privacy-aware platform and product activity.</p></div>
-        <div className="adm-overview-actions">
-          <div className="adm-overview-ranges" aria-label="Analytics date range">
-            {RANGES.map((range) => (
-              <button type="button" key={range} className={days === range ? 'adm-overview-range-active' : ''} aria-pressed={days === range} onClick={() => setDays(range)}>
-                Last {range} days
-              </button>
-            ))}
+        {section === 'activity' && (
+          <div className="adm-overview-actions">
+            <div className="adm-overview-ranges" aria-label="Analytics date range">
+              {RANGES.map((range) => (
+                <button type="button" key={range} className={days === range ? 'adm-overview-range-active' : ''} aria-pressed={days === range} onClick={() => setDays(range)}>
+                  Last {range} days
+                </button>
+              ))}
+            </div>
+            <Button className="line sm" loading={exporting} onClick={exportCsv}>Export CSV</Button>
+            <Button className="line sm" loading={loading} onClick={load}>Refresh</Button>
           </div>
-          <Button className="line sm" loading={exporting} onClick={exportCsv}>Export CSV</Button>
-          <Button className="line sm" loading={loading} onClick={load}>Refresh</Button>
-        </div>
+        )}
       </header>
 
+      <div className="tabs analytics-tabs" role="tablist" aria-label="Analytics report">
+        <button type="button" role="tab" aria-selected={section === 'activity'} className={section === 'activity' ? 'on' : ''} onClick={() => setSection('activity')}>Platform activity</button>
+        <button type="button" role="tab" aria-selected={section === 'creators'} className={section === 'creators' ? 'on' : ''} onClick={() => setSection('creators')}>Creator insights</button>
+      </div>
+
+      {section === 'creators' ? <CreatorInsightsPanel /> : (
+        <>
       {report?.range && <p className="analytics-period">Showing {report.range.from} to {report.range.to}</p>}
       {error && <div className="adm-overview-error" role="alert"><div><h2>Could not load analytics</h2><p>{error}</p></div><Button className="line sm" onClick={load}>Retry</Button></div>}
       {loading && !report && <div className="adm-overview-loading" aria-busy="true"><div /><div /><div /></div>}
@@ -174,6 +185,8 @@ export default function Analytics() {
               </>
             )}
           </section>
+        </>
+      )}
         </>
       )}
     </main>
