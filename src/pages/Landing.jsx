@@ -15,6 +15,7 @@ import {
 import OfferDeck from '../components/OfferDeck.jsx';
 import { track } from '../lib/analytics/track.js';
 import { isAnalyticsOptedOut, setAnalyticsOptOut } from '../lib/analytics/consent.js';
+import { CONTACT_EMAIL, SUBSIDIARY_LINE } from '../config/site.js';
 
 gsap.registerPlugin(ScrollTrigger, useGSAP);
 
@@ -306,7 +307,7 @@ export default function Landing() {
             <h2 id="landing-contact-title">{LANDING_COPY.contactHeading}</h2>
             <p>{LANDING_COPY.contactDescription}</p>
           </div>
-          <motion.a className="btn white" href="mailto:info@cloutlabs.name.ng" onClick={() => track('cta_click', { id: 'contact_email' })} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+          <motion.a className="btn white" href={`mailto:${CONTACT_EMAIL}`} onClick={() => track('cta_click', { id: 'contact_email' })} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
             {LANDING_COPY.contactCta}
           </motion.a>
         </section>
@@ -338,7 +339,7 @@ export default function Landing() {
               <ul>
                 {links.map((link) => (
                   <li key={link.label}>
-                    {link.to.startsWith('/') ? <Link to={link.to}>{link.label}</Link> : <a href={link.to}>{link.label}</a>}
+                    {link.to?.startsWith('/') ? <Link to={link.to}>{link.label}</Link> : link.to ? <a href={link.to} title={link.title}>{link.label}</a> : <span className="footer-location-value">{link.label}</span>}
                   </li>
                 ))}
               </ul>
@@ -364,7 +365,10 @@ export default function Landing() {
           </motion.div>
         </div>
         <div className="footer-bottom">
-          <span>&copy; {new Date().getFullYear()} {LANDING_COPY.footerName}</span>
+          <div className="footer-legal">
+            <span>&copy; {new Date().getFullYear()} {LANDING_COPY.footerName}</span>
+            <span className="footer-subsidiary">{SUBSIDIARY_LINE}</span>
+          </div>
           <label className="analytics-visitor-toggle">
             <input
               type="checkbox"

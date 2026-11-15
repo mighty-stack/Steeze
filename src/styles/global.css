@@ -1225,6 +1225,16 @@
   .footer-links a:hover {
     @apply text-brand-purple-50;
   }
+  .footer-location-value {
+    overflow-wrap: anywhere;
+  }
+  .footer-legal {
+    display: grid;
+    gap: 0.25rem;
+  }
+  .footer-subsidiary {
+    color: inherit;
+  }
   .footer-bottom {
     @apply max-w-[1240px] mx-auto border-t border-[#4a5170] pt-5 flex items-center justify-between gap-4;
   }
@@ -3466,7 +3476,8 @@
       @apply border-0 bg-ink px-0 pt-14 pb-6 text-mist;
     }
     .landing-page .footer-main {
-      @apply mx-auto grid max-w-none grid-cols-4 gap-12 border-0 pb-10;
+      @apply mx-auto grid max-w-none gap-12 border-0 pb-10;
+      grid-template-columns: 1.5fr repeat(4, minmax(0, 1fr));
       width: min(1176px, calc(100% - 48px));
     }
     .landing-page .footer-brand p {

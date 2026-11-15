@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { CONTACT_EMAIL } from '../config/site.js';
 
 const POLICY_SECTIONS = [
   {
@@ -233,7 +234,7 @@ export default function PrivacyPolicy() {
             <p>If you have questions, concerns, or requests relating to this Privacy Policy or the handling of your personal information, please contact us.</p>
             <p><strong>Company:</strong> CloutLabs</p>
             <p><strong>Website:</strong> <a href="https://www.cloutlabs.name.ng">https://www.cloutlabs.name.ng</a></p>
-            <p><strong>Support Email:</strong> <a href="mailto:info@cloutlabs.name.ng">info@cloutlabs.name.ng</a></p>
+            <p><strong>Support Email:</strong> <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a></p>
             <p>We value your privacy and remain committed to protecting the information entrusted to us.</p>
           </section>
           <p className="privacy-policy-copyright">© 2026 CloutLabs. All Rights Reserved.</p>

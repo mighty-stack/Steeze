@@ -1,3 +1,5 @@
+import { CONTACT_EMAIL, LOCATIONS } from '../config/site.js';
+
 export const LANDING_HERO = {
   title: 'Where creators get hired and brands find talent.',
   description: "CloutLabs brings creators, brands, and opportunities together. Creators build a profile they control. Our team uses it to see who's rising and who's the right fit for a gig, a collaboration, or a growth programme.",
@@ -141,8 +143,6 @@ export const FAQS = [
   { question: 'What happens after email verification?', answer: 'You can log in to manage your profile and view current collaboration opportunities.' },
 ];
 
-export const CONTACT_EMAIL = 'hello@example.com';
-
 export const FOOTER_DESCRIPTION = 'CloutLabs brings creators, brands, and opportunities together.';
 
 export const FOOTER_LINKS = {
@@ -154,9 +154,13 @@ export const FOOTER_LINKS = {
   ],
   'For members': [
     { label: 'Help center', to: '#help-center' },
-    { label: 'Contact', to: '#contact' },
+    { label: 'Contact', to: `mailto:${CONTACT_EMAIL}`, title: CONTACT_EMAIL },
     { label: 'FAQ', to: '#faq' },
     { label: 'Privacy Policy', to: '/privacy-policy' },
+    { label: 'Terms of Use', to: '/terms' },
+  ],
+  Locations: [
+    { label: LOCATIONS.join(' · ') },
   ],
 };
 
