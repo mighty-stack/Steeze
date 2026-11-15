@@ -476,6 +476,18 @@ export default function Dashboard() {
   const [countdownPayload, setCountdownPayload] = useState(null);
   const [countdownClockOffset, setCountdownClockOffset] = useState(0);
   const [countdownLoading, setCountdownLoading] = useState(true);
+  const refreshCountdown = useCallback(async ({ showLoading = false } = {}) => {
+    if (showLoading) setCountdownLoading(true);
+    try {
+      const response = await api('/countdowns/active', { cache: 'no-store' });
+      setCountdownPayload(response);
+      setCountdownClockOffset(new Date(response.serverNow).getTime() - Date.now());
+    } catch {
+      setCountdownPayload(null);
+    } finally {
+      setCountdownLoading(false);
+    }
+  }, []);
   const load = useCallback(async () => {
     setError('');
     setLoading(true);
@@ -488,16 +500,7 @@ export default function Dashboard() {
         countdownLoading: dashboard.role === 'creator',
       });
       if (dashboard.role === 'creator') {
-        setCountdownLoading(true);
-        try {
-          const response = await api('/countdowns/active');
-          setCountdownPayload(response);
-          setCountdownClockOffset(new Date(response.serverNow).getTime() - Date.now());
-        } catch {
-          setCountdownPayload(null);
-        } finally {
-          setCountdownLoading(false);
-        }
+        await refreshCountdown({ showLoading: true });
       } else {
         setCountdownPayload(null);
         setCountdownLoading(false);
@@ -507,8 +510,16 @@ export default function Dashboard() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [refreshCountdown]);
   useEffect(() => { load(); }, [load]);
+  useEffect(() => {
+    if (data?.role !== 'creator') return undefined;
+    const refreshVisibleCountdown = () => {
+      if (document.visibilityState === 'visible') void refreshCountdown();
+    };
+    const interval = window.setInterval(refreshVisibleCountdown, 60_000);
+    return () => window.clearInterval(interval);
+  }, [data?.role, refreshCountdown]);
   useEffect(() => {
     const onFocus = () => { if (document.visibilityState === 'visible') load(); };
     window.addEventListener('focus', onFocus);
