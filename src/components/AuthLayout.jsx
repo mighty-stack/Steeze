@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Wordmark, cx } from './ui.jsx';
+import HomeChatbot from './HomeChatbot.jsx';
 
 // Split screen used by registration, login, password reset and the pending notice.
 export default function AuthLayout({ theme = 'brand', heading, sub, footnote, aside, top, children }) {
@@ -18,6 +19,7 @@ export default function AuthLayout({ theme = 'brand', heading, sub, footnote, as
         <div className="top">{top ?? <span>New here? <Link to="/">Back to home</Link></span>}</div>
         {children}
       </main>
+      {theme === 'creator' && <HomeChatbot />}
     </div>
   );
 }

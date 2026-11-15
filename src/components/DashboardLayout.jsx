@@ -4,6 +4,7 @@ import { cx } from './ui.jsx';
 import Sidebar from './Sidebar.jsx';
 import NotificationBell from './NotificationBell.jsx';
 import { api } from '../api/client.js';
+import HomeChatbot from './HomeChatbot.jsx';
 
 export default function DashboardLayout({ user, admin = false, stats, onLogout, children, home: homeOverride, links: overrideLinks }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -112,6 +113,7 @@ export default function DashboardLayout({ user, admin = false, stats, onLogout, 
         </div>
         {children}
       </main>
+      {!admin && user?.role === 'creator' && <HomeChatbot />}
     </div>
   );
 }
