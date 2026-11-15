@@ -96,12 +96,27 @@ function countdownSentence(milliseconds) {
   return parts.length > 1 ? `${parts.slice(0, -1).join(', ')} and ${parts.at(-1)}` : parts[0];
 }
 
+function countdownDismissalStorageKey(campaign) {
+  if (!campaign?.key || !campaign?.targetAt) return null;
+  return `countdown-dismissed:${campaign.key}:${campaign.targetAt}`;
+}
+
+function readCountdownDismissal(key) {
+  if (!key) return null;
+  try {
+    return window.localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
 function CountdownCard({ payload, clockOffset, loading }) {
   const campaigns = payload?.campaigns || [];
   const campaign = campaigns[0];
   const [now, setNow] = useState(() => Date.now() + clockOffset);
   const [announcementTime, setAnnouncementTime] = useState(() => Date.now() + clockOffset);
-  const [dismissed, setDismissed] = useState(false);
+  const [dismissedOn, setDismissedOn] = useState(null);
+  const dismissalKey = countdownDismissalStorageKey(campaign);
 
   useEffect(() => {
     setNow(Date.now() + clockOffset);
@@ -132,12 +147,13 @@ function CountdownCard({ payload, clockOffset, loading }) {
   }, [clockOffset]);
 
   useEffect(() => {
-    setDismissed(false);
-  }, [campaign?.id]);
+    setDismissedOn(readCountdownDismissal(dismissalKey));
+  }, [dismissalKey]);
 
   if (loading) {
     return <div className="db-countdown-card db-countdown-loading" aria-label="Loading resumption countdown" aria-busy="true" />;
   }
+  const dismissed = dismissedOn === localDateKey(now, campaign?.timezone || 'Africa/Lagos');
   if (!campaign || dismissed) return null;
 
   const targetAt = new Date(campaign.targetAt);
@@ -163,7 +179,13 @@ function CountdownCard({ payload, clockOffset, loading }) {
     : `${countdownSentence(Math.max(0, targetAt.getTime() - announcementTime))} until resumption.`;
 
   const dismiss = () => {
-    setDismissed(true);
+    const date = localDateKey(now, campaign.timezone || 'Africa/Lagos');
+    try {
+      window.localStorage.setItem(dismissalKey, date);
+    } catch {
+      // Keep dismissal available for this render if browser storage is unavailable.
+    }
+    setDismissedOn(date);
   };
 
   return (

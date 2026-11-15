@@ -49,6 +49,7 @@ import AdminTraining from './pages/admin/Training.jsx';
 import AdminCollaborations from './pages/admin/Collaborations.jsx';
 import AdminCreatorEmail from './pages/admin/CreatorEmail.jsx';
 import AdminAnalytics from './pages/admin/Analytics.jsx';
+import AdminCountdowns from './pages/admin/Countdowns.jsx';
 import StaffDashboard from './pages/staff/Dashboard.jsx';
 import StaffInterviews from './pages/staff/Interviews.jsx';
 import StaffSettings from './pages/staff/Settings.jsx';
@@ -114,6 +115,7 @@ export default function App() {
                 <Route path="analytics" element={<AdminAnalytics />} />
                 <Route path="registrations" element={<AdminRegistrations />} />
                 <Route path="interviews" element={<AdminInterviews />} />
+                <Route path="countdowns" element={<AdminCountdowns />} />
                 <Route path="access-codes" element={<AdminAccessCodes />} />
                 <Route path="resources" element={<AdminResources />} />
                 <Route path="options" element={<AdminOptions />} />
