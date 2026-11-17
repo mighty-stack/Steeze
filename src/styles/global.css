@@ -2724,14 +2724,19 @@
   .home-chat {
     @apply fixed right-5 bottom-5 z-[100] flex flex-col items-end gap-3;
   }
+  .reg > .home-chat {
+    bottom: 7rem;
+  }
   .home-chat-whatsapp {
-    @apply inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#25d366] px-4 font-semibold text-white shadow-lg transition hover:bg-[#1ebe5d] focus-visible:outline-white;
+    @apply inline-flex h-12 items-center justify-center gap-2 rounded-full bg-[#25d366] px-4 font-semibold text-white shadow-lg transition hover:bg-[#1ebe5d] focus-visible:outline-white cursor-grab active:cursor-grabbing;
+    touch-action: none;
   }
   .home-chat-whatsapp svg {
     @apply h-5 w-5 fill-current;
   }
   .home-chat-launcher {
-    @apply inline-flex h-13 items-center justify-center gap-2.5 rounded-full bg-brand-purple px-5 font-semibold text-white shadow-lg transition hover:bg-brand-purple-light hover:text-black focus-visible:outline-white;
+    @apply inline-flex h-13 items-center justify-center gap-2.5 rounded-full bg-brand-purple px-5 font-semibold text-white shadow-lg transition hover:bg-brand-purple-light hover:text-black focus-visible:outline-white cursor-grab active:cursor-grabbing;
+    touch-action: none;
   }
   .home-chat-launcher svg {
     @apply h-5 w-5 fill-none stroke-current stroke-2;
@@ -2743,7 +2748,8 @@
     box-shadow: 0 16px 55px rgba(16, 21, 40, 0.24);
   }
   .home-chat-header {
-    @apply flex items-center justify-between gap-3 bg-ink px-4.5 py-3.5 text-white;
+    @apply flex items-center justify-between gap-3 bg-ink px-4.5 py-3.5 text-white cursor-grab active:cursor-grabbing;
+    touch-action: none;
   }
   .home-chat-header strong,
   .home-chat-header span {
@@ -2805,6 +2811,9 @@
   @media (max-width: 760px) {
     .home-chat {
       @apply right-3 bottom-3;
+    }
+    .reg > .home-chat {
+      bottom: calc(6rem + env(safe-area-inset-bottom));
     }
     .home-chat-panel {
       height: min(560px, calc(100dvh - 96px));
