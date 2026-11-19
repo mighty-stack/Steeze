@@ -6,11 +6,12 @@ const TIMEOUT_MS = 90_000; // a sleeping Render free-tier server can take up to 
 const SLOW_AFTER_MS = 4_000;
 
 export class ApiError extends Error {
-  constructor(status, code, message, fields) {
+  constructor(status, code, message, fields, requestId) {
     super(message);
     this.status = status;
     this.code = code;
     this.fields = fields || {};
+    this.requestId = requestId || null;
   }
 }
 
@@ -97,7 +98,11 @@ export async function api(path, { method = 'GET', body, cache } = {}) {
   }
   if (!res.ok) {
     const e = data?.error;
-    throw new ApiError(res.status, e?.code || 'ERROR', e?.message || 'Something went wrong. Try again.', e?.fields);
+    const requestId = data?.requestId || res.headers.get('x-request-id');
+    const message = res.status >= 500
+      ? `Something went wrong on our side. Please try again. If it keeps happening, tell us this reference: ${requestId || 'unavailable'}.`
+      : e?.message || 'Something went wrong. Try again.';
+    throw new ApiError(res.status, e?.code || 'ERROR', message, e?.fields, requestId);
   }
   return data;
 }

@@ -255,7 +255,11 @@ export default function Register({ kind }) {
         recordFieldErrors(fields, Math.min(...Object.keys(fields).map(stepOfField)), true);
         form.setErrors(fields);
         setStep(Math.min(...Object.keys(fields).map(stepOfField)));
-        setBanner(err.status === 409 ? 'Some details are already registered. Check the highlighted fields.' : 'Check the highlighted fields.');
+        setBanner(err.status === 409 && fields.email
+          ? 'This email is already registered. If you just saw an error while registering, your account may have been created. Try logging in or use Forgot password.'
+          : err.status === 409
+            ? 'Some details are already registered. Check the highlighted fields.'
+            : 'Check the highlighted fields.');
         focusFirstError();
       } else {
         setBanner(err.message);

@@ -15,6 +15,10 @@ export default function Registered() {
             <div className="form-error mt-4" role="alert">
               We received your application, but couldn't send the verification email. Use the link below to request another.
             </div>
+          ) : state.emailSent === null ? (
+            <p className="verification-reminder">
+              Check your inbox for the verification link. If it does not arrive, use the link below to request another.
+            </p>
           ) : (
             <p className="verification-reminder">
               To activate your account, verify your email using the link we sent to <strong>{state.email}</strong>.

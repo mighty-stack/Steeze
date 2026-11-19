@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 const COPY = {
   registered: {
     tone: 'wait', icon: '\u2709', title: 'Check your inbox',
-    body: 'Thanks for registering. We sent a link to verify your email address.',
-    steps: ['Open the verification email we sent you.', 'Click the link to verify your email.', 'Then you can log in and use your account.'],
+    body: 'Thanks for registering. Look for an email verification link; if it does not arrive, request another.',
+    steps: ['Open the verification email from CloutLabs.', 'Click the link to verify your email.', 'Then you can log in and use your account.'],
     note: 'The link expires after 24 hours. You cannot log in until your email is verified.',
   },
   ACCOUNT_PENDING: {
@@ -37,7 +37,8 @@ export default function PendingNotice({ code = 'registered', email, emailSent, m
       <p>{c.body}</p>
       {code === 'ACCOUNT_REJECTED' && message && <p><b>{message.replace(/^Your registration was not approved\.?\s*/, '')}</b></p>}
       {c.steps && <ol>{c.steps.map((s) => <li key={s}>{s}</li>)}</ol>}
-      {email && code === 'registered' && emailSent !== false && <p>We sent a confirmation to <b>{email}</b>.</p>}
+      {email && code === 'registered' && emailSent === null && <p>Registration received for <b>{email}</b>.</p>}
+      {email && code === 'registered' && emailSent === true && <p>We sent a confirmation to <b>{email}</b>.</p>}
       {c.note && <p><b>{c.note}</b></p>}
       {(code === 'registered' || (code === 'ACCOUNT_PENDING' && email)) && (
         <p><Link className="link" to="/resend-verification" state={{ email }}>Resend verification email</Link></p>
