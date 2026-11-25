@@ -23,6 +23,20 @@ export default function ProjectNav({ user, unseen = 0, onLogout, landing = false
   return (
     <header className={cx('site-nav', dashboard && 'dashboard-nav', navOpen && 'menu-open')}>
       <Wordmark to={home} tone="reversed" />
+      {landing && (
+        <button
+          type="button"
+          className="landing-menu-button"
+          aria-label={navOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          aria-expanded={navOpen}
+          aria-controls="landing-primary-nav"
+          onClick={() => setNavOpen((open) => !open)}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+      )}
       {dashboard && (
         <button
           type="button"
@@ -42,12 +56,15 @@ export default function ProjectNav({ user, unseen = 0, onLogout, landing = false
           onClick={() => setNavOpen(false)}
         />
       )}
-      <nav id={dashboard ? 'dashboard-sidebar' : undefined} className={cx('site-nav-links', dashboard && 'dashboard-nav-links')} aria-label="Primary navigation">
+      <nav id={landing ? 'landing-primary-nav' : dashboard ? 'dashboard-sidebar' : undefined} className={cx('site-nav-links', dashboard && 'dashboard-nav-links')} aria-label="Primary navigation">
         {!user ? landing ? (
           <>
-            <a href="#about">About</a>
-            <Link to="/login" onClick={() => track('cta_click', { id: 'login' })}>Log in</Link>
-            <a className="nav-register" href="#register">Register</a>
+            <a href="#about" onClick={() => setNavOpen(false)}>About</a>
+            <Link to="/login" onClick={() => { setNavOpen(false); track('cta_click', { id: 'login' }); }}>Log in</Link>
+            <a className="nav-register" href="#register" onClick={() => setNavOpen(false)}>Register</a>
+            <a className="btn white sm nav-b2b-mobile" href="https://upstairs.name.ng" target="_blank" rel="noreferrer" onClick={() => setNavOpen(false)}>
+              CloutLabs B2B
+            </a>
           </>
         ) : (
           <>

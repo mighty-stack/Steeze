@@ -3158,6 +3158,10 @@
     .landing-page .site-nav-b2b {
       justify-self: end;
     }
+    .landing-page .landing-menu-button,
+    .landing-page .nav-b2b-mobile {
+      display: none;
+    }
     .landing-page .site-nav-links a {
       @apply rounded-full whitespace-nowrap text-white transition-colors duration-150;
     }
@@ -3545,17 +3549,35 @@
       .landing-page .site-nav .wordmark-logo {
         @apply w-[112px];
       }
-      .landing-page .site-nav-links {
-        @apply order-3 w-full justify-center gap-1 text-[11px];
+      .landing-page .landing-menu-button {
+        @apply ml-auto grid h-10 w-10 place-content-center gap-1.5 rounded-lg border border-white/50 bg-transparent;
+      }
+      .landing-page .landing-menu-button span {
+        @apply block h-0.5 w-5 rounded-full bg-white;
       }
       .landing-page .site-nav-b2b {
-        @apply ml-auto;
+        display: none;
+      }
+      .landing-page .site-nav-links {
+        @apply order-3 hidden w-full flex-col items-stretch justify-start gap-1 border-t border-white/20 pt-3 text-sm;
+      }
+      .landing-page .site-nav.menu-open .site-nav-links {
+        @apply flex;
       }
       .landing-page .site-nav-links a:not(.nav-register) {
-        @apply px-2 py-1.5;
+        @apply rounded-lg px-3 py-2 text-left;
+      }
+      .landing-page .site-nav-links a:nth-child(2) {
+        @apply border-0;
+      }
+      .landing-page .site-nav-links a:nth-child(2):hover {
+        @apply bg-transparent text-brand-purple-50;
       }
       .landing-page .site-nav-links .nav-register {
-        @apply px-2.5 py-1.5;
+        @apply rounded-lg px-3 py-2 text-left;
+      }
+      .landing-page .site-nav-links .nav-b2b-mobile {
+        @apply mt-1 flex justify-center border border-white/50 text-center;
       }
       .landing-page .landing-hero {
         @apply grid-cols-1 gap-5 pt-2 pb-1;
