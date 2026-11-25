@@ -324,6 +324,9 @@ export default function Landing() {
           >
             <Wordmark tone="reversed" brandName={LANDING_COPY.footerName} />
             <p>{FOOTER_DESCRIPTION}</p>
+            <a className="btn white sm footer-b2b" href="https://upstairs.name.ng" target="_blank" rel="noreferrer">
+              CloutLabs B2B
+            </a>
           </motion.div>
           {Object.entries(FOOTER_LINKS).map(([title, links]) => (
             <motion.nav

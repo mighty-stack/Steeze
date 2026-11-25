@@ -29,6 +29,9 @@ export const creatorRules = {
     socials: (v) => (socialErrors(v).socials ? socialErrors(v).socials : undefined),
     audienceNotes: rules.optionalLongText('Audience details', 300),
     contentDescription: rules.longText('Content description', 10, 1000),
+    portfolio: (links) => links.some((link) => link.trim() && rules.website(link))
+      ? 'Enter a valid website address for each portfolio link.'
+      : undefined,
   },
   interests: { accessCode: () => undefined, collaborationInterests: rules.interests },
 };
@@ -55,7 +58,7 @@ export const emptyBrand = {
 };
 export const emptyCreator = {
   accessCode: '', fullName: '', creatorName: '', phone: '', niche: '', location: '', socials: [{ platform: '', handle: '', followers: '' }],
-  audienceNotes: '', contentDescription: '', collaborationInterests: [], discoverable: true,
+  audienceNotes: '', contentDescription: '', portfolio: [], collaborationInterests: [], discoverable: true,
 };
 
 /* Turn form values into the API payload. */
@@ -74,6 +77,10 @@ export function creatorPayload(v) {
     fullName: clean(v.fullName), creatorName: clean(v.creatorName), phone: v.phone, niche: v.niche, location: v.location,
     socials: v.socials.map((s) => ({ platform: s.platform, handle: cleanHandle(s.handle), followers: Number(s.followers) })),
     audienceNotes: v.audienceNotes.trim(), contentDescription: v.contentDescription.trim(),
+    portfolio: v.portfolio.filter((link) => link.trim()).map((link) => {
+      const url = link.trim();
+      return { url: /^https?:\/\//i.test(url) ? url : `https://${url}` };
+    }),
     collaborationInterests: v.collaborationInterests,
   };
 }
@@ -91,6 +98,7 @@ export function creatorFromProfile(p) {
     fullName: p.fullName, creatorName: p.creatorName, phone: p.phone || '', niche: p.niche?.id || '', location: p.location?.id || '',
     socials: p.socials.map((s) => ({ platform: s.platform, handle: s.handle, followers: String(s.followers) })),
     audienceNotes: p.audienceNotes || '', contentDescription: p.contentDescription,
+    portfolio: (p.portfolio || []).map((item) => typeof item === 'string' ? item : item.url),
     collaborationInterests: (p.collaborationInterests || []).map((o) => o.id),
   };
 }

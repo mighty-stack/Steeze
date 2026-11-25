@@ -118,6 +118,7 @@ export function CreatorAboutFields({ form, options }) {
 }
 
 export function CreatorAudienceFields({ form, contentPlaceholder }) {
+  const portfolio = form.values.portfolio.length ? form.values.portfolio : [''];
   return (
     <>
       <SocialsEditor value={form.values.socials} onChange={(v) => form.set('socials', v)} errors={form.errors} />
@@ -126,6 +127,40 @@ export function CreatorAudienceFields({ form, contentPlaceholder }) {
         hint="For example: mostly women aged 18 to 34, based in Lagos."
       />
       <TextAreaField label="What you create" {...form.bind('contentDescription')} maxLength={1000} placeholder={contentPlaceholder} hint="Describe your content and style in a few sentences." />
+      <fieldset className="field">
+        <legend>Portfolio links <span className="opt">Optional</span></legend>
+        <div className="form-grid">
+          {portfolio.map((link, index) => (
+            <div className="flex items-end gap-2" key={index}>
+              <div className="min-w-0 flex-1">
+                <TextField
+                  label={`Portfolio link ${index + 1}`}
+                  type="url"
+                  value={link}
+                  onChange={(value) => form.set('portfolio', portfolio.map((item, i) => i === index ? value : item))}
+                  error={form.errors.portfolio}
+                  placeholder="https://example.com/your-work"
+                  autoCapitalize="none"
+                />
+              </div>
+              {portfolio.length > 1 && (
+                <button
+                  type="button"
+                  className="btn line sm mb-1"
+                  onClick={() => form.set('portfolio', portfolio.filter((_, i) => i !== index))}
+                  aria-label={`Remove portfolio link ${index + 1}`}
+                >
+                  Remove
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+        <button type="button" className="btn line sm mt-2.5" onClick={() => form.set('portfolio', [...portfolio, ''])}>
+          + Add a portfolio link
+        </button>
+        <span className="hint">Add links to your work, such as a portfolio site or a public work sample.</span>
+      </fieldset>
     </>
   );
 }

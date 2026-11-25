@@ -43,6 +43,15 @@ function CreatorView({ profile }) {
       ))}</dd></div>
       {profile.audienceNotes && <div><dt>Audience</dt><dd>{profile.audienceNotes}</dd></div>}
       <div><dt>Content</dt><dd>{profile.contentDescription}</dd></div>
+      <div>
+        <dt>Portfolio</dt>
+        <dd>
+          {profile.portfolio?.length ? profile.portfolio.map((item, index) => {
+            const url = typeof item === 'string' ? item : item.url;
+            return <div key={`${url}-${index}`}><a className="link" href={url} target="_blank" rel="noopener noreferrer nofollow">{typeof item === 'string' ? item : item.title || item.host || url}</a></div>;
+          }) : 'No portfolio links added.'}
+        </dd>
+      </div>
       <div><dt>Interested in</dt><dd><span className="chip-list">{profile.collaborationInterests.map((o) => <span key={o.id} className="chip-static">{o.label}</span>)}</span></dd></div>
     </dl>
   );

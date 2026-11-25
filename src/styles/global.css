@@ -3145,14 +3145,18 @@
   }
 
     .landing-page .site-nav {
-      @apply flex items-center justify-between gap-6 bg-ink text-white;
+      @apply grid items-center gap-6 bg-ink text-white;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
       width: 100%;
       min-height: 78px;
       padding: 18px max(24px, calc((100% - 1176px) / 2));
       box-sizing: border-box;
     }
     .landing-page .site-nav-links {
-      @apply ml-auto flex flex-none items-center justify-end gap-7 font-medium;
+      @apply flex flex-none items-center justify-center gap-7 font-medium;
+    }
+    .landing-page .site-nav-b2b {
+      justify-self: end;
     }
     .landing-page .site-nav-links a {
       @apply rounded-full whitespace-nowrap text-white transition-colors duration-150;
@@ -3523,10 +3527,13 @@
       @apply mx-auto flex max-w-none items-center justify-between gap-4 border-t border-[#4a5170] pt-5 text-xs text-mist;
       width: min(1176px, calc(100% - 48px));
     }
+    .landing-page .footer-b2b {
+      @apply mt-4;
+    }
 
     @media (max-width: 760px) {
       .landing-page .site-nav {
-        @apply gap-2 py-3;
+        @apply flex flex-wrap gap-2 py-3;
         width: 100%;
         min-height: 56px;
         padding-right: 11px;
@@ -3539,7 +3546,10 @@
         @apply w-[112px];
       }
       .landing-page .site-nav-links {
-        @apply gap-1 text-[11px];
+        @apply order-3 w-full justify-center gap-1 text-[11px];
+      }
+      .landing-page .site-nav-b2b {
+        @apply ml-auto;
       }
       .landing-page .site-nav-links a:not(.nav-register) {
         @apply px-2 py-1.5;

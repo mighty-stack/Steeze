@@ -78,6 +78,11 @@ export default function ProjectNav({ user, unseen = 0, onLogout, landing = false
           </>
         )}
       </nav>
+      {landing && (
+        <a className="btn white sm site-nav-b2b" href="https://upstairs.name.ng" target="_blank" rel="noreferrer">
+          CloutLabs B2B
+        </a>
+      )}
       {user && (
         <div className={cx('site-nav-account', dashboard && 'dashboard-nav-account')}>
           <div className={cx('avatar', admin || user.role === 'brand' ? 'b' : 'c')} aria-hidden="true">
