@@ -3577,7 +3577,7 @@
         @apply rounded-lg px-3 py-2 text-left;
       }
       .landing-page .site-nav-links .nav-b2b-mobile {
-        @apply mt-1 flex justify-center border border-white/50 text-center;
+        @apply mt-1 flex justify-center border border-white/50 text-center text-brand-purple-dark;
       }
       .landing-page .landing-hero {
         @apply grid-cols-1 gap-5 pt-2 pb-1;
