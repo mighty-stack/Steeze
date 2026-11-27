@@ -13,12 +13,6 @@ import InterviewAssignmentModal from './InterviewAssignmentModal.jsx';
 
 const PAGE_SIZE = 20;
 const CREATOR_LEVELS = ['intern', 'emerging', 'rising', 'established', 'professional'];
-const COHORT_OPTIONS = [
-  { value: '', label: 'All cohorts' },
-  { value: 'launch', label: 'Launch cohort' },
-  { value: 'v1', label: 'V1 cohort' },
-  { value: 'general', label: 'General' },
-];
 const TABS = [
   { key: 'all', label: 'All', query: {} },
   { key: 'brand', label: 'Brands', query: { role: 'brand' } },
@@ -203,11 +197,25 @@ export default function Registrations() {
   const [category, setCategory] = useState('');
   const [location, setLocation] = useState('');
   const [cohort, setCohort] = useState(() => params.get('cohort') || '');
+  const [creatorCohorts, setCreatorCohorts] = useState([]);
+  const [cohortCsv, setCohortCsv] = useState('');
   const [level, setLevel] = useState(() => params.get('level') || '');
   const [minScore, setMinScore] = useState(() => params.get('minScore') || '');
   const [sort, setSort] = useState(() => params.get('sort') || '');
   const [page, setPage] = useState(1);
   const onlyUnseen = params.get('unseen') === 'true';
+
+  useEffect(() => {
+    let active = true;
+    api('/admin/creator-cohorts')
+      .then(({ items }) => {
+        if (active) setCreatorCohorts(items || []);
+      })
+      .catch((err) => {
+        if (active) toast(err.message || 'Could not load creator cohorts.', 'error');
+      });
+    return () => { active = false; };
+  }, [toast]);
 
   useEffect(() => {
     if (!accessCodeId) {
@@ -351,6 +359,18 @@ export default function Registrations() {
     }
   };
 
+  const exportCohortCsv = async () => {
+    if (!cohortCsv) return;
+    setBusyAction('cohort-export');
+    try {
+      await download(`/admin/users/export.csv${qs({ role: 'creator', cohort: cohortCsv })}`);
+    } catch (err) {
+      toast(err.message, 'error');
+    } finally {
+      setBusyAction('');
+    }
+  };
+
   const verifyPending = async () => {
     setBusyAction('verify-pending');
     try {
@@ -390,6 +410,25 @@ export default function Registrations() {
           <p>{list ? `${list.total} account${list.total === 1 ? '' : 's'}${onlyUnseen ? ', showing new ones only' : ''}.` : '\u00A0'}</p>
         </div>
         <div className="head-actions">
+          <select
+            className="select input"
+            value={cohortCsv}
+            onChange={(event) => setCohortCsv(event.target.value)}
+            aria-label="Select creator cohort CSV"
+          >
+            <option value="">Download cohort CSV...</option>
+            {creatorCohorts.map((item) => (
+              <option key={item.key} value={item.key}>{item.label} ({item.registrations})</option>
+            ))}
+          </select>
+          <Button
+            className="line sm"
+            loading={busyAction === 'cohort-export'}
+            disabled={!cohortCsv}
+            onClick={exportCohortCsv}
+          >
+            Download cohort CSV
+          </Button>
           {tab === 'pending' && (
             <Button className="primary sm" loading={busyAction === 'verify-pending'} onClick={() => setModal('verify-pending')}>
               Verify all pending
@@ -413,8 +452,9 @@ export default function Registrations() {
           <option value="">Location</option>
           {options?.location.map((o) => <option key={o.id} value={o.id}>{o.label}</option>)}
         </select>
-        <select className="select input" value={cohort} onChange={(e) => setCohort(e.target.value)} aria-label="Filter by cohort">
-          {COHORT_OPTIONS.map((o) => <option key={o.value || 'all'} value={o.value}>{o.label}</option>)}
+        <select className="select input" value={cohort} onChange={(e) => { setCohort(e.target.value); if (e.target.value) setTab('creator'); }} aria-label="Filter by cohort">
+          <option value="">All cohorts</option>
+          {creatorCohorts.map((item) => <option key={item.key} value={item.key}>{item.label}</option>)}
         </select>
         <select className="select input" value={level} onChange={(e) => { setLevel(e.target.value); if (e.target.value) setTab('creator'); }} aria-label="Filter by creator level">
           <option value="">All creator levels</option>
@@ -465,7 +505,7 @@ export default function Registrations() {
                       <td className="ty"><span className={cx('dot', u.role === 'brand' ? 'b' : 'c')} />{u.role === 'brand' ? 'Brand' : 'Creator'}</td>
                       <td>{u.categoryOrNiche?.label || '\u2013'}</td>
                       <td>{u.location?.label || '\u2013'}</td>
-                      <td>{u.cohort || '\u2013'}</td>
+                      <td>{u.cohortLabel || u.cohort || '\u2013'}</td>
                       <td>{relativeDay(u.createdAt)}</td>
                       <td>{u.lastActiveAt ? relativeDay(u.lastActiveAt) : 'Not recorded'}</td>
                       <td><Pill tone={status.tone}>{status.label}</Pill></td>
